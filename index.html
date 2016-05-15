@@ -1,10 +1,35 @@
 <!DOCTYPE html>
-
 <html>
 <head>
-  <title>Chess</title>
+    <title>Chess</title>
 </head>
-  <script src="libraries/phaser/phaser.min.js"></script>
-  <script src="fChess.js"></script>
+<body>
+<div id="game"></div>
 
+<script src="libraries/phaser/phaser.min.js"></script>
+<script src="libraries/jquery/jquery-1.12.3.min.js"></script>
+<script src="scripts/board.js"></script>
+
+<script type="text/javascript">
+    var fChess = fChess || {};
+
+    fChess.Page = (function () {
+        var Page = {};
+
+        //fields
+        Page.board = null;
+
+        //functions
+        Page.initialize = function () {
+            this.board = new fChess.Board('#game');
+        };
+
+        return Page;
+    })();
+
+    $(document).on('ready', function () {
+        fChess.Page.initialize();
+    });
+</script>
+</body>
 </html>
