@@ -43,7 +43,7 @@ fChess.Board = (function () {
     };
 
     Board.prototype.update = function () {
-
+        this.render();
     };
 
     Board.prototype.render = function () {
@@ -51,10 +51,8 @@ fChess.Board = (function () {
         var yPos = 0;
         var row = 0;
         var column = 0;
-        var startingX = this.game.world.centerX - 4*Board.gameSettings.squareWidth
-                        + Board.gameSettings.squareWidth/2;
-        var startingY = this.game.world.centerY - 4*Board.gameSettings.squareWidth
-                        + Board.gameSettings.squareWidth/2;
+        var startingX = this.game.world.centerX - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth / 2;
+        var startingY = this.game.world.centerY - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth / 2;
 
         this.cells.forEach(function (cell, i) {
             if (cell.piece != null) {
@@ -73,7 +71,6 @@ fChess.Board = (function () {
 
     Board.prototype.startNewGame = function () {
         this.resetPlayers();
-        this.render();
     };
 
     Board.prototype.resetPlayers = function () {
@@ -133,7 +130,7 @@ fChess.Board = (function () {
     Board.gameSettings = {
         rows: 8,
         columns: 8,
-        squareWidth: 63,
+        squareWidth: 63
     };
 
     return Board;
