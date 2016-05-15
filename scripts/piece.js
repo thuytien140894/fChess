@@ -9,6 +9,7 @@ fChess.Piece = (function () {
 
     //fields
     Piece.prototype.alive = true;
+    Piece.prototype.name = '';
 
     //functions
 
@@ -20,6 +21,7 @@ fChess.KingPiece = (function () {
 
     //constructor
     var KingPiece = function () {
+        this.name = 'king';
     };
 
     fChess.Utils.extend(fChess.Piece, KingPiece);
@@ -36,6 +38,7 @@ fChess.QueenPiece = (function () {
 
     //constructor
     var QueenPiece = function () {
+        this.name = 'queen';
     };
 
     fChess.Utils.extend(fChess.Piece, QueenPiece);
@@ -52,6 +55,7 @@ fChess.BishopPiece = (function () {
 
     //constructor
     var BishopPiece = function () {
+        this.name = 'bishop';
     };
 
     fChess.Utils.extend(fChess.Piece, BishopPiece);
@@ -68,6 +72,7 @@ fChess.RookPiece = (function () {
 
     //constructor
     var RookPiece = function () {
+        this.name = 'rook';
     };
 
     fChess.Utils.extend(fChess.Piece, RookPiece);
@@ -84,6 +89,7 @@ fChess.KnightPiece = (function () {
 
     //constructor
     var KnightPiece = function () {
+        this.name = 'knight';
     };
 
     fChess.Utils.extend(fChess.Piece, KnightPiece);
@@ -100,6 +106,7 @@ fChess.PawnPiece = (function () {
 
     //constructor
     var PawnPiece = function () {
+        this.name = 'pawn';
     };
 
     fChess.Utils.extend(fChess.Piece, PawnPiece);

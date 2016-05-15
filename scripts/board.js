@@ -9,7 +9,7 @@ fChess.Board = (function () {
             parentElement = document.body;
         }
         this.$parent = $(parentElement);
-        
+
         this.players = [];
         this.cells = [];
 
@@ -40,22 +40,40 @@ fChess.Board = (function () {
         var board = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'board');
         board.scale.setTo(0.6, 0.6);
         board.anchor.setTo(0.5, 0.5);
-
-        var queen = this.game.add.sprite(200, 200, 'queen');
-        queen.scale.setTo(0.6, 0.6);
-        queen.anchor.setTo(0.5, 0.5);
     };
 
     Board.prototype.update = function () {
 
     };
 
+    Board.prototype.render = function () {
+        var xPos = 0;
+        var yPos = 0;
+        var row = 0;
+        var column = 0;
+
+        this.cells.forEach(function (cell, i) {
+            if (cell.piece != null) {
+                row = Math.floor(i / 8);
+                column = i % 8;
+
+                xPos = Board.gameSettings.startingPos.x + Board.gameSettings.squareWidth * column;
+                yPos = Board.gameSettings.startingPos.y + Board.gameSettings.squareWidth * row;
+
+                var piece = this.game.add.sprite(xPos, yPos, cell.piece.name);
+                piece.scale.setTo(0.6, 0.6);
+                piece.anchor.setTo(0.5, 0.5);
+            }
+        }.bind(this));
+    };
+
     Board.prototype.startNewGame = function () {
         this.resetPlayers();
+        this.render();
     };
 
     Board.prototype.resetPlayers = function () {
-      this.players.push(new fChess.Player('Player 1'), new fChess.Player('Player 2'));
+        this.players.push(new fChess.Player('Player 1'), new fChess.Player('Player 2'));
 
         //give players all the starting pieces
         this.players.forEach(function (player) {
@@ -110,7 +128,11 @@ fChess.Board = (function () {
 
     Board.gameSettings = {
         rows: 8,
-        columns: 8
+        columns: 8,
+        squareWidth: 63,
+        startingPos: {
+            x: 420,
+            y: 130}
     };
 
     return Board;
