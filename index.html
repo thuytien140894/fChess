@@ -7,10 +7,22 @@
     <link rel="stylesheet" type="text/css" href="styles/site.css">
 </head>
 <body>
-<div id="game"></div>
+<div id="wrapper">
+    <div id="game">
+
+    </div>
+    <div id="dashboard">
+        <button id="start-new-game-btn" type="button">New Game</button>
+    </div>
+</div>
 
 <script src="libraries/jquery/jquery-1.12.3.min.js"></script>
 <script src="libraries/phaser/phaser.min.js"></script>
+
+<script src="scripts/utils.js"></script>
+<script src="scripts/cell.js"></script>
+<script src="scripts/player.js"></script>
+<script src="scripts/piece.js"></script>
 <script src="scripts/board.js"></script>
 
 <script type="text/javascript">
@@ -25,6 +37,9 @@
         //functions
         Page.initialize = function () {
             this.board = new fChess.Board('#game');
+            $('#start-new-game-btn').on('click', function () {
+                this.board.startNewGame();
+            }.bind(this));
         };
 
         return Page;
