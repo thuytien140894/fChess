@@ -74,23 +74,23 @@ fChess.Board = (function () {
     };
 
     Board.prototype.resetPlayers = function () {
-        this.players.push(new fChess.Player('Player 1'), new fChess.Player('Player 2'));
+        this.players.push(new fChess.Player('Player 1', 'white'), new fChess.Player('Player 2', 'black'));
 
         //give players all the starting pieces
         this.players.forEach(function (player) {
             player.pieces.length = 0;
 
-            player.pieces.push(new fChess.RookPiece());
-            player.pieces.push(new fChess.KnightPiece());
-            player.pieces.push(new fChess.BishopPiece());
-            player.pieces.push(new fChess.QueenPiece());
-            player.pieces.push(new fChess.KingPiece());
-            player.pieces.push(new fChess.BishopPiece());
-            player.pieces.push(new fChess.KnightPiece());
-            player.pieces.push(new fChess.RookPiece());
+            player.pieces.push(new fChess.RookPiece(player.color));
+            player.pieces.push(new fChess.KnightPiece(player.color));
+            player.pieces.push(new fChess.BishopPiece(player.color));
+            player.pieces.push(new fChess.QueenPiece(player.color));
+            player.pieces.push(new fChess.KingPiece(player.color));
+            player.pieces.push(new fChess.BishopPiece(player.color));
+            player.pieces.push(new fChess.KnightPiece(player.color));
+            player.pieces.push(new fChess.RookPiece(player.color));
 
             for (var i = 0; i < 8; i++) {
-                player.pieces.push(new fChess.PawnPiece());
+                player.pieces.push(new fChess.PawnPiece(player.color));
             }
         }.bind(this));
 
@@ -119,12 +119,18 @@ fChess.Board = (function () {
     //static fields
     Board.images = {
         'board': 'assets/board.png',
-        'king': 'assets/chesspieces/alpha/bK.png',
-        'queen': 'assets/chesspieces/alpha/bQ.png',
-        'bishop': 'assets/chesspieces/alpha/bB.png',
-        'rook': 'assets/chesspieces/alpha/bR.png',
-        'knight': 'assets/chesspieces/alpha/bN.png',
-        'pawn': 'assets/chesspieces/alpha/bP.png'
+        'bKing': 'assets/chesspieces/alpha/bK.png',
+        'bQueen': 'assets/chesspieces/alpha/bQ.png',
+        'bBishop': 'assets/chesspieces/alpha/bB.png',
+        'bRook': 'assets/chesspieces/alpha/bR.png',
+        'bKnight': 'assets/chesspieces/alpha/bN.png',
+        'bPawn': 'assets/chesspieces/alpha/bP.png',
+        'wKing': 'assets/chesspieces/alpha/wK.png',
+        'wQueen': 'assets/chesspieces/alpha/wQ.png',
+        'wBishop': 'assets/chesspieces/alpha/wB.png',
+        'wRook': 'assets/chesspieces/alpha/wR.png',
+        'wKnight': 'assets/chesspieces/alpha/wN.png',
+        'wPawn': 'assets/chesspieces/alpha/wP.png'
     };
 
     Board.gameSettings = {
