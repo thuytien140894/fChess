@@ -12,12 +12,12 @@ function preload() {
 
 function create() {
   var board = game.add.sprite(game.world.centerX, game.world.centerY, 'board');
-  board.scale.setTo(0.6, 0.6)
+  board.scale.setTo(0.6, 0.6);
   board.anchor.setTo(0.5, 0.5);
 
   var queen = game.add.sprite(200, 200, 'queen');
-  queen.scale.setTo(0.6, 0.6)
-  queen.anchor.setTo(0.5, 0.5)
+  queen.scale.setTo(0.6, 0.6);
+  queen.anchor.setTo(0.5, 0.5);
 }
 
 function update() {
