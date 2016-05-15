@@ -9,7 +9,6 @@ fChess.Piece = (function () {
 
     //fields
     Piece.prototype.alive = true;
-    Piece.prototype.name = '';
     Piece.prototype.color = '';
 
     //functions
@@ -22,13 +21,7 @@ fChess.KingPiece = (function () {
 
     //constructor
     var KingPiece = function (color) {
-        if (color != undefined) {
-            if (color == 'white') {
-                this.name = 'wKing';
-            } else {
-                this.name = 'bKing';
-            }
-        }
+        this.color = color;
     };
 
     fChess.Utils.extend(fChess.Piece, KingPiece);
@@ -45,13 +38,7 @@ fChess.QueenPiece = (function () {
 
     //constructor
     var QueenPiece = function (color) {
-        if (color != undefined) {
-            if (color == 'white') {
-                this.name = 'wQueen';
-            } else {
-                this.name = 'bQueen';
-            }
-        }
+        this.color = color;
     };
 
     fChess.Utils.extend(fChess.Piece, QueenPiece);
@@ -68,13 +55,7 @@ fChess.BishopPiece = (function () {
 
     //constructor
     var BishopPiece = function (color) {
-        if (color != undefined) {
-            if (color == 'white') {
-                this.name = 'wBishop';
-            } else {
-                this.name = 'bBishop';
-            }
-        }
+        this.color = color;
     };
 
     fChess.Utils.extend(fChess.Piece, BishopPiece);
@@ -91,13 +72,7 @@ fChess.RookPiece = (function () {
 
     //constructor
     var RookPiece = function (color) {
-        if (color != undefined) {
-            if (color == 'white') {
-                this.name = 'wRook';
-            } else {
-                this.name = 'bRook';
-            }
-        }
+        this.color = color;
     };
 
     fChess.Utils.extend(fChess.Piece, RookPiece);
@@ -114,13 +89,7 @@ fChess.KnightPiece = (function () {
 
     //constructor
     var KnightPiece = function (color) {
-        if (color != undefined) {
-            if (color == 'white') {
-                this.name = 'wKnight';
-            } else {
-                this.name = 'bKnight';
-            }
-        }
+        this.color = color;
     };
 
     fChess.Utils.extend(fChess.Piece, KnightPiece);
@@ -137,13 +106,7 @@ fChess.PawnPiece = (function () {
 
     //constructor
     var PawnPiece = function (color) {
-        if (color != undefined) {
-            if (color == 'white') {
-                this.name = 'wPawn';
-            } else {
-                this.name = 'bPawn';
-            }
-        }
+        this.color = color;
     };
 
     fChess.Utils.extend(fChess.Piece, PawnPiece);

@@ -38,8 +38,8 @@ fChess.Board = (function () {
 
     Board.prototype.create = function () {
         var board = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'board');
-        board.scale.setTo(0.6, 0.6);
-        board.anchor.setTo(0.5, 0.5);
+        board.scale.setTo(Board.gameSettings.widthScale, Board.gameSettings.heightScale);
+        board.anchor.setTo(Board.gameSettings.anchorX, Board.gameSettings.anchorY);
     };
 
     Board.prototype.update = function () {
@@ -56,15 +56,16 @@ fChess.Board = (function () {
 
         this.cells.forEach(function (cell, i) {
             if (cell.piece != null) {
-                row = Math.floor(i / 8);
-                column = i % 8;
+                row = Math.floor(i / Board.gameSettings.rows);
+                column = i % Board.gameSettings.columns;
 
                 xPos = startingX + Board.gameSettings.squareWidth * column;
                 yPos = startingY + Board.gameSettings.squareWidth * row;
 
-                var piece = this.game.add.sprite(xPos, yPos, cell.piece.name);
-                piece.scale.setTo(0.6, 0.6);
-                piece.anchor.setTo(0.5, 0.5);
+                var pieceName = fChess.Utils.createName(cell.piece);
+                var piece = this.game.add.sprite(xPos, yPos, pieceName);
+                piece.scale.setTo(Board.gameSettings.widthScale, Board.gameSettings.heightScale);
+                piece.anchor.setTo(Board.gameSettings.anchorX, Board.gameSettings.anchorY);
             }
         }.bind(this));
     };
@@ -119,24 +120,28 @@ fChess.Board = (function () {
     //static fields
     Board.images = {
         'board': 'assets/board.png',
-        'bKing': 'assets/chesspieces/alpha/bK.png',
-        'bQueen': 'assets/chesspieces/alpha/bQ.png',
-        'bBishop': 'assets/chesspieces/alpha/bB.png',
-        'bRook': 'assets/chesspieces/alpha/bR.png',
-        'bKnight': 'assets/chesspieces/alpha/bN.png',
-        'bPawn': 'assets/chesspieces/alpha/bP.png',
-        'wKing': 'assets/chesspieces/alpha/wK.png',
-        'wQueen': 'assets/chesspieces/alpha/wQ.png',
-        'wBishop': 'assets/chesspieces/alpha/wB.png',
-        'wRook': 'assets/chesspieces/alpha/wR.png',
-        'wKnight': 'assets/chesspieces/alpha/wN.png',
-        'wPawn': 'assets/chesspieces/alpha/wP.png'
+        'blackKing': 'assets/chesspieces/alpha/bK.png',
+        'blackQueen': 'assets/chesspieces/alpha/bQ.png',
+        'blackBishop': 'assets/chesspieces/alpha/bB.png',
+        'blackRook': 'assets/chesspieces/alpha/bR.png',
+        'blackKnight': 'assets/chesspieces/alpha/bN.png',
+        'blackPawn': 'assets/chesspieces/alpha/bP.png',
+        'whiteKing': 'assets/chesspieces/alpha/wK.png',
+        'whiteQueen': 'assets/chesspieces/alpha/wQ.png',
+        'whiteBishop': 'assets/chesspieces/alpha/wB.png',
+        'whiteRook': 'assets/chesspieces/alpha/wR.png',
+        'whiteKnight': 'assets/chesspieces/alpha/wN.png',
+        'whitePawn': 'assets/chesspieces/alpha/wP.png'
     };
 
     Board.gameSettings = {
         rows: 8,
         columns: 8,
-        squareWidth: 63
+        squareWidth: 63,
+        widthScale: 0.6,
+        heightScale: 0.6,
+        anchorX: 0.5,
+        anchorY: 0.5
     };
 
     return Board;
