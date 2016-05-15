@@ -51,14 +51,18 @@ fChess.Board = (function () {
         var yPos = 0;
         var row = 0;
         var column = 0;
+        var startingX = this.game.world.centerX - 4*Board.gameSettings.squareWidth
+                        + Board.gameSettings.squareWidth/2;
+        var startingY = this.game.world.centerY - 4*Board.gameSettings.squareWidth
+                        + Board.gameSettings.squareWidth/2;
 
         this.cells.forEach(function (cell, i) {
             if (cell.piece != null) {
                 row = Math.floor(i / 8);
                 column = i % 8;
 
-                xPos = Board.gameSettings.startingPos.x + Board.gameSettings.squareWidth * column;
-                yPos = Board.gameSettings.startingPos.y + Board.gameSettings.squareWidth * row;
+                xPos = startingX + Board.gameSettings.squareWidth * column;
+                yPos = startingY + Board.gameSettings.squareWidth * row;
 
                 var piece = this.game.add.sprite(xPos, yPos, cell.piece.name);
                 piece.scale.setTo(0.6, 0.6);
@@ -130,9 +134,6 @@ fChess.Board = (function () {
         rows: 8,
         columns: 8,
         squareWidth: 63,
-        startingPos: {
-            x: 420,
-            y: 130}
     };
 
     return Board;
