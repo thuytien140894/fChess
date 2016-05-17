@@ -29,6 +29,9 @@ fChess.KingPiece = (function () {
     //fields
 
     //functions
+    KingPiece.prototype.onMouseDown = function () {
+        console.log('Clicked');
+    };
 
     return KingPiece;
 })();
@@ -46,6 +49,9 @@ fChess.QueenPiece = (function () {
     //fields
 
     //functions
+    QueenPiece.prototype.onMouseDown = function () {
+        console.log('Clicked');
+    };
 
     return QueenPiece;
 })();
@@ -63,6 +69,9 @@ fChess.BishopPiece = (function () {
     //fields
 
     //functions
+    BishopPiece.prototype.onMouseDown = function () {
+        console.log('Clicked');
+    };
 
     return BishopPiece;
 })();
@@ -80,6 +89,9 @@ fChess.RookPiece = (function () {
     //fields
 
     //functions
+    RookPiece.prototype.onMouseDown = function () {
+        console.log('Clicked');
+    };
 
     return RookPiece;
 })();
@@ -97,6 +109,9 @@ fChess.KnightPiece = (function () {
     //fields
 
     //functions
+    KnightPiece.prototype.onMouseDown = function () {
+        console.log('Clicked');
+    };
 
     return KnightPiece;
 })();
@@ -114,6 +129,9 @@ fChess.PawnPiece = (function () {
     //fields
 
     //functions
+    PawnPiece.prototype.onMouseDown = function () {
+        console.log('Clicked');
+    };
 
     return PawnPiece;
 })();

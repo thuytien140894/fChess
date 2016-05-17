@@ -39,7 +39,7 @@ fChess.Board = (function () {
     Board.prototype.create = function () {
         var board = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'board');
         board.scale.setTo(Board.gameSettings.widthScale, Board.gameSettings.heightScale);
-        board.anchor.setTo(Board.gameSettings.anchorX, Board.gameSettings.anchorY);
+        board.anchor.set(Board.gameSettings.anchor);
     };
 
     Board.prototype.update = function () {
@@ -63,9 +63,8 @@ fChess.Board = (function () {
                 yPos = startingY + Board.gameSettings.squareWidth * row;
 
                 var pieceName = fChess.Utils.createName(cell.piece);
-                var piece = this.game.add.sprite(xPos, yPos, pieceName);
-                piece.scale.setTo(Board.gameSettings.widthScale, Board.gameSettings.heightScale);
-                piece.anchor.setTo(Board.gameSettings.anchorX, Board.gameSettings.anchorY);
+                var piece = new fChess.Sprite(this.game, xPos, yPos, pieceName);
+                this.game.add.existing(piece.sprite);
             }
         }.bind(this));
     };
@@ -140,8 +139,7 @@ fChess.Board = (function () {
         squareWidth: 63,
         widthScale: 0.6,
         heightScale: 0.6,
-        anchorX: 0.5,
-        anchorY: 0.5
+        anchor: 0.5,
     };
 
     return Board;
