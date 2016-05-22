@@ -18,6 +18,8 @@ fChess.Sprite = (function () {
     Sprite.prototype.name = '';
     Sprite.prototype.xPos = 0;
     Sprite.prototype.yPos = 0;
+    Sprite.prototype.row = 0;
+    Sprite.prototype.column = 0;
     Sprite.prototype.sprite = null;
 
     // functions
@@ -32,7 +34,7 @@ fChess.Sprite = (function () {
 
     Sprite.prototype.attachEventListeners = function () {
         this.sprite.events.onInputOver.add(this.onMouseOver, this);
-        // this.sprite.events.onInputDown.add(this.onMouseDown, this);
+        this.sprite.events.onInputDown.add(this.onMouseDown, this);
         this.sprite.events.onInputOut.add(this.onMouseOver, this);
     };
 

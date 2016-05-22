@@ -58,26 +58,28 @@ fChess.Board = (function () {
 
         this.cells.forEach(function (cell, i) {
             if (cell.piece != null) {
-                cell.row = Math.floor(i / Board.gameSettings.rows);
-                cell.column = i % Board.gameSettings.columns;
+                row = Math.floor(i / Board.gameSettings.rows);
+                column = i % Board.gameSettings.columns;
 
-                xPos = startingX + Board.gameSettings.squareWidth * cell.column;
-                yPos = startingY + Board.gameSettings.squareWidth * cell.row;
+                xPos = startingX + Board.gameSettings.squareWidth * column;
+                yPos = startingY + Board.gameSettings.squareWidth * row;
 
                 var pieceName = Board.getImageNameForPiece(cell.piece);
                 var pieceSprite = new fChess.Sprite(this.game, xPos, yPos, pieceName);
+                pieceSprite.row = row;
+                pieceSprite.column = column;
                 this.game.add.existing(pieceSprite.sprite);
 
-                piece.sprite.events.onInputDown.add(function() {
-                    this.onMouseDownForPiece(cell.row, cell.column);
+                pieceSprite.sprite.events.onInputDown.add(function() {
+                    this.onMouseDownForPiece(pieceSprite);
                 }.bind(this), this);
             }
         }.bind(this));
     };
 
-    Board.prototype.onMouseDownForPiece = function (row, column) {
-        var xCoor = this.game.world.centerX - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth * column;
-        var yCoor = this.game.world.centerY - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth * row;
+    Board.prototype.onMouseDownForPiece = function (pieceSprite) {
+        var xCoor = this.game.world.centerX - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth * pieceSprite.column;
+        var yCoor = this.game.world.centerY - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth * pieceSprite.row;
 
         if (this.selectedCell) {
             this.selectedCell.destroy();
