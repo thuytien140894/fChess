@@ -32,7 +32,7 @@ fChess.Sprite = (function () {
 
     Sprite.prototype.attachEventListeners = function () {
         this.sprite.events.onInputOver.add(this.onMouseOver, this);
-        this.sprite.events.onInputDown.add(this.onMouseDown, this);
+        // this.sprite.events.onInputDown.add(this.onMouseDown, this);
         this.sprite.events.onInputOut.add(this.onMouseOver, this);
     };
 
@@ -45,7 +45,7 @@ fChess.Sprite = (function () {
     };
 
     Sprite.prototype.onMouseDown = function () {
-        console.log('Clicked');
+
     };
 
     return Sprite;
