@@ -23,10 +23,12 @@ fChess.Board = (function () {
     //fields
     Board.prototype.game = null;
     Board.prototype.$parent = null;
+    Board.prototype.selectedCell = null;
 
     Board.prototype.players = null;
     Board.prototype.currentPlayer = null;
     Board.prototype.cells = null;
+    Board.prototype.graphics = null;
 
     //functions
     Board.prototype.preload = function () {
@@ -56,17 +58,34 @@ fChess.Board = (function () {
 
         this.cells.forEach(function (cell, i) {
             if (cell.piece != null) {
-                row = Math.floor(i / Board.gameSettings.rows);
-                column = i % Board.gameSettings.columns;
+                cell.row = Math.floor(i / Board.gameSettings.rows);
+                cell.column = i % Board.gameSettings.columns;
 
-                xPos = startingX + Board.gameSettings.squareWidth * column;
-                yPos = startingY + Board.gameSettings.squareWidth * row;
+                xPos = startingX + Board.gameSettings.squareWidth * cell.column;
+                yPos = startingY + Board.gameSettings.squareWidth * cell.row;
 
                 var pieceName = Board.getImageNameForPiece(cell.piece);
                 var pieceSprite = new fChess.Sprite(this.game, xPos, yPos, pieceName);
                 this.game.add.existing(pieceSprite.sprite);
+
+                piece.sprite.events.onInputDown.add(function() {
+                    this.onMouseDownForPiece(cell.row, cell.column);
+                }.bind(this), this)
             }
         }.bind(this));
+    };
+
+    Board.prototype.onMouseDownForPiece = function (row, column) {
+        var xCoor = this.game.world.centerX - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth * column;
+        var yCoor = this.game.world.centerY - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth * row;
+
+        if (this.selectedCell) {
+            this.selectedCell.destroy();
+        }
+        var graphics = this.game.add.graphics(0, 0);
+        graphics.lineStyle(4, 0x0000FF, 1);
+        this.selectedCell = graphics.drawRect(xCoor, yCoor, Board.gameSettings.squareWidth, Board.gameSettings.squareWidth);
+        this.game.add.existing(this.selectedCell);
     };
 
     Board.prototype.startNewGame = function () {
