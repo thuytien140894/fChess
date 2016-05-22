@@ -137,7 +137,6 @@ fChess.Board = (function () {
         }.bind(this));
     };
 
-    //static functions
     Board.prototype.findCellForPiece = function (piece) {
         for (var i = 0; i < this.cells.length; i++) {
             if (this.cells[i].piece == piece) {
@@ -148,6 +147,7 @@ fChess.Board = (function () {
         return null;
     };
 
+    //static functions
     Board.getImageNameForPiece = function (piece) {
         var name = '';
         if (piece instanceof fChess.KingPiece) {
