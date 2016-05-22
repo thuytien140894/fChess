@@ -70,7 +70,7 @@ fChess.Board = (function () {
 
                 piece.sprite.events.onInputDown.add(function() {
                     this.onMouseDownForPiece(cell.row, cell.column);
-                }.bind(this), this)
+                }.bind(this), this);
             }
         }.bind(this));
     };
