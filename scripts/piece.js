@@ -4,7 +4,8 @@ fChess.Piece = (function () {
     'use strict';
 
     //constructor
-    var Piece = function () {
+    var Piece = function (color) {
+        this.color = color;
     };
 
     //fields
@@ -21,7 +22,8 @@ fChess.KingPiece = (function () {
 
     //constructor
     var KingPiece = function (color) {
-        this.color = color;
+        //super()
+        fChess.Piece.prototype.constructor.apply(this, arguments);
     };
 
     fChess.Utils.extend(fChess.Piece, KingPiece);
@@ -41,7 +43,8 @@ fChess.QueenPiece = (function () {
 
     //constructor
     var QueenPiece = function (color) {
-        this.color = color;
+        //super()
+        fChess.Piece.prototype.constructor.apply(this, arguments);
     };
 
     fChess.Utils.extend(fChess.Piece, QueenPiece);
@@ -61,7 +64,8 @@ fChess.BishopPiece = (function () {
 
     //constructor
     var BishopPiece = function (color) {
-        this.color = color;
+        //super()
+        fChess.Piece.prototype.constructor.apply(this, arguments);
     };
 
     fChess.Utils.extend(fChess.Piece, BishopPiece);
@@ -81,7 +85,8 @@ fChess.RookPiece = (function () {
 
     //constructor
     var RookPiece = function (color) {
-        this.color = color;
+        //super()
+        fChess.Piece.prototype.constructor.apply(this, arguments);
     };
 
     fChess.Utils.extend(fChess.Piece, RookPiece);
@@ -101,7 +106,8 @@ fChess.KnightPiece = (function () {
 
     //constructor
     var KnightPiece = function (color) {
-        this.color = color;
+        //super()
+        fChess.Piece.prototype.constructor.apply(this, arguments);
     };
 
     fChess.Utils.extend(fChess.Piece, KnightPiece);
@@ -121,7 +127,8 @@ fChess.PawnPiece = (function () {
 
     //constructor
     var PawnPiece = function (color) {
-        this.color = color;
+        //super()
+        fChess.Piece.prototype.constructor.apply(this, arguments);
     };
 
     fChess.Utils.extend(fChess.Piece, PawnPiece);

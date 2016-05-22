@@ -62,9 +62,9 @@ fChess.Board = (function () {
                 xPos = startingX + Board.gameSettings.squareWidth * column;
                 yPos = startingY + Board.gameSettings.squareWidth * row;
 
-                var pieceName = fChess.Utils.createName(cell.piece);
-                var piece = new fChess.Sprite(this.game, xPos, yPos, pieceName);
-                this.game.add.existing(piece.sprite);
+                var pieceName = Board.getImageNameForPiece(cell.piece);
+                var pieceSprite = new fChess.Sprite(this.game, xPos, yPos, pieceName);
+                this.game.add.existing(pieceSprite.sprite);
             }
         }.bind(this));
     };
@@ -114,6 +114,26 @@ fChess.Board = (function () {
                 this.cells[this.cells.length - i - 1].piece = piece;
             }
         }.bind(this));
+    };
+
+    //static functions
+    Board.getImageNameForPiece = function (piece) {
+        var name = '';
+        if (piece instanceof fChess.KingPiece) {
+            name = piece.color + 'King';
+        } else if (piece instanceof fChess.QueenPiece) {
+            name = piece.color + 'Queen';
+        } else if (piece instanceof fChess.BishopPiece) {
+            name = piece.color + 'Bishop';
+        } else if (piece instanceof fChess.KnightPiece) {
+            name = piece.color + 'Knight';
+        } else if (piece instanceof fChess.RookPiece) {
+            name = piece.color + 'Rook';
+        } else { //pawn
+            name = piece.color + 'Pawn';
+        }
+
+        return name;
     };
 
     //static fields

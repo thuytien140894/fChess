@@ -5,9 +5,10 @@ fChess.Player = (function () {
 
     //constructor
     var Player = function (name, color) {
-        this.pieces = [];
         this.name = name;
         this.color = color;
+        
+        this.pieces = [];
     };
 
     //fields
