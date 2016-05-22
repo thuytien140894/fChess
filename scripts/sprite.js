@@ -4,11 +4,11 @@ fChess.Sprite = (function () {
     'use strict';
 
     // constructor
-    var Sprite = function (game, xPos, yPos, name) {
+    var Sprite = function (game, xPos, yPos, piece) {
         this.game = game;
         this.xPos = xPos;
         this.yPos = yPos;
-        this.name = name;
+        this.piece = piece;
 
         this.initialize();
     };
@@ -18,12 +18,12 @@ fChess.Sprite = (function () {
     Sprite.prototype.name = '';
     Sprite.prototype.xPos = 0;
     Sprite.prototype.yPos = 0;
-    Sprite.prototype.row = 0;
-    Sprite.prototype.column = 0;
     Sprite.prototype.sprite = null;
+    Sprite.prototype.piece = null;
 
     // functions
     Sprite.prototype.initialize = function () {
+        this.name = fChess.Board.getImageNameForPiece(this.piece);
         this.sprite = new Phaser.Sprite(this.game, this.xPos, this.yPos, this.name);
         this.sprite.scale.setTo(0.6, 0.6);
         this.sprite.anchor.set(0.5);

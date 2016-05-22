@@ -58,36 +58,36 @@ fChess.Board = (function () {
 
         this.cells.forEach(function (cell, i) {
             if (cell.piece != null) {
-                row = Math.floor(i / Board.gameSettings.rows);
-                column = i % Board.gameSettings.columns;
+                cell.row = Math.floor(i / Board.gameSettings.rows);
+                cell.column = i % Board.gameSettings.columns;
 
-                xPos = startingX + Board.gameSettings.squareWidth * column;
-                yPos = startingY + Board.gameSettings.squareWidth * row;
+                xPos = startingX + Board.gameSettings.squareWidth * cell.column;
+                yPos = startingY + Board.gameSettings.squareWidth * cell.row;
 
-                var pieceName = Board.getImageNameForPiece(cell.piece);
-                var pieceSprite = new fChess.Sprite(this.game, xPos, yPos, pieceName);
-                pieceSprite.row = row;
-                pieceSprite.column = column;
+                var pieceSprite = new fChess.Sprite(this.game, xPos, yPos, cell.piece);
                 this.game.add.existing(pieceSprite.sprite);
 
                 pieceSprite.sprite.events.onInputDown.add(function() {
-                    this.onMouseDownForPiece(pieceSprite);
+                    this.onMouseDownForPiece(pieceSprite.piece);
                 }.bind(this), this);
             }
         }.bind(this));
     };
 
-    Board.prototype.onMouseDownForPiece = function (pieceSprite) {
-        var xCoor = this.game.world.centerX - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth * pieceSprite.column;
-        var yCoor = this.game.world.centerY - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth * pieceSprite.row;
+    Board.prototype.onMouseDownForPiece = function (piece) {
+        var cell = this.findCellForPiece(piece);
+        if (cell) {
+            var xCoor = this.game.world.centerX - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth * cell.column;
+            var yCoor = this.game.world.centerY - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth * cell.row;
 
-        if (this.selectedCell) {
-            this.selectedCell.destroy();
+            if (this.selectedCell) {
+                this.selectedCell.destroy();
+            }
+            var graphics = this.game.add.graphics(0, 0);
+            graphics.lineStyle(4, 0x0000FF, 1);
+            this.selectedCell = graphics.drawRect(xCoor, yCoor, Board.gameSettings.squareWidth, Board.gameSettings.squareWidth);
+            this.game.add.existing(this.selectedCell);
         }
-        var graphics = this.game.add.graphics(0, 0);
-        graphics.lineStyle(4, 0x0000FF, 1);
-        this.selectedCell = graphics.drawRect(xCoor, yCoor, Board.gameSettings.squareWidth, Board.gameSettings.squareWidth);
-        this.game.add.existing(this.selectedCell);
     };
 
     Board.prototype.startNewGame = function () {
@@ -138,6 +138,16 @@ fChess.Board = (function () {
     };
 
     //static functions
+    Board.prototype.findCellForPiece = function (piece) {
+        for (var i = 0; i < this.cells.length; i++) {
+            if (this.cells[i].piece == piece) {
+                return this.cells[i];
+            }
+        }
+
+        return null;
+    };
+
     Board.getImageNameForPiece = function (piece) {
         var name = '';
         if (piece instanceof fChess.KingPiece) {
