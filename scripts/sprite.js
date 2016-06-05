@@ -28,26 +28,6 @@ fChess.Sprite = (function () {
         this.sprite.scale.setTo(0.6, 0.6);
         this.sprite.anchor.set(0.5);
         this.sprite.inputEnabled = true;
-
-        this.attachEventListeners();
-    };
-
-    Sprite.prototype.attachEventListeners = function () {
-        this.sprite.events.onInputOver.add(this.onMouseOver, this);
-        this.sprite.events.onInputDown.add(this.onMouseDown, this);
-        this.sprite.events.onInputOut.add(this.onMouseOver, this);
-    };
-
-    Sprite.prototype.onMouseOver = function () {
-
-    };
-
-    Sprite.prototype.onMouseExit = function () {
-
-    };
-
-    Sprite.prototype.onMouseDown = function () {
-
     };
 
     return Sprite;

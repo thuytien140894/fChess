@@ -11,14 +11,15 @@ fChess.Cell = (function () {
     Cell.prototype.piece = null;
     Cell.prototype.row = 0;
     Cell.prototype.column = 0;
+    Cell.prototype.centerX = 0;
+    Cell.prototype.centerY = 0;
+    Cell.prototype.topLeftX = 0;
+    Cell.prototype.topLeftY = 0;
+    Cell.prototype.containEnemy = false;
 
     //functions
     Cell.prototype.isEmpty = function () {
-        if (!this.piece) {
-            return true;
-        }
-
-        return false;
+        return !this.piece;
     };
 
     return Cell;

@@ -6,12 +6,13 @@ fChess.Piece = (function () {
     //constructor
     var Piece = function (color) {
         this.color = color;
+        this.availableMoves = [];
     };
 
     //fields
     Piece.prototype.alive = true;
     Piece.prototype.color = '';
-    Piece.prototype.availableMoves = [];
+    Piece.prototype.availableMoves = null;
 
     //functions
     Piece.prototype.findCell = function (cells) {
@@ -24,26 +25,42 @@ fChess.Piece = (function () {
         return null;
     };
 
-    Piece.prototype.findNorthernMoves = function (currentCell, boardCells) {
-        var cellIndex = boardCells.indexOf(currentCell);
-        for (var i = currentCell.row; i < 7; i++) {
-            cellIndex += 8;
-            if (boardCells[cellIndex] && boardCells[cellIndex].isEmpty()) {
-                this.availableMoves.push(boardCells[cellIndex]);
-            } else {
-                break;
-            }
-        }
+    Piece.prototype.isEnemy = function (piece) {
+        return this.color != piece.color;
     };
 
     Piece.prototype.findSouthernMoves = function (currentCell, boardCells) {
         var cellIndex = boardCells.indexOf(currentCell);
+        for (var i = currentCell.row; i < 7; i++) {
+            cellIndex += 8;
+            if (boardCells[cellIndex]) {
+                if (boardCells[cellIndex].isEmpty()) {
+                    this.availableMoves.push(boardCells[cellIndex]);
+                } else {
+                    if (this.isEnemy(boardCells[cellIndex].piece)) {
+                        boardCells[cellIndex].containEnemy = true;
+                        this.availableMoves.push(boardCells[cellIndex]);
+                    }
+                    break;
+                }
+            }
+        }
+    };
+
+    Piece.prototype.findNorthernMoves = function (currentCell, boardCells) {
+        var cellIndex = boardCells.indexOf(currentCell);
         for (var i = 0; i < currentCell.row; i++) {
             cellIndex -= 8;
-            if (boardCells[cellIndex] && boardCells[cellIndex].isEmpty()) {
-                this.availableMoves.push(boardCells[cellIndex]);
-            } else {
-                break;
+            if (boardCells[cellIndex]) {
+                if (boardCells[cellIndex].isEmpty()) {
+                    this.availableMoves.push(boardCells[cellIndex]);
+                } else {
+                    if (this.isEnemy(boardCells[cellIndex].piece)) {
+                        boardCells[cellIndex].containEnemy = true;
+                        this.availableMoves.push(boardCells[cellIndex]);
+                    }
+                    break;
+                }
             }
         }
     };
@@ -52,10 +69,16 @@ fChess.Piece = (function () {
         var cellIndex = boardCells.indexOf(currentCell);
         for (var i = currentCell.column; i < 7; i++) {
             cellIndex++;
-            if (boardCells[cellIndex] && boardCells[cellIndex].isEmpty()) {
-                this.availableMoves.push(boardCells[cellIndex]);
-            } else {
-                break;
+            if (boardCells[cellIndex]) {
+                if (boardCells[cellIndex].isEmpty()) {
+                    this.availableMoves.push(boardCells[cellIndex]);
+                } else {
+                    if (this.isEnemy(boardCells[cellIndex].piece)) {
+                        boardCells[cellIndex].containEnemy = true;
+                        this.availableMoves.push(boardCells[cellIndex]);
+                    }
+                    break;
+                }
             }
         }
     };
@@ -64,58 +87,92 @@ fChess.Piece = (function () {
         var cellIndex = boardCells.indexOf(currentCell);
         for (var i = 0; i < currentCell.column; i++) {
             cellIndex--;
-            if (boardCells[cellIndex] && boardCells[cellIndex].isEmpty()) {
-                this.availableMoves.push(boardCells[cellIndex]);
-            } else {
-                break;
-            }
-        }
-    };
-
-    Piece.prototype.findNorthEasternMoves = function (currentCell, boardCells) {
-        var cellIndex = boardCells.indexOf(currentCell);
-        for (var i = currentCell.column; i < 7; i++) {
-            cellIndex += 9;
-            if (boardCells[cellIndex] && boardCells[cellIndex].isEmpty()) {
-                this.availableMoves.push(boardCells[cellIndex]);
-            } else {
-                break;
-            }
-        }
-    };
-
-    Piece.prototype.findNorthWesternMoves = function (currentCell, boardCells) {
-        var cellIndex = boardCells.indexOf(currentCell);
-        for (var i = 0; i < currentCell.column; i++) {
-            cellIndex += 7;
-            if (boardCells[cellIndex] && boardCells[cellIndex].isEmpty()) {
-                this.availableMoves.push(boardCells[cellIndex]);
-            } else {
-                break;
-            }
-        }
-    };
-
-    Piece.prototype.findSouthWesternMoves = function (currentCell, boardCells) {
-        var cellIndex = boardCells.indexOf(currentCell);
-        for (var i = 0; i < currentCell.column; i++) {
-            cellIndex -= 7;
-            if (boardCells[cellIndex] && boardCells[cellIndex].isEmpty()) {
-                this.availableMoves.push(boardCells[cellIndex]);
-            } else {
-                break;
+            if (boardCells[cellIndex]) {
+                if (boardCells[cellIndex].isEmpty()) {
+                    this.availableMoves.push(boardCells[cellIndex]);
+                } else {
+                    if (this.isEnemy(boardCells[cellIndex].piece)) {
+                        boardCells[cellIndex].containEnemy = true;
+                        this.availableMoves.push(boardCells[cellIndex]);
+                    }
+                    break;
+                }
             }
         }
     };
 
     Piece.prototype.findSouthEasternMoves = function (currentCell, boardCells) {
+        var numberOfDiagonalCells = Math.min(7 - currentCell.row, 7 - currentCell.column);
         var cellIndex = boardCells.indexOf(currentCell);
-        for (var i = currentCell.column; i < 7; i++) {
+        for (var i = 0; i < numberOfDiagonalCells; i++) {
+            cellIndex += 9;
+            if (boardCells[cellIndex]) {
+                if (boardCells[cellIndex].isEmpty()) {
+                    this.availableMoves.push(boardCells[cellIndex]);
+                } else {
+                    if (this.isEnemy(boardCells[cellIndex].piece)) {
+                        boardCells[cellIndex].containEnemy = true;
+                        this.availableMoves.push(boardCells[cellIndex]);
+                    }
+                    break;
+                }
+            }
+        }
+    };
+
+    Piece.prototype.findSouthWesternMoves = function (currentCell, boardCells) {
+        var numberOfDiagonalCells = Math.min(7 - currentCell.row, currentCell.column);
+        var cellIndex = boardCells.indexOf(currentCell);
+        for (var i = 0; i < numberOfDiagonalCells; i++) {
+            cellIndex += 7;
+            if (boardCells[cellIndex]) {
+                if (boardCells[cellIndex].isEmpty()) {
+                    this.availableMoves.push(boardCells[cellIndex]);
+                } else {
+                    if (this.isEnemy(boardCells[cellIndex].piece)) {
+                        boardCells[cellIndex].containEnemy = true;
+                        this.availableMoves.push(boardCells[cellIndex]);
+                    }
+                    break;
+                }
+            }
+        }
+    };
+
+    Piece.prototype.findNorthEasternMoves = function (currentCell, boardCells) {
+        var numberOfDiagonalCells = Math.min(currentCell.row, 7 - currentCell.column);
+        var cellIndex = boardCells.indexOf(currentCell);
+        for (var i = 0; i < numberOfDiagonalCells; i++) {
+            cellIndex -= 7;
+            if (boardCells[cellIndex]) {
+                if (boardCells[cellIndex].isEmpty()) {
+                    this.availableMoves.push(boardCells[cellIndex]);
+                } else {
+                    if (this.isEnemy(boardCells[cellIndex].piece)) {
+                        boardCells[cellIndex].containEnemy = true;
+                        this.availableMoves.push(boardCells[cellIndex]);
+                    }
+                    break;
+                }
+            }
+        }
+    };
+
+    Piece.prototype.findNorthWesternMoves = function (currentCell, boardCells) {
+        var numberOfDiagonalCells = Math.min(currentCell.row, currentCell.column);
+        var cellIndex = boardCells.indexOf(currentCell);
+        for (var i = 0; i < numberOfDiagonalCells; i++) {
             cellIndex -= 9;
-            if (boardCells[cellIndex] && boardCells[cellIndex].isEmpty()) {
-                this.availableMoves.push(boardCells[cellIndex]);
-            } else {
-                break;
+            if (boardCells[cellIndex]) {
+                if (boardCells[cellIndex].isEmpty()) {
+                    this.availableMoves.push(boardCells[cellIndex]);
+                } else {
+                    if (this.isEnemy(boardCells[cellIndex].piece)) {
+                        boardCells[cellIndex].containEnemy = true;
+                        this.availableMoves.push(boardCells[cellIndex]);
+                    }
+                    break;
+                }
             }
         }
     };
@@ -143,6 +200,7 @@ fChess.KingPiece = (function () {
     };
 
     KingPiece.prototype.calculateMoves = function (boardCells) {
+        this.availableMoves = [];
         console.log('Move');
     };
 
@@ -168,6 +226,7 @@ fChess.QueenPiece = (function () {
     };
 
     QueenPiece.prototype.calculateMoves = function (boardCells) {
+        this.availableMoves = [];
         var currentCell = this.findCell(boardCells);
         this.findNorthernMoves(currentCell, boardCells);
         this.findSouthernMoves(currentCell, boardCells);
@@ -201,6 +260,7 @@ fChess.BishopPiece = (function () {
     };
 
     BishopPiece.prototype.calculateMoves = function (boardCells) {
+        this.availableMoves = [];
         var currentCell = this.findCell(boardCells);
         this.findNorthWesternMoves(currentCell, boardCells);
         this.findSouthWesternMoves(currentCell, boardCells);
@@ -230,6 +290,7 @@ fChess.RookPiece = (function () {
     };
 
     RookPiece.prototype.calculateMoves = function (boardCells) {
+        this.availableMoves = [];
         var currentCell = this.findCell(boardCells);
         this.findNorthernMoves(currentCell, boardCells);
         this.findSouthernMoves(currentCell, boardCells);
@@ -259,6 +320,7 @@ fChess.KnightPiece = (function () {
     };
 
     KnightPiece.prototype.calculateMoves = function (boardCells) {
+        this.availableMoves = [];
         console.log('Move');
     };
 
@@ -284,6 +346,7 @@ fChess.PawnPiece = (function () {
     };
 
     PawnPiece.prototype.calculateMoves = function (boardCells) {
+        this.availableMoves = [];
         console.log('Move');
     };
 

@@ -12,6 +12,7 @@ fChess.Board = (function () {
 
         this.players = [];
         this.cells = [];
+        this.chessPieces = [];
 
         this.game = new Phaser.Game('100%', '100%', Phaser.AUTO, this.$parent.get(0), {
             preload: this.preload.bind(this),
@@ -29,6 +30,7 @@ fChess.Board = (function () {
     Board.prototype.players = null;
     Board.prototype.currentPlayer = null;
     Board.prototype.cells = null;
+    Board.prototype.chessPieces = null;
     Board.prototype.graphics = null;
 
     //functions
@@ -50,22 +52,67 @@ fChess.Board = (function () {
     };
 
     Board.prototype.render = function () {
+        this.chessPieces.forEach(function (chessPiece) {
+            var cell = this.findCellForPiece(chessPiece.piece);
+            if (cell) {
+                chessPiece.sprite.x = cell.centerX;
+                chessPiece.sprite.y = cell.centerY;
+            }
+        }.bind(this));
+    };
+
+    Board.prototype.onMouseDownForPiece = function (piece) {
+        var cell = this.findCellForPiece(piece);
+        if (cell) {
+            if (this.graphics && this.graphics.alive) {
+                this.graphics.destroy();
+            }
+
+            this.graphics = this.game.add.graphics(0, 0);
+            this.graphics.alive = true;
+            this.graphics.lineStyle(4, 0x0000FF, 1);
+            this.graphics.drawRect(cell.topLeftX, cell.topLeftY, Board.gameSettings.squareWidth, Board.gameSettings.squareWidth);
+
+            piece.calculateMoves(this.cells);
+
+            // draw the possible moves for the piece
+            piece.availableMoves.forEach(function (move) {
+                if (move.containEnemy) { // if the cell contains an enemy, highlight it red
+                    this.graphics.lineStyle(4, 0xFF0000, 1);
+                    this.graphics.drawRect(move.topLeftX, move.topLeftY, Board.gameSettings.squareWidth, Board.gameSettings.squareWidth);
+                } else {
+                    this.graphics.lineStyle(0);
+                    this.graphics.beginFill(0X0000FF, 1)
+                    this.graphics.drawCircle(move.centerX, move.centerY, 10);
+                    this.graphics.endFill();
+                }
+            }.bind(this));
+        }
+    };
+
+    Board.prototype.startNewGame = function () {
+        this.resetPlayers();
+        this.initialize();
+        this.test();
+    };
+
+    Board.prototype.initialize = function () {
         var xPos = 0;
         var yPos = 0;
-        var row = 0;
-        var column = 0;
         var startingX = this.game.world.centerX - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth / 2;
         var startingY = this.game.world.centerY - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth / 2;
 
         this.cells.forEach(function (cell, i) {
             cell.row = Math.floor(i / Board.gameSettings.rows);
             cell.column = i % Board.gameSettings.columns;
+            cell.centerX = startingX + Board.gameSettings.squareWidth * cell.column;
+            cell.centerY = startingY + Board.gameSettings.squareWidth * cell.row;
+            cell.topLeftX = this.game.world.centerX - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth * cell.column;
+            cell.topLeftY = this.game.world.centerY - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth * cell.row;
 
             if (cell.piece != null) {
-                xPos = startingX + Board.gameSettings.squareWidth * cell.column;
-                yPos = startingY + Board.gameSettings.squareWidth * cell.row;
-
-                var pieceSprite = new fChess.Sprite(this.game, xPos, yPos, cell.piece);
+                var pieceSprite = new fChess.Sprite(this.game, cell.centerX, cell.centerY, cell.piece);
+                this.chessPieces.push(pieceSprite);
                 this.game.add.existing(pieceSprite.sprite);
 
                 pieceSprite.sprite.events.onInputDown.add(function() {
@@ -75,38 +122,14 @@ fChess.Board = (function () {
         }.bind(this));
     };
 
-    Board.prototype.onMouseDownForPiece = function (piece) {
-        var cell = this.findCellForPiece(piece);
-        if (cell) {
-            var xCoor = this.game.world.centerX - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth * cell.column;
-            var yCoor = this.game.world.centerY - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth * cell.row;
-
-            if (this.selectedCell) {
-                this.selectedCell.destroy();
-            }
-
-            this.highlightedCells = [];
-            var graphics1 = this.game.add.graphics(0, 0);
-            graphics1.lineStyle(4, 0x0000FF, 1);
-            this.selectedCell = graphics1.drawRect(xCoor, yCoor, Board.gameSettings.squareWidth, Board.gameSettings.squareWidth);
-        }
-        // calculate the steps that a piece can go and then highlight them
-        piece.calculateMoves(this.cells);
-
-        piece.availableMoves.forEach(function (move) {
-            var x = this.game.world.centerX - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth * move.column;
-            var y = this.game.world.centerY - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth * move.row;
-        }.bind(this));
-    };
-
-    Board.prototype.startNewGame = function () {
-        this.resetPlayers();
-        this.test();
-    };
-
+    // just move some pieces around
     Board.prototype.test = function () {
         this.cells[59].piece = null;
         this.cells[27].piece = this.players[1].pieces[3];
+        this.cells[0].piece = null;
+        this.cells[26].piece = this.players[0].pieces[0];
+        this.cells[30].piece = this.cells[61].piece;
+        this.cells[61].piece = null;
     };
 
     Board.prototype.resetPlayers = function () {
