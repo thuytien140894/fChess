@@ -13,6 +13,13 @@ fChess.Cell = (function () {
     Cell.prototype.column = 0;
 
     //functions
+    Cell.prototype.isEmpty = function () {
+        if (!this.piece) {
+            return true;
+        }
+
+        return false;
+    };
 
     return Cell;
 })();

@@ -24,6 +24,7 @@ fChess.Board = (function () {
     Board.prototype.game = null;
     Board.prototype.$parent = null;
     Board.prototype.selectedCell = null;
+    Board.prototype.highlightedCells = [];
 
     Board.prototype.players = null;
     Board.prototype.currentPlayer = null;
@@ -57,10 +58,10 @@ fChess.Board = (function () {
         var startingY = this.game.world.centerY - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth / 2;
 
         this.cells.forEach(function (cell, i) {
-            if (cell.piece != null) {
-                cell.row = Math.floor(i / Board.gameSettings.rows);
-                cell.column = i % Board.gameSettings.columns;
+            cell.row = Math.floor(i / Board.gameSettings.rows);
+            cell.column = i % Board.gameSettings.columns;
 
+            if (cell.piece != null) {
                 xPos = startingX + Board.gameSettings.squareWidth * cell.column;
                 yPos = startingY + Board.gameSettings.squareWidth * cell.row;
 
@@ -83,15 +84,29 @@ fChess.Board = (function () {
             if (this.selectedCell) {
                 this.selectedCell.destroy();
             }
-            var graphics = this.game.add.graphics(0, 0);
-            graphics.lineStyle(4, 0x0000FF, 1);
-            this.selectedCell = graphics.drawRect(xCoor, yCoor, Board.gameSettings.squareWidth, Board.gameSettings.squareWidth);
-            this.game.add.existing(this.selectedCell);
+
+            this.highlightedCells = [];
+            var graphics1 = this.game.add.graphics(0, 0);
+            graphics1.lineStyle(4, 0x0000FF, 1);
+            this.selectedCell = graphics1.drawRect(xCoor, yCoor, Board.gameSettings.squareWidth, Board.gameSettings.squareWidth);
         }
+        // calculate the steps that a piece can go and then highlight them
+        piece.calculateMoves(this.cells);
+
+        piece.availableMoves.forEach(function (move) {
+            var x = this.game.world.centerX - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth * move.column;
+            var y = this.game.world.centerY - 4 * Board.gameSettings.squareWidth + Board.gameSettings.squareWidth * move.row;
+        }.bind(this));
     };
 
     Board.prototype.startNewGame = function () {
         this.resetPlayers();
+        this.test();
+    };
+
+    Board.prototype.test = function () {
+        this.cells[59].piece = null;
+        this.cells[27].piece = this.players[1].pieces[3];
     };
 
     Board.prototype.resetPlayers = function () {
