@@ -72,13 +72,11 @@ fChess.Piece = (function () {
             if (boardCells[cellIndex]) {
                 if (boardCells[cellIndex].isEmpty()) {
                     this.availableMoves.push(boardCells[cellIndex]);
-                } else {
-                    if (this.isEnemy(boardCells[cellIndex].piece)) {
-                        boardCells[cellIndex].containEnemy = true;
-                        this.availableMoves.push(boardCells[cellIndex]);
-                    }
-                    break;
+                } else if (this.isEnemy(boardCells[cellIndex].piece)) {
+                    boardCells[cellIndex].containEnemy = true;
+                    this.availableMoves.push(boardCells[cellIndex]);
                 }
+                break;
             }
         }
     };
@@ -177,7 +175,6 @@ fChess.Piece = (function () {
         }
     };
 
-
     return Piece;
 })();
 
@@ -200,7 +197,7 @@ fChess.KingPiece = (function () {
     };
 
     KingPiece.prototype.calculateMoves = function (boardCells) {
-        this.availableMoves = [];
+        this.availableMoves.length = 0;
         console.log('Move');
     };
 
@@ -226,7 +223,7 @@ fChess.QueenPiece = (function () {
     };
 
     QueenPiece.prototype.calculateMoves = function (boardCells) {
-        this.availableMoves = [];
+        this.availableMoves.length = 0;
         var currentCell = this.findCell(boardCells);
         this.findNorthernMoves(currentCell, boardCells);
         this.findSouthernMoves(currentCell, boardCells);
@@ -260,7 +257,7 @@ fChess.BishopPiece = (function () {
     };
 
     BishopPiece.prototype.calculateMoves = function (boardCells) {
-        this.availableMoves = [];
+        this.availableMoves.length = 0;
         var currentCell = this.findCell(boardCells);
         this.findNorthWesternMoves(currentCell, boardCells);
         this.findSouthWesternMoves(currentCell, boardCells);
@@ -290,7 +287,7 @@ fChess.RookPiece = (function () {
     };
 
     RookPiece.prototype.calculateMoves = function (boardCells) {
-        this.availableMoves = [];
+        this.availableMoves.length = 0;
         var currentCell = this.findCell(boardCells);
         this.findNorthernMoves(currentCell, boardCells);
         this.findSouthernMoves(currentCell, boardCells);
@@ -320,7 +317,7 @@ fChess.KnightPiece = (function () {
     };
 
     KnightPiece.prototype.calculateMoves = function (boardCells) {
-        this.availableMoves = [];
+        this.availableMoves.length = 0;
         console.log('Move');
     };
 
@@ -346,7 +343,7 @@ fChess.PawnPiece = (function () {
     };
 
     PawnPiece.prototype.calculateMoves = function (boardCells) {
-        this.availableMoves = [];
+        this.availableMoves.length = 0;
         console.log('Move');
     };
 
