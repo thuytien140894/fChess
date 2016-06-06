@@ -226,10 +226,6 @@ fChess.KingPiece = (function () {
     //fields
 
     //functions
-    KingPiece.prototype.onMouseDown = function () {
-        console.log('Clicked');
-    };
-
     KingPiece.prototype.calculateMoves = function (boardCells) {
         this.availableMoves.length = 0;
         var currentCell = this.findCell(boardCells);
@@ -260,10 +256,6 @@ fChess.QueenPiece = (function () {
     //fields
 
     //functions
-    QueenPiece.prototype.onMouseDown = function () {
-        console.log('Clicked');
-    };
-
     QueenPiece.prototype.calculateMoves = function (boardCells) {
         this.availableMoves.length = 0;
         var currentCell = this.findCell(boardCells);
@@ -294,10 +286,6 @@ fChess.BishopPiece = (function () {
     //fields
 
     //functions
-    BishopPiece.prototype.onMouseDown = function () {
-        console.log('Clicked');
-    };
-
     BishopPiece.prototype.calculateMoves = function (boardCells) {
         this.availableMoves.length = 0;
         var currentCell = this.findCell(boardCells);
@@ -324,10 +312,6 @@ fChess.RookPiece = (function () {
     //fields
 
     //functions
-    RookPiece.prototype.onMouseDown = function () {
-        console.log('Clicked');
-    };
-
     RookPiece.prototype.calculateMoves = function (boardCells) {
         this.availableMoves.length = 0;
         var currentCell = this.findCell(boardCells);
@@ -354,10 +338,6 @@ fChess.KnightPiece = (function () {
     //fields
 
     //functions
-    KnightPiece.prototype.onMouseDown = function () {
-        console.log('Clicked');
-    };
-
     KnightPiece.prototype.findNorthernMoves = function (currentCell, boardCells, maxStep) {
         var cellIndex = boardCells.indexOf(currentCell);
         var numberOfPossibleMoves = currentCell.row;
@@ -457,10 +437,6 @@ fChess.PawnPiece = (function () {
     PawnPiece.prototype.hasMoved = false;
 
     //functions
-    PawnPiece.prototype.onMouseDown = function () {
-        console.log('Clicked');
-    };
-
     PawnPiece.prototype.checkForEnemies = function (currentCell, boardCells) {
         var cellIndex = boardCells.indexOf(currentCell);
 
