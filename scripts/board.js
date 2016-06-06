@@ -70,7 +70,7 @@ fChess.Board = (function () {
 
             this.graphics = this.game.add.graphics(0, 0);
             this.graphics.alive = true;
-            this.graphics.lineStyle(4, 0x0000FF, 1);
+            this.graphics.lineStyle(4, Board.gameSettings.selectedCellColor, 1);
             this.graphics.drawRect(cell.topLeftX, cell.topLeftY, Board.gameSettings.squareWidth, Board.gameSettings.squareHeight);
 
             piece.calculateMoves(this.cells);
@@ -78,12 +78,12 @@ fChess.Board = (function () {
             // draw the possible moves for the piece
             piece.availableMoves.forEach(function (move) {
                 if (move.containEnemy) { // if the cell contains an enemy, highlight it red
-                    this.graphics.lineStyle(4, 0xFF0000, 1);
+                    this.graphics.lineStyle(4, Board.gameSettings.enemyCellColor, 1);
                     this.graphics.drawRect(move.topLeftX, move.topLeftY, Board.gameSettings.squareWidth, Board.gameSettings.squareHeight);
                 } else {
                     this.graphics.lineStyle(0, 0, 1);
-                    this.graphics.beginFill(0X0000FF, 1);
-                    this.graphics.drawCircle(move.centerX, move.centerY, 10);
+                    this.graphics.beginFill(Board.gameSettings.selectedCellColor, 1);
+                    this.graphics.drawCircle(move.centerX, move.centerY, 15);
                     this.graphics.endFill();
                 }
             }.bind(this));
@@ -136,6 +136,10 @@ fChess.Board = (function () {
         this.cells[26].piece = this.players[0].pieces[0];
         this.cells[30].piece = this.cells[61].piece;
         this.cells[61].piece = null;
+        this.cells[4].piece = null;
+        this.cells[45].piece = this.players[0].pieces[4];
+        this.cells[1].piece = null;
+        this.cells[37].piece = this.players[0].pieces[1];
     };
 
     Board.prototype.resetPlayers = function () {
@@ -235,7 +239,9 @@ fChess.Board = (function () {
         squareHeight: 63,
         widthScale: 0.6,
         heightScale: 0.6,
-        anchor: 0.5
+        anchor: 0.5,
+        selectedCellColor: 0x0000FF,
+        enemyCellColor: 0xFF0000
     };
 
     return Board;
