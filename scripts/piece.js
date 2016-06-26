@@ -7,12 +7,15 @@ fChess.Piece = (function () {
     var Piece = function (color) {
         this.color = color;
         this.availableMoves = [];
+        this.blockedMoves = [];
     };
 
     //fields
     Piece.prototype.alive = true;
+    Piece.prototype.isChecked = false;
     Piece.prototype.color = '';
     Piece.prototype.availableMoves = null;
+    Piece.prototype.blockedMoves = null;
 
     //functions
     Piece.prototype.findCell = function (cells) {
@@ -23,6 +26,54 @@ fChess.Piece = (function () {
         }
 
         return null;
+    };
+
+    Piece.prototype.encounter = function (anotherPiece) {
+        var intersection = [];
+        var enemyMoves = [];
+
+        if (anotherPiece instanceof fChess.PawnPiece) {
+            // for the pawn, we only consider the moves that it can make to capture
+            // an enemy, not the ones used for moving
+            enemyMoves = anotherPiece.potentialMoves.concat(anotherPiece.blockedMoves);
+        } else {
+            // we need to consider all possible moves that a piece can make, not just
+            // the ones that they can go. These possible moves include all the available
+            // moves and the ones blocked by its "friends".
+            enemyMoves = anotherPiece.availableMoves.concat(anotherPiece.blockedMoves);;
+        }
+
+        this.availableMoves.forEach(function (move) {
+            enemyMoves.forEach(function (enemyMove) {
+                if (move === enemyMove) {
+                    intersection.push(move);
+                }
+            }.bind(this));
+        }.bind(this));
+
+        return intersection;
+    };
+
+    Piece.prototype.disregardMoves = function (moves) {
+        moves.forEach(function (move) {
+            if (this.availableMoves.indexOf(move) != -1) {
+                this.availableMoves.splice(this.availableMoves.indexOf(move), 1);
+            }
+        }.bind(this));
+    };
+
+    // this function is used by the king primarily
+    Piece.prototype.avoidEnemies = function (boardCells) {
+        boardCells.forEach(function (cell) {
+            if (!cell.isEmpty()) {
+                if (this.isEnemy(cell.piece)) {
+                    var enemy = cell.piece;
+                    enemy.calculateMoves(boardCells);
+                    var dangerousMoves = this.encounter(enemy);
+                    this.disregardMoves(dangerousMoves);
+                }
+            }
+        }.bind(this));
     };
 
     Piece.prototype.isEnemy = function (piece) {
@@ -43,6 +94,8 @@ fChess.Piece = (function () {
                         if (this.isEnemy(boardCells[cellIndex].piece)) {
                             boardCells[cellIndex].containEnemy = true;
                             this.availableMoves.push(boardCells[cellIndex]);
+                        } else {
+                            this.blockedMoves.push(boardCells[cellIndex]);
                         }
                     }
                     break;
@@ -65,6 +118,8 @@ fChess.Piece = (function () {
                         if (this.isEnemy(boardCells[cellIndex].piece)) {
                             boardCells[cellIndex].containEnemy = true;
                             this.availableMoves.push(boardCells[cellIndex]);
+                        } else {
+                            this.blockedMoves.push(boardCells[cellIndex]);
                         }
                     }
                     break;
@@ -86,9 +141,11 @@ fChess.Piece = (function () {
                     if (this.isEnemy(boardCells[cellIndex].piece)) {
                         boardCells[cellIndex].containEnemy = true;
                         this.availableMoves.push(boardCells[cellIndex]);
+                    } else {
+                        this.blockedMoves.push(boardCells[cellIndex]);
                     }
+                    break;
                 }
-                break;
             }
         }
     };
@@ -106,6 +163,8 @@ fChess.Piece = (function () {
                     if (this.isEnemy(boardCells[cellIndex].piece)) {
                         boardCells[cellIndex].containEnemy = true;
                         this.availableMoves.push(boardCells[cellIndex]);
+                    } else {
+                        this.blockedMoves.push(boardCells[cellIndex]);
                     }
                     break;
                 }
@@ -124,12 +183,16 @@ fChess.Piece = (function () {
                     if (!(this instanceof fChess.PawnPiece)) { // a pawn only gets to move diagonally if there is an enemy
                         this.availableMoves.push(boardCells[cellIndex]);
                     } else {
+                        // these moves can be used by a pawn to capture an incoming enemy
+                        this.potentialMoves.push(boardCells[cellIndex]);
                         break;
                     }
                 } else {
                     if (this.isEnemy(boardCells[cellIndex].piece)) {
                         boardCells[cellIndex].containEnemy = true;
                         this.availableMoves.push(boardCells[cellIndex]);
+                    } else {
+                        this.blockedMoves.push(boardCells[cellIndex]);
                     }
                     break;
                 }
@@ -148,12 +211,15 @@ fChess.Piece = (function () {
                     if (!(this instanceof fChess.PawnPiece)) {
                         this.availableMoves.push(boardCells[cellIndex]);
                     } else {
+                        this.potentialMoves.push(boardCells[cellIndex]);
                         break;
                     }
                 } else {
                     if (this.isEnemy(boardCells[cellIndex].piece)) {
                         boardCells[cellIndex].containEnemy = true;
                         this.availableMoves.push(boardCells[cellIndex]);
+                    } else {
+                        this.blockedMoves.push(boardCells[cellIndex]);
                     }
                     break;
                 }
@@ -172,12 +238,15 @@ fChess.Piece = (function () {
                     if (!(this instanceof fChess.PawnPiece)) {
                         this.availableMoves.push(boardCells[cellIndex]);
                     } else {
+                        this.potentialMoves.push(boardCells[cellIndex]);
                         break;
                     }
                 } else {
                     if (this.isEnemy(boardCells[cellIndex].piece)) {
                         boardCells[cellIndex].containEnemy = true;
                         this.availableMoves.push(boardCells[cellIndex]);
+                    } else {
+                        this.blockedMoves.push(boardCells[cellIndex]);
                     }
                     break;
                 }
@@ -196,12 +265,15 @@ fChess.Piece = (function () {
                     if (!(this instanceof fChess.PawnPiece)) {
                         this.availableMoves.push(boardCells[cellIndex]);
                     } else {
+                        this.potentialMoves.push(boardCells[cellIndex]);
                         break;
                     }
                 } else {
                     if (this.isEnemy(boardCells[cellIndex].piece)) {
                         boardCells[cellIndex].containEnemy = true;
                         this.availableMoves.push(boardCells[cellIndex]);
+                    } else {
+                        this.blockedMoves.push(boardCells[cellIndex]);
                     }
                     break;
                 }
@@ -228,6 +300,7 @@ fChess.KingPiece = (function () {
     //functions
     KingPiece.prototype.calculateMoves = function (boardCells) {
         this.availableMoves.length = 0;
+        this.blockedMoves.length = 0;
         var currentCell = this.findCell(boardCells);
         this.findNorthernMoves(currentCell, boardCells, 1);
         this.findSouthernMoves(currentCell, boardCells, 1);
@@ -238,6 +311,11 @@ fChess.KingPiece = (function () {
         this.findSouthEasternMoves(currentCell, boardCells, 1);
         this.findSouthWesternMoves(currentCell, boardCells, 1);
     };
+
+    KingPiece.prototype.calculateMovesWithCaution = function (boardCells) {
+        this.calculateMoves(boardCells);
+        this.avoidEnemies(boardCells);
+    }
 
     return KingPiece;
 })();
@@ -258,6 +336,7 @@ fChess.QueenPiece = (function () {
     //functions
     QueenPiece.prototype.calculateMoves = function (boardCells) {
         this.availableMoves.length = 0;
+        this.blockedMoves.length = 0;
         var currentCell = this.findCell(boardCells);
         this.findNorthernMoves(currentCell, boardCells, 8);
         this.findSouthernMoves(currentCell, boardCells, 8);
@@ -288,6 +367,7 @@ fChess.BishopPiece = (function () {
     //functions
     BishopPiece.prototype.calculateMoves = function (boardCells) {
         this.availableMoves.length = 0;
+        this.blockedMoves.length = 0;
         var currentCell = this.findCell(boardCells);
         this.findNorthWesternMoves(currentCell, boardCells, 8);
         this.findSouthWesternMoves(currentCell, boardCells, 8);
@@ -314,6 +394,7 @@ fChess.RookPiece = (function () {
     //functions
     RookPiece.prototype.calculateMoves = function (boardCells) {
         this.availableMoves.length = 0;
+        this.blockedMoves.length = 0;
         var currentCell = this.findCell(boardCells);
         this.findNorthernMoves(currentCell, boardCells, 8);
         this.findSouthernMoves(currentCell, boardCells, 8);
@@ -412,6 +493,7 @@ fChess.KnightPiece = (function () {
 
     KnightPiece.prototype.calculateMoves = function (boardCells) {
         this.availableMoves.length = 0;
+        this.blockedMoves.length = 0;
         var currentCell = this.findCell(boardCells);
         this.findNorthernMoves(currentCell, boardCells, 2);
         this.findSouthernMoves(currentCell, boardCells, 2);
@@ -429,12 +511,14 @@ fChess.PawnPiece = (function () {
     var PawnPiece = function (color) {
         //super()
         fChess.Piece.prototype.constructor.apply(this, arguments);
+        this.potentialMoves = [];
     };
 
     fChess.Utils.extend(fChess.Piece, PawnPiece);
 
     //fields
     PawnPiece.prototype.hasMoved = false;
+    PawnPiece.prototype.potentialMoves = null;
 
     //functions
     PawnPiece.prototype.checkForEnemies = function (currentCell, boardCells) {
@@ -461,6 +545,8 @@ fChess.PawnPiece = (function () {
 
     PawnPiece.prototype.calculateMoves = function (boardCells) {
         this.availableMoves.length = 0;
+        this.blockedMoves.length = 0;
+        this.potentialMoves.length = 0;
         var currentCell = this.findCell(boardCells);
         if (this.color == 'white') { //move south
             if (this.hasMoved) {

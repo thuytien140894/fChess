@@ -73,7 +73,11 @@ fChess.Board = (function () {
             this.graphics.lineStyle(4, Board.gameSettings.selectedCellColor, 1);
             this.graphics.drawRect(cell.topLeftX, cell.topLeftY, Board.gameSettings.squareWidth, Board.gameSettings.squareHeight);
 
-            piece.calculateMoves(this.cells);
+            if (piece instanceof fChess.KingPiece) {
+                piece.calculateMovesWithCaution(this.cells);
+            } else {
+                piece.calculateMoves(this.cells);
+            }
 
             // draw the possible moves for the piece
             piece.availableMoves.forEach(function (move) {
@@ -128,6 +132,18 @@ fChess.Board = (function () {
         }.bind(this));
     };
 
+    Board.prototype.calculateMoves = function () {
+        this.cells.forEach(function (cell) {
+            if (cell.piece) {
+                if (cell.piece instanceof fChess.KingPiece) {
+                    cell.piece.calculateMovesWithCaution(this.cells);
+                } else {
+                    cell.piece.calculateMoves(this.cells);
+                }
+            }
+        }.bind(this));
+    }
+
     // just move some pieces around
     Board.prototype.test = function () {
         this.cells[59].piece = null;
@@ -137,9 +153,11 @@ fChess.Board = (function () {
         this.cells[30].piece = this.cells[61].piece;
         this.cells[61].piece = null;
         this.cells[4].piece = null;
-        this.cells[45].piece = this.players[0].pieces[4];
+        this.cells[33].piece = this.players[0].pieces[4];
         this.cells[1].piece = null;
         this.cells[37].piece = this.players[0].pieces[1];
+        this.cells[60].piece = null;
+        this.cells[36].piece = this.players[1].pieces[4];
     };
 
     Board.prototype.resetPlayers = function () {
