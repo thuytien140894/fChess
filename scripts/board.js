@@ -42,9 +42,14 @@ fChess.Board = (function () {
     };
 
     Board.prototype.create = function () {
+        this.game.stage.backgroundColor = '#182d3b';
         var board = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'board');
         board.scale.setTo(Board.gameSettings.widthScale, Board.gameSettings.heightScale);
         board.anchor.set(Board.gameSettings.anchor);
+
+        var style = { font: '65px Arial', fill: '#ff0044', align: 'center' };
+        var text = this.game.add.text(150, 50, 'fChess', style);
+        text.anchor.set(0.5);
     };
 
     Board.prototype.update = function () {
@@ -73,6 +78,7 @@ fChess.Board = (function () {
             this.graphics.lineStyle(4, Board.gameSettings.selectedCellColor, 1);
             this.graphics.drawRect(cell.topLeftX, cell.topLeftY, Board.gameSettings.squareWidth, Board.gameSettings.squareHeight);
 
+            // calculate the moves for all the pieces
             if (piece instanceof fChess.KingPiece) {
                 piece.calculateMovesWithCaution(this.cells);
             } else {
@@ -148,16 +154,24 @@ fChess.Board = (function () {
     Board.prototype.test = function () {
         this.cells[59].piece = null;
         this.cells[27].piece = this.players[1].pieces[3];
+
         this.cells[0].piece = null;
         this.cells[26].piece = this.players[0].pieces[0];
-        this.cells[30].piece = this.cells[61].piece;
+
         this.cells[61].piece = null;
+        this.cells[30].piece = this.players[1].pieces[2];
+
         this.cells[4].piece = null;
-        this.cells[33].piece = this.players[0].pieces[4];
+        this.cells[25].piece = this.players[0].pieces[4];
+
         this.cells[1].piece = null;
         this.cells[37].piece = this.players[0].pieces[1];
+
         this.cells[60].piece = null;
-        this.cells[36].piece = this.players[1].pieces[4];
+        this.cells[28].piece = this.players[1].pieces[4];
+
+        this.cells[3].piece = null;
+        this.cells[43].piece = this.players[0].pieces[3];
     };
 
     Board.prototype.resetPlayers = function () {
