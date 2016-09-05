@@ -1,3 +1,3 @@
 # fChess
 
-This is the coolest game ever!
+Javascript clone of chess.
