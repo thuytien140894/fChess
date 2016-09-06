@@ -7,7 +7,7 @@ fChess.Player = (function () {
     var Player = function (name, color) {
         this.name = name;
         this.color = color;
-        
+
         this.pieces = [];
     };
 
@@ -15,6 +15,7 @@ fChess.Player = (function () {
     Player.prototype.name = '';
     Player.prototype.color = '';
     Player.prototype.pieces = null;
+    Player.prototype.isActive = false;
 
     //functions
 

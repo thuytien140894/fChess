@@ -12,7 +12,7 @@ fChess.Piece = (function () {
 
     //fields
     Piece.prototype.alive = true;
-    Piece.prototype.isMoved = false;
+    Piece.prototype.changePosition = false;
     Piece.prototype.color = '';
     Piece.prototype.availableMoves = null;
     Piece.prototype.blockedMoves = null; // used for cells blocked by the piece's friends
@@ -28,6 +28,10 @@ fChess.Piece = (function () {
         return null;
     };
 
+    Piece.prototype.isAllowedToMove = function (move) {
+        return (this.availableMoves.indexOf(move) != -1);
+    };
+
     // This function finds the common moves that two pieces can make
     Piece.prototype.encounter = function (anotherPiece) {
         var intersection = [];
@@ -41,7 +45,7 @@ fChess.Piece = (function () {
             // we need to consider all possible moves that a piece can make, not just
             // the ones that they can go. These possible moves include all the available
             // moves and the ones blocked by its "friends".
-            enemyMoves = anotherPiece.availableMoves.concat(anotherPiece.blockedMoves);;
+            enemyMoves = anotherPiece.availableMoves.concat(anotherPiece.blockedMoves);
         }
 
         this.availableMoves.forEach(function (move) {
@@ -72,6 +76,12 @@ fChess.Piece = (function () {
     // this function is used by the king primarily to calculate the moves
     // that it can make without being taken by an enemy
     Piece.prototype.avoidEnemies = function (boardCells) {
+        var currentCell = this.findCell(boardCells);
+        // hypothetically remove the king and calculate all possible enemy moves
+        // that might go pass the king. In other words, the king might have moves
+        // that intersect with the enemy moves that are blocked by the king himself.
+        currentCell.piece = null;
+
         boardCells.forEach(function (cell) {
             if (!cell.isEmpty()) {
                 if (this.isEnemy(cell.piece)) {
@@ -83,6 +93,8 @@ fChess.Piece = (function () {
                 }
             }
         }.bind(this));
+
+        currentCell.piece = this;
     };
 
     // checks if a piece is an enemy
@@ -105,10 +117,9 @@ fChess.Piece = (function () {
     // to attack the king
     Piece.prototype.isSafeToMove = function (boardCells, myKing) {
         var currentCell = this.findCell(boardCells);
-        var cellIndex = boardCells.indexOf(currentCell);
         // hypothetically remove the piece and calculate all the enemies' moves
         // to see if the king would be affected
-        boardCells[cellIndex].piece = null;
+        currentCell.piece = null;
 
         var enemies = this.findAllEnemies(boardCells);
         for (var i = 0; i < enemies.length; i++) {
@@ -126,7 +137,7 @@ fChess.Piece = (function () {
                 }
         }
 
-        boardCells[cellIndex].piece = this;
+        currentCell.piece = this;
         return true;
     };
 
@@ -150,8 +161,8 @@ fChess.Piece = (function () {
         for (var i = 0; i < limit; i++) {
             cellIndex += 8;
             if (boardCells[cellIndex]) {
+                boardCells[cellIndex].containEnemy = false;
                 if (boardCells[cellIndex].isEmpty()) {
-                    boardCells[cellIndex].containEnemy = false;
                     this.availableMoves.push(boardCells[cellIndex]);
                 } else {
                     if (!(this instanceof fChess.PawnPiece)) { // a pawn cannot cannot capture its enemy on its path
@@ -163,7 +174,6 @@ fChess.Piece = (function () {
                                 boardCells[cellIndex].piece.isChecked = true;
                             }
                         } else {
-                            boardCells[cellIndex].containEnemy = false;
                             this.blockedMoves.push(boardCells[cellIndex]);
                         }
                     }
@@ -180,8 +190,8 @@ fChess.Piece = (function () {
         for (var i = 0; i < limit; i++) {
             cellIndex -= 8;
             if (boardCells[cellIndex]) {
+                boardCells[cellIndex].containEnemy = false;
                 if (boardCells[cellIndex].isEmpty()) {
-                    boardCells[cellIndex].containEnemy = false;
                     this.availableMoves.push(boardCells[cellIndex]);
                 } else {
                     if (!(this instanceof fChess.PawnPiece)) { // a pawn cannot cannot capture its enemy on its path
@@ -193,7 +203,6 @@ fChess.Piece = (function () {
                                 boardCells[cellIndex].piece.isChecked = true;
                             }
                         } else {
-                            boardCells[cellIndex].containEnemy = false;
                             this.blockedMoves.push(boardCells[cellIndex]);
                         }
                     }
@@ -210,8 +219,8 @@ fChess.Piece = (function () {
         for (var i = 0; i < limit; i++) {
             cellIndex++;
             if (boardCells[cellIndex]) {
+                boardCells[cellIndex].containEnemy = false;
                 if (boardCells[cellIndex].isEmpty()) {
-                    boardCells[cellIndex].containEnemy = false;
                     this.availableMoves.push(boardCells[cellIndex]);
                 } else {
                     if (this.isEnemy(boardCells[cellIndex].piece)) {
@@ -222,7 +231,6 @@ fChess.Piece = (function () {
                             boardCells[cellIndex].piece.isChecked = true;
                         }
                     } else {
-                        boardCells[cellIndex].containEnemy = false;
                         this.blockedMoves.push(boardCells[cellIndex]);
                     }
                     break;
@@ -238,8 +246,8 @@ fChess.Piece = (function () {
         for (var i = 0; i < limit; i++) {
             cellIndex--;
             if (boardCells[cellIndex]) {
+                boardCells[cellIndex].containEnemy = false;
                 if (boardCells[cellIndex].isEmpty()) {
-                    boardCells[cellIndex].containEnemy = false;
                     this.availableMoves.push(boardCells[cellIndex]);
                 } else {
                     if (this.isEnemy(boardCells[cellIndex].piece)) {
@@ -250,7 +258,6 @@ fChess.Piece = (function () {
                             boardCells[cellIndex].piece.isChecked = true;
                         }
                     } else {
-                        boardCells[cellIndex].containEnemy = false;
                         this.blockedMoves.push(boardCells[cellIndex]);
                     }
                     break;
@@ -266,8 +273,8 @@ fChess.Piece = (function () {
         for (var i = 0; i < limit; i++) {
             cellIndex += 9;
             if (boardCells[cellIndex]) {
+                boardCells[cellIndex].containEnemy = false;
                 if (boardCells[cellIndex].isEmpty()) {
-                    boardCells[cellIndex].containEnemy = false;
                     if (!(this instanceof fChess.PawnPiece)) { // a pawn only gets to move diagonally if there is an enemy
                         this.availableMoves.push(boardCells[cellIndex]);
                     } else {
@@ -284,7 +291,6 @@ fChess.Piece = (function () {
                             boardCells[cellIndex].piece.isChecked = true;
                         }
                     } else {
-                        boardCells[cellIndex].containEnemy = false;
                         this.blockedMoves.push(boardCells[cellIndex]);
                     }
                     break;
@@ -300,8 +306,8 @@ fChess.Piece = (function () {
         for (var i = 0; i < limit; i++) {
             cellIndex += 7;
             if (boardCells[cellIndex]) {
+                boardCells[cellIndex].containEnemy = false;
                 if (boardCells[cellIndex].isEmpty()) {
-                    boardCells[cellIndex].containEnemy = false;
                     if (!(this instanceof fChess.PawnPiece)) {
                         this.availableMoves.push(boardCells[cellIndex]);
                     } else {
@@ -317,7 +323,6 @@ fChess.Piece = (function () {
                             boardCells[cellIndex].piece.isChecked = true;
                         }
                     } else {
-                        boardCells[cellIndex].containEnemy = false;
                         this.blockedMoves.push(boardCells[cellIndex]);
                     }
                     break;
@@ -333,8 +338,8 @@ fChess.Piece = (function () {
         for (var i = 0; i < limit; i++) {
             cellIndex -= 7;
             if (boardCells[cellIndex]) {
+                boardCells[cellIndex].containEnemy = false;
                 if (boardCells[cellIndex].isEmpty()) {
-                    boardCells[cellIndex].containEnemy = false;
                     if (!(this instanceof fChess.PawnPiece)) {
                         this.availableMoves.push(boardCells[cellIndex]);
                     } else {
@@ -350,7 +355,6 @@ fChess.Piece = (function () {
                             boardCells[cellIndex].piece.isChecked = true;
                         }
                     } else {
-                        boardCells[cellIndex].containEnemy = false;
                         this.blockedMoves.push(boardCells[cellIndex]);
                     }
                     break;
@@ -366,8 +370,8 @@ fChess.Piece = (function () {
         for (var i = 0; i < limit; i++) {
             cellIndex -= 9;
             if (boardCells[cellIndex]) {
+                boardCells[cellIndex].containEnemy = false;
                 if (boardCells[cellIndex].isEmpty()) {
-                    boardCells[cellIndex].containEnemy = false;
                     if (!(this instanceof fChess.PawnPiece)) {
                         this.availableMoves.push(boardCells[cellIndex]);
                     } else {
@@ -383,7 +387,6 @@ fChess.Piece = (function () {
                             boardCells[cellIndex].piece.isChecked = true;
                         }
                     } else {
-                        boardCells[cellIndex].containEnemy = false;
                         this.blockedMoves.push(boardCells[cellIndex]);
                     }
                     break;
