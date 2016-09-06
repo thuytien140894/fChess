@@ -151,6 +151,7 @@ fChess.Piece = (function () {
             cellIndex += 8;
             if (boardCells[cellIndex]) {
                 if (boardCells[cellIndex].isEmpty()) {
+                    boardCells[cellIndex].containEnemy = false;
                     this.availableMoves.push(boardCells[cellIndex]);
                 } else {
                     if (!(this instanceof fChess.PawnPiece)) { // a pawn cannot cannot capture its enemy on its path
@@ -162,6 +163,7 @@ fChess.Piece = (function () {
                                 boardCells[cellIndex].piece.isChecked = true;
                             }
                         } else {
+                            boardCells[cellIndex].containEnemy = false;
                             this.blockedMoves.push(boardCells[cellIndex]);
                         }
                     }
@@ -179,6 +181,7 @@ fChess.Piece = (function () {
             cellIndex -= 8;
             if (boardCells[cellIndex]) {
                 if (boardCells[cellIndex].isEmpty()) {
+                    boardCells[cellIndex].containEnemy = false;
                     this.availableMoves.push(boardCells[cellIndex]);
                 } else {
                     if (!(this instanceof fChess.PawnPiece)) { // a pawn cannot cannot capture its enemy on its path
@@ -190,6 +193,7 @@ fChess.Piece = (function () {
                                 boardCells[cellIndex].piece.isChecked = true;
                             }
                         } else {
+                            boardCells[cellIndex].containEnemy = false;
                             this.blockedMoves.push(boardCells[cellIndex]);
                         }
                     }
@@ -207,6 +211,7 @@ fChess.Piece = (function () {
             cellIndex++;
             if (boardCells[cellIndex]) {
                 if (boardCells[cellIndex].isEmpty()) {
+                    boardCells[cellIndex].containEnemy = false;
                     this.availableMoves.push(boardCells[cellIndex]);
                 } else {
                     if (this.isEnemy(boardCells[cellIndex].piece)) {
@@ -217,6 +222,7 @@ fChess.Piece = (function () {
                             boardCells[cellIndex].piece.isChecked = true;
                         }
                     } else {
+                        boardCells[cellIndex].containEnemy = false;
                         this.blockedMoves.push(boardCells[cellIndex]);
                     }
                     break;
@@ -233,6 +239,7 @@ fChess.Piece = (function () {
             cellIndex--;
             if (boardCells[cellIndex]) {
                 if (boardCells[cellIndex].isEmpty()) {
+                    boardCells[cellIndex].containEnemy = false;
                     this.availableMoves.push(boardCells[cellIndex]);
                 } else {
                     if (this.isEnemy(boardCells[cellIndex].piece)) {
@@ -243,6 +250,7 @@ fChess.Piece = (function () {
                             boardCells[cellIndex].piece.isChecked = true;
                         }
                     } else {
+                        boardCells[cellIndex].containEnemy = false;
                         this.blockedMoves.push(boardCells[cellIndex]);
                     }
                     break;
@@ -259,6 +267,7 @@ fChess.Piece = (function () {
             cellIndex += 9;
             if (boardCells[cellIndex]) {
                 if (boardCells[cellIndex].isEmpty()) {
+                    boardCells[cellIndex].containEnemy = false;
                     if (!(this instanceof fChess.PawnPiece)) { // a pawn only gets to move diagonally if there is an enemy
                         this.availableMoves.push(boardCells[cellIndex]);
                     } else {
@@ -275,6 +284,7 @@ fChess.Piece = (function () {
                             boardCells[cellIndex].piece.isChecked = true;
                         }
                     } else {
+                        boardCells[cellIndex].containEnemy = false;
                         this.blockedMoves.push(boardCells[cellIndex]);
                     }
                     break;
@@ -291,6 +301,7 @@ fChess.Piece = (function () {
             cellIndex += 7;
             if (boardCells[cellIndex]) {
                 if (boardCells[cellIndex].isEmpty()) {
+                    boardCells[cellIndex].containEnemy = false;
                     if (!(this instanceof fChess.PawnPiece)) {
                         this.availableMoves.push(boardCells[cellIndex]);
                     } else {
@@ -306,6 +317,7 @@ fChess.Piece = (function () {
                             boardCells[cellIndex].piece.isChecked = true;
                         }
                     } else {
+                        boardCells[cellIndex].containEnemy = false;
                         this.blockedMoves.push(boardCells[cellIndex]);
                     }
                     break;
@@ -322,6 +334,7 @@ fChess.Piece = (function () {
             cellIndex -= 7;
             if (boardCells[cellIndex]) {
                 if (boardCells[cellIndex].isEmpty()) {
+                    boardCells[cellIndex].containEnemy = false;
                     if (!(this instanceof fChess.PawnPiece)) {
                         this.availableMoves.push(boardCells[cellIndex]);
                     } else {
@@ -337,6 +350,7 @@ fChess.Piece = (function () {
                             boardCells[cellIndex].piece.isChecked = true;
                         }
                     } else {
+                        boardCells[cellIndex].containEnemy = false;
                         this.blockedMoves.push(boardCells[cellIndex]);
                     }
                     break;
@@ -353,6 +367,7 @@ fChess.Piece = (function () {
             cellIndex -= 9;
             if (boardCells[cellIndex]) {
                 if (boardCells[cellIndex].isEmpty()) {
+                    boardCells[cellIndex].containEnemy = false;
                     if (!(this instanceof fChess.PawnPiece)) {
                         this.availableMoves.push(boardCells[cellIndex]);
                     } else {
@@ -368,6 +383,7 @@ fChess.Piece = (function () {
                             boardCells[cellIndex].piece.isChecked = true;
                         }
                     } else {
+                        boardCells[cellIndex].containEnemy = false;
                         this.blockedMoves.push(boardCells[cellIndex]);
                     }
                     break;

@@ -122,7 +122,7 @@ fChess.Board = (function () {
     };
 
     Board.prototype.movePiece = function (cellToMove) {
-        if (this.selectedCell) {
+        if (this.selectedCell && (this.selectedCell.piece.availableMoves.indexOf(cellToMove) != -1)) {
             cellToMove.piece = this.selectedCell.piece;
             this.selectedCell.piece = null;
             this.feedbackGraphics.destroy();
