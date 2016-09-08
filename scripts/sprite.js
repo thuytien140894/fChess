@@ -66,6 +66,11 @@ fChess.SpritePiece = (function () {
         this.piece = null;
     };
 
+    SpritePiece.prototype.kill = function () {
+        this.sprite.alpha = 0;
+        this.sprite.inputEnabled = false;
+    };
+
     return SpritePiece;
 })();
 
@@ -93,7 +98,7 @@ fChess.SpriteCell = (function () {
 
         this.sprite = new Phaser.Sprite(this.game, 0, 0, this.name);
         this.sprite.addChild(this.graphics);
-        this.sprite.alpha = 0;
+        this.sprite.alpha = 0.5;
 
         this.attachEvents();
     };

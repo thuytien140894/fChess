@@ -12,7 +12,6 @@ fChess.Board = (function () {
 
         this.players = [];
         this.spritePieces = [];
-        this.spriteCells = [];
 
         this.game = new Phaser.Game('100%', '100%', Phaser.AUTO, this.$parent.get(0), {
             preload: this.preload.bind(this),
@@ -25,13 +24,12 @@ fChess.Board = (function () {
     Board.prototype.game = null;
     Board.prototype.$parent = null;
     Board.prototype.selectedCell = null;
-    Board.prototype.isUpdated = false;
 
     Board.prototype.players = null;
-    Board.prototype.currentPlayer = null;
     Board.prototype.cells = null;
     Board.prototype.spritePieces = null;
-    Board.prototype.spriteCells = null;
+
+    // these fields are used for graphics
     Board.prototype.overlayCells = null;
     Board.prototype.feedbackGraphics = null;
     Board.prototype.firstPlayerPieces = null;
@@ -74,9 +72,17 @@ fChess.Board = (function () {
             if (cell) {
                 chessPiece.sprite.x = cell.centerX;
                 chessPiece.sprite.y = cell.centerY;
+            } else {
+                if (!chessPiece.piece.alive) {
+                    chessPiece.kill();
+                }
             }
         }.bind(this));
 
+        this.toggleActivity();
+    };
+
+    Board.prototype.toggleActivity = function () {
         // toggle the activity and inactivity of two players
         this.game.world.bringToTop(this.overlayCells);
         if (this.players.length == 2) {
@@ -91,58 +97,69 @@ fChess.Board = (function () {
     Board.prototype.selectPiece = function (piece) {
         this.selectedCell = this.findCellForPiece(piece);
         if (this.selectedCell) {
-            if (this.feedbackGraphics && this.feedbackGraphics.alive) {
-                this.feedbackGraphics.destroy();
-            }
-
-            this.feedbackGraphics = this.game.add.graphics(0, 0);
-            this.feedbackGraphics.alive = true;
-            this.feedbackGraphics.lineStyle(4, Board.gameSettings.selectedCellColor, 1);
-            this.feedbackGraphics.drawRect(this.selectedCell.topLeftX, this.selectedCell.topLeftY, Board.gameSettings.squareWidth, Board.gameSettings.squareHeight);
-
-            // calculate the moves for all the pieces
-            if (piece instanceof fChess.KingPiece) {
-                piece.calculateMovesWithCaution(this.cells);
-            } else {
-                piece.calculateMoves(this.cells);
-            }
-
-            // draw the possible moves for the piece
-            piece.availableMoves.forEach(function (move) {
-                if (move.containEnemy) { // if the cell contains an enemy, highlight it red
-                    this.feedbackGraphics.lineStyle(4, Board.gameSettings.enemyCellColor, 1);
-                    this.feedbackGraphics.drawRect(move.topLeftX, move.topLeftY, Board.gameSettings.squareWidth, Board.gameSettings.squareHeight);
-                } else {
-                    this.feedbackGraphics.lineStyle(0, 0, 1);
-                    this.feedbackGraphics.beginFill(Board.gameSettings.selectedCellColor, 1);
-                    this.feedbackGraphics.drawCircle(move.centerX, move.centerY, 15);
-                    this.feedbackGraphics.endFill();
-                }
-            }.bind(this));
+            this.calculateMoves(piece);
+            this.highlight(this.selectedCell);
         }
     };
 
-    Board.prototype.makeMove = function (cellToMove) {
-        if (this.selectedCell && this.selectedCell.piece.isAllowedToMove(cellToMove)) {
-            var selectedPiece = this.selectedCell.piece;
-            cellToMove.piece = selectedPiece;
+    Board.prototype.calculateMoves = function (piece) {
+        if (piece instanceof fChess.KingPiece) {
+            piece.calculateMovesWithCaution(this.cells);
+        } else {
+            piece.calculateMoves(this.cells);
+        }
+    };
 
-            // recalculate moves for the piece that just gets moved
-            if (selectedPiece instanceof fChess.KingPiece) {
-                selectedPiece.calculateMovesWithCaution(this.cells);
-            } else {
-                selectedPiece.calculateMoves(this.cells);
-            }
-
-            this.selectedCell.piece = null;
-            this.switchPlayer();
+    Board.prototype.highlight = function (selectedCell) {
+        if (this.feedbackGraphics && this.feedbackGraphics.alive) {
             this.feedbackGraphics.destroy();
+        }
 
-            if (selectedPiece instanceof fChess.PawnPiece) {
-                selectedPiece.hasMoved = true;
-            } else if (selectedPiece instanceof fChess.KingPiece && selectedPiece.isChecked) {
-                selectedPiece.isChecked = false;
+        this.feedbackGraphics = this.game.add.graphics(0, 0);
+        this.feedbackGraphics.alive = true;
+        this.feedbackGraphics.lineStyle(4, Board.gameSettings.selectedCellColor, 1);
+        this.feedbackGraphics.drawRect(selectedCell.topLeftX, selectedCell.topLeftY, Board.gameSettings.squareWidth, Board.gameSettings.squareHeight);
+
+        this.highlightMoves(selectedCell.piece);
+    };
+
+    Board.prototype.highlightMoves = function (piece) {
+        // draw the possible moves for the piece
+        piece.availableMoves.forEach(function (move) {
+            if (move.containEnemy) { // if the cell contains an enemy, highlight it red
+                this.feedbackGraphics.lineStyle(4, Board.gameSettings.enemyCellColor, 1);
+                this.feedbackGraphics.drawRect(move.topLeftX, move.topLeftY, Board.gameSettings.squareWidth, Board.gameSettings.squareHeight);
+            } else {
+                this.feedbackGraphics.lineStyle(0, 0, 1);
+                this.feedbackGraphics.beginFill(Board.gameSettings.selectedCellColor, 1);
+                this.feedbackGraphics.drawCircle(move.centerX, move.centerY, 15);
+                this.feedbackGraphics.endFill();
             }
+        }.bind(this));
+    };
+
+    Board.prototype.makeMove = function (cellToMove) {
+        if (this.selectedCell &&
+            this.selectedCell.piece &&
+            this.selectedCell.piece.isAllowedToMove(cellToMove)) {
+                var selectedPiece = this.selectedCell.piece;
+                if (!cellToMove.isEmpty()) {
+                    this.clearCell(cellToMove);
+                }
+                cellToMove.piece = selectedPiece;
+                this.selectedCell.piece = null;
+
+                // recalculate moves for the piece that just gets moved
+                this.calculateMoves(selectedPiece);
+
+                if (selectedPiece instanceof fChess.PawnPiece) {
+                    selectedPiece.hasMoved = true;
+                } else if (selectedPiece instanceof fChess.KingPiece && selectedPiece.isChecked) {
+                    selectedPiece.isChecked = false;
+                }
+
+                this.switchPlayer();
+                this.feedbackGraphics.destroy();
         }
     };
 
@@ -156,15 +173,16 @@ fChess.Board = (function () {
         }
     };
 
-    Board.prototype.removePiece = function (piece) {
-
+    Board.prototype.clearCell = function (cell) {
+        var spritePiece = this.findSpriteForPiece(cell.piece);
+        spritePiece.piece.alive = false;
+        cell.piece = null;
     };
 
     Board.prototype.startNewGame = function () {
         this.clearBoard();
         this.resetPlayers();
         this.initializePieces();
-        // this.test();
     };
 
     Board.prototype.clearBoard = function () {
@@ -176,6 +194,11 @@ fChess.Board = (function () {
         this.cells.forEach(function (cell) {
             cell.piece = null;
         }.bind(this));
+
+        // remove the feedbackGraphics from the previous game
+        if (this.feedbackGraphics) {
+            this.feedbackGraphics.destroy();
+        }
     };
 
     Board.prototype.initializeCells = function () {
@@ -199,7 +222,6 @@ fChess.Board = (function () {
             (function () {
                 var spriteCell = new fChess.SpriteCell(this.game, cell);
                 this.game.add.existing(spriteCell.sprite);
-                this.spriteCells.push(spriteCell);
                 this.overlayCells.add(spriteCell.sprite);
 
                 spriteCell.sprite.events.onInputDown.add(function () {
@@ -210,6 +232,11 @@ fChess.Board = (function () {
     };
 
     Board.prototype.initializePieces = function () {
+        this.renderPieces();
+        this.categorizePieces();
+    };
+
+    Board.prototype.renderPieces = function () {
         // since forEach is already a function, all the variables created for each
         // iteration is unique to that iteration.
         this.cells.forEach(function (cell, i) {
@@ -223,11 +250,9 @@ fChess.Board = (function () {
                 }, this);
             }
         }.bind(this));
-
-        this.initializePieceGroups();
     };
 
-    Board.prototype.initializePieceGroups = function () {
+    Board.prototype.categorizePieces = function () {
         // group the sprite pieces for two players
         this.spritePieces.forEach(function (spritePiece) {
             if (spritePiece.piece.color == this.players[0].color) {
@@ -237,18 +262,6 @@ fChess.Board = (function () {
             }
         }.bind(this));
     };
-
-    Board.prototype.calculateMoves = function () {
-        this.cells.forEach(function (cell) {
-            if (cell.piece) {
-                if (cell.piece instanceof fChess.KingPiece) {
-                    cell.piece.calculateMovesWithCaution(this.cells);
-                } else {
-                    cell.piece.calculateMoves(this.cells);
-                }
-            }
-        }.bind(this));
-    }
 
     // just move some pieces around
     Board.prototype.test = function () {
@@ -275,6 +288,7 @@ fChess.Board = (function () {
     };
 
     Board.prototype.resetPlayers = function () {
+        this.players.length = 0;
         this.players.push(new fChess.Player('Player 1', 'white'), new fChess.Player('Player 2', 'black'));
         this.players[0].isActive = true;
 
@@ -315,6 +329,16 @@ fChess.Board = (function () {
         for (var i = 0; i < this.cells.length; i++) {
             if (this.cells[i].piece == piece) {
                 return this.cells[i];
+            }
+        }
+
+        return null;
+    };
+
+    Board.prototype.findSpriteForPiece = function (piece) {
+        for (var i = 0; i < this.spritePieces.length; i++) {
+            if (this.spritePieces[i].piece == piece) {
+                return this.spritePieces[i];
             }
         }
 

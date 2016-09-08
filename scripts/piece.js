@@ -130,7 +130,7 @@ fChess.Piece = (function () {
                     enemy.refreshMoves();
                     enemy.findMoves(boardCells);
                     if (myKing.isChecked) {
-                        boardCells[cellIndex].piece = this;
+                        currentCell.piece = this;
                         myKing.isChecked = false;
                         return false;
                     }
