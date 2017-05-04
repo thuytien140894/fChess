@@ -44,7 +44,8 @@ fChess.Piece = (function () {
         } else {
             // we need to consider all possible moves that a piece can make, not just
             // the ones that they can go. These possible moves include all the available
-            // moves and the ones blocked by its "friends".
+            // moves and the ones blocked by its "friends". Because if the king takes
+            // one of these friends, the king will be eaten.
             enemyMoves = anotherPiece.availableMoves.concat(anotherPiece.blockedMoves);
         }
 
@@ -124,6 +125,9 @@ fChess.Piece = (function () {
         var enemies = this.findAllEnemies(boardCells);
         for (var i = 0; i < enemies.length; i++) {
             var enemy = enemies[i];
+            // pawns can only move one step at a time so the king will not be
+            // blocked.
+            // knights' possible moves are not blocked by other pieces
             if (enemy instanceof fChess.BishopPiece ||
                 enemy instanceof fChess.RookPiece ||
                 enemy instanceof fChess.QueenPiece) {
@@ -161,13 +165,11 @@ fChess.Piece = (function () {
         for (var i = 0; i < limit; i++) {
             cellIndex += 8;
             if (boardCells[cellIndex]) {
-                boardCells[cellIndex].containEnemy = false;
                 if (boardCells[cellIndex].isEmpty()) {
                     this.availableMoves.push(boardCells[cellIndex]);
                 } else {
                     if (!(this instanceof fChess.PawnPiece)) { // a pawn cannot cannot capture its enemy on its path
                         if (this.isEnemy(boardCells[cellIndex].piece)) {
-                            boardCells[cellIndex].containEnemy = true;
                             this.availableMoves.push(boardCells[cellIndex]);
 
                             if (boardCells[cellIndex].piece instanceof fChess.KingPiece) {
@@ -190,13 +192,11 @@ fChess.Piece = (function () {
         for (var i = 0; i < limit; i++) {
             cellIndex -= 8;
             if (boardCells[cellIndex]) {
-                boardCells[cellIndex].containEnemy = false;
                 if (boardCells[cellIndex].isEmpty()) {
                     this.availableMoves.push(boardCells[cellIndex]);
                 } else {
                     if (!(this instanceof fChess.PawnPiece)) { // a pawn cannot cannot capture its enemy on its path
                         if (this.isEnemy(boardCells[cellIndex].piece)) {
-                            boardCells[cellIndex].containEnemy = true;
                             this.availableMoves.push(boardCells[cellIndex]);
 
                             if (boardCells[cellIndex].piece instanceof fChess.KingPiece) {
@@ -219,12 +219,10 @@ fChess.Piece = (function () {
         for (var i = 0; i < limit; i++) {
             cellIndex++;
             if (boardCells[cellIndex]) {
-                boardCells[cellIndex].containEnemy = false;
                 if (boardCells[cellIndex].isEmpty()) {
                     this.availableMoves.push(boardCells[cellIndex]);
                 } else {
                     if (this.isEnemy(boardCells[cellIndex].piece)) {
-                        boardCells[cellIndex].containEnemy = true;
                         this.availableMoves.push(boardCells[cellIndex]);
 
                         if (boardCells[cellIndex].piece instanceof fChess.KingPiece) {
@@ -246,12 +244,10 @@ fChess.Piece = (function () {
         for (var i = 0; i < limit; i++) {
             cellIndex--;
             if (boardCells[cellIndex]) {
-                boardCells[cellIndex].containEnemy = false;
                 if (boardCells[cellIndex].isEmpty()) {
                     this.availableMoves.push(boardCells[cellIndex]);
                 } else {
                     if (this.isEnemy(boardCells[cellIndex].piece)) {
-                        boardCells[cellIndex].containEnemy = true;
                         this.availableMoves.push(boardCells[cellIndex]);
 
                         if (boardCells[cellIndex].piece instanceof fChess.KingPiece) {
@@ -273,7 +269,6 @@ fChess.Piece = (function () {
         for (var i = 0; i < limit; i++) {
             cellIndex += 9;
             if (boardCells[cellIndex]) {
-                boardCells[cellIndex].containEnemy = false;
                 if (boardCells[cellIndex].isEmpty()) {
                     if (!(this instanceof fChess.PawnPiece)) { // a pawn only gets to move diagonally if there is an enemy
                         this.availableMoves.push(boardCells[cellIndex]);
@@ -284,7 +279,6 @@ fChess.Piece = (function () {
                     }
                 } else {
                     if (this.isEnemy(boardCells[cellIndex].piece)) {
-                        boardCells[cellIndex].containEnemy = true;
                         this.availableMoves.push(boardCells[cellIndex]);
 
                         if (boardCells[cellIndex].piece instanceof fChess.KingPiece) {
@@ -306,7 +300,6 @@ fChess.Piece = (function () {
         for (var i = 0; i < limit; i++) {
             cellIndex += 7;
             if (boardCells[cellIndex]) {
-                boardCells[cellIndex].containEnemy = false;
                 if (boardCells[cellIndex].isEmpty()) {
                     if (!(this instanceof fChess.PawnPiece)) {
                         this.availableMoves.push(boardCells[cellIndex]);
@@ -316,7 +309,6 @@ fChess.Piece = (function () {
                     }
                 } else {
                     if (this.isEnemy(boardCells[cellIndex].piece)) {
-                        boardCells[cellIndex].containEnemy = true;
                         this.availableMoves.push(boardCells[cellIndex]);
 
                         if (boardCells[cellIndex].piece instanceof fChess.KingPiece) {
@@ -338,7 +330,6 @@ fChess.Piece = (function () {
         for (var i = 0; i < limit; i++) {
             cellIndex -= 7;
             if (boardCells[cellIndex]) {
-                boardCells[cellIndex].containEnemy = false;
                 if (boardCells[cellIndex].isEmpty()) {
                     if (!(this instanceof fChess.PawnPiece)) {
                         this.availableMoves.push(boardCells[cellIndex]);
@@ -348,7 +339,6 @@ fChess.Piece = (function () {
                     }
                 } else {
                     if (this.isEnemy(boardCells[cellIndex].piece)) {
-                        boardCells[cellIndex].containEnemy = true;
                         this.availableMoves.push(boardCells[cellIndex]);
 
                         if (boardCells[cellIndex].piece instanceof fChess.KingPiece) {
@@ -370,7 +360,6 @@ fChess.Piece = (function () {
         for (var i = 0; i < limit; i++) {
             cellIndex -= 9;
             if (boardCells[cellIndex]) {
-                boardCells[cellIndex].containEnemy = false;
                 if (boardCells[cellIndex].isEmpty()) {
                     if (!(this instanceof fChess.PawnPiece)) {
                         this.availableMoves.push(boardCells[cellIndex]);
@@ -380,7 +369,6 @@ fChess.Piece = (function () {
                     }
                 } else {
                     if (this.isEnemy(boardCells[cellIndex].piece)) {
-                        boardCells[cellIndex].containEnemy = true;
                         this.availableMoves.push(boardCells[cellIndex]);
 
                         if (boardCells[cellIndex].piece instanceof fChess.KingPiece) {

@@ -67,19 +67,31 @@ fChess.Board = (function () {
 
     Board.prototype.render = function () {
         // update the positions of all pieces
+        this.updatePosition();
+        this.toggleActivity();
+    };
+
+    Board.prototype.updatePosition = function () {
         this.spritePieces.forEach(function (chessPiece) {
             var cell = this.findCellForPiece(chessPiece.piece);
             if (cell) {
                 chessPiece.sprite.x = cell.centerX;
                 chessPiece.sprite.y = cell.centerY;
+
+                // update the king's status
+                if (chessPiece.piece instanceof fChess.KingPiece) {
+                    if (chessPiece.piece.isChecked) {
+                        this.check(chessPiece);
+                    } else {
+                        this.uncheck(chessPiece);
+                    }
+                }
             } else {
                 if (!chessPiece.piece.alive) {
                     chessPiece.kill();
                 }
             }
         }.bind(this));
-
-        this.toggleActivity();
     };
 
     Board.prototype.toggleActivity = function () {
@@ -98,8 +110,17 @@ fChess.Board = (function () {
         this.selectedCell = this.findCellForPiece(piece);
         if (this.selectedCell) {
             this.calculateMoves(piece);
+            this.detectEnemies(piece);
             this.highlight(this.selectedCell);
         }
+    };
+
+    Board.prototype.check = function (kingPiece) {
+        kingPiece.sprite.tint = 0xff0000;
+    };
+
+    Board.prototype.uncheck = function (kingPiece) {
+        kingPiece.sprite.tint = 0xffffff;
     };
 
     Board.prototype.calculateMoves = function (piece) {
@@ -108,6 +129,14 @@ fChess.Board = (function () {
         } else {
             piece.calculateMoves(this.cells);
         }
+    };
+
+    Board.prototype.detectEnemies = function (selectedPiece) {
+        selectedPiece.availableMoves.forEach(function (cell) {
+            if (!cell.isEmpty() && cell.piece.isEnemy(selectedPiece)) {
+                cell.containEnemy = true;
+            }
+        }.bind(this));
     };
 
     Board.prototype.highlight = function (selectedCell) {
@@ -183,6 +212,7 @@ fChess.Board = (function () {
         this.clearBoard();
         this.resetPlayers();
         this.initializePieces();
+        this.test();
     };
 
     Board.prototype.clearBoard = function () {
@@ -209,7 +239,7 @@ fChess.Board = (function () {
         var totalCells = Board.gameSettings.rows * Board.gameSettings.columns;
         for (var i = 0; i < totalCells; i++) {
             var cell = new fChess.Cell();
-            cell.row = Math.floor(i / Board.gameSettings.rows);
+            cell.row = Math.floor(i / Board.gameSettings.columns);
             cell.column = i % Board.gameSettings.columns;
             cell.centerX = startingX + Board.gameSettings.squareWidth * cell.column;
             cell.centerY = startingY + Board.gameSettings.squareHeight * cell.row;
