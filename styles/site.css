@@ -3,10 +3,32 @@
     height: 100%;
 
     display: flex;
-    flex-direction: column;
+    flex-direction: row;
+}
+
+#right-panel {
+    flex: 2;
+    background-color: #2f4f4f;
 }
 
 #game {
-    flex-grow: 1;
-    margin: auto;
+    flex: 10;
+}
+
+#left-panel {
+    flex: 5;
+    background-color: #182d3b;
+    display: flex;
+    align-items: center;
+}
+
+#dashboard {
+    background-color: white;
+    width: 70%;
+    height: 620px;
+    border-radius: 10px;
+}
+
+#history-chart {
+    overflow-y: scroll;
 }

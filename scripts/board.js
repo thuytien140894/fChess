@@ -13,7 +13,7 @@ fChess.Board = (function () {
         this.players = [];
         this.spritePieces = [];
 
-        this.game = new Phaser.Game('100%', '100%', Phaser.AUTO, this.$parent.get(0), {
+        this.game = new Phaser.Game(this.$parent[0].clientWidth, '100', Phaser.AUTO, this.$parent[0], {
             preload: this.preload.bind(this),
             create: this.create.bind(this),
             update: this.update.bind(this)
@@ -48,10 +48,6 @@ fChess.Board = (function () {
         var board = this.game.add.sprite(this.game.world.centerX, this.game.world.centerY, 'board');
         board.scale.setTo(Board.gameSettings.widthScale, Board.gameSettings.heightScale);
         board.anchor.set(Board.gameSettings.anchor);
-
-        var style = { font: '65px Arial', fill: '#ff0044', align: 'center' };
-        var text = this.game.add.text(150, 50, 'fChess', style);
-        text.anchor.set(0.5);
 
         // create groups
         this.firstPlayerPieces = this.game.add.group();
