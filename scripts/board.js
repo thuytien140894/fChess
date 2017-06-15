@@ -131,6 +131,7 @@ fChess.Board = (function () {
 
     Board.prototype.detectEnemies = function (selectedPiece) {
         selectedPiece.availableMoves.forEach(function (cell) {
+            cell.containEnemy = false;
             if (!cell.isEmpty() && cell.piece.isEnemy(selectedPiece)) {
                 cell.containEnemy = true;
             }
