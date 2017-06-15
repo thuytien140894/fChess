@@ -15,16 +15,28 @@
     </div>
     <div id="left-panel">
         <div id="dashboard">
+            <div id="lost-pieces">
+                <div id="piece" data-bind="foreach: lostBlackPieces">
+                    <img data-bind="attr: { src: imageUrl }">
+                </div>
+            </div>
             <div id="history-chart">
-                
+
+            </div>
+            <div id="lost-pieces">
+                <div id="piece" data-bind="foreach: lostWhitePieces">
+                    <img data-bind="attr: { src: imageUrl }">
+                </div>
             </div>
         </div>
     </div>
 </div>
 
+<!-- third-party libraries -->
 <script src="libraries/jquery/jquery-1.12.3.min.js"></script>
 <script src="libraries/lodash.js"></script>
 <script src="libraries/phaser/phaser.min.js"></script>
+<script src="libraries/knockout-3.4.2.js"></script>
 
 <script src="scripts/utils.js"></script>
 <script src="scripts/cell.js"></script>
@@ -38,6 +50,7 @@
 <script src="scripts/knightPiece.js"></script>
 <script src="scripts/pawnPiece.js"></script>
 <script src="scripts/board.js"></script>
+<script src="scripts/game-manager.js"></script>
 
 <script type="text/javascript">
     var fChess = fChess || {};
@@ -54,6 +67,8 @@
             $('#start-new-game-btn').on('click', function () {
                 this.board.startNewGame();
             }.bind(this));
+
+            ko.applyBindings(this.board.boardVM);
         };
 
         return Page;

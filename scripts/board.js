@@ -9,6 +9,7 @@ fChess.Board = (function () {
             parentElement = document.body;
         }
         this.$parent = $(parentElement);
+        this.boardVM = new fChess.BoardVM();
 
         this.players = [];
         this.spritePieces = [];
@@ -23,6 +24,7 @@ fChess.Board = (function () {
     //fields
     Board.prototype.game = null;
     Board.prototype.$parent = null;
+    Board.prototype.boardVM = null;
     Board.prototype.selectedCell = null;
 
     Board.prototype.players = null;
@@ -166,7 +168,7 @@ fChess.Board = (function () {
     Board.prototype.makeMove = function (cellToMove) {
         if (this.selectedCell &&
             this.selectedCell.piece &&
-            this.selectedCell.piece.isAllowedToMove(cellToMove)) {
+            this.selectedCell.piece.isAllowedToMove(cellToMove)) { // make sure that cellToMove is part of the piece's availableMoves
                 var selectedPiece = this.selectedCell.piece;
                 if (!cellToMove.isEmpty()) {
                     this.clearCell(cellToMove);
@@ -202,7 +204,18 @@ fChess.Board = (function () {
         var spritePiece = this.findSpriteForPiece(cell.piece);
         spritePiece.piece.alive = false;
         cell.piece = null;
+
+        this.recordLostPiece(spritePiece);
     };
+
+    Board.prototype.recordLostPiece = function (spritePiece) {
+        var color = spritePiece.piece.color;
+        if (color == 'white') {
+            this.boardVM.lostWhitePieces.push(spritePiece);
+        } else { // black
+            this.boardVM.lostBlackPieces.push(spritePiece);
+        }
+    }
 
     Board.prototype.startNewGame = function () {
         this.clearBoard();
@@ -421,4 +434,16 @@ fChess.Board = (function () {
     };
 
     return Board;
+})();
+
+fChess.BoardVM = (function() {
+    var BoardVM = function() {
+
+    };
+
+    BoardVM.prototype.lostWhitePieces = ko.observableArray([]);
+    BoardVM.prototype.lostBlackPieces = ko.observableArray([]);
+    BoardVM.prototype.state = ko.observable();
+
+    return BoardVM;
 })();
