@@ -27,7 +27,7 @@ fChess.Sprite = (function () {
 
     Sprite.prototype.initialize = function () {
         this.name = this._getName();
-        this.imageUrl = fChess.Board.images[this.name];
+        this.imageUrl = fChess.Utils.images[this.name];
         this.sprite = new Phaser.Sprite(this.game, this.xPos, this.yPos, this.name);
         this.sprite.scale.setTo(0.6, 0.6);
         this.sprite.anchor.set(0.5);
@@ -60,7 +60,7 @@ fChess.SpritePiece = (function () {
 
     // functions
     SpritePiece.prototype._getName = function () {
-        return fChess.Board.getImageNameForPiece(this.piece);
+        return fChess.Utils.getImageNameForPiece(this.piece);
     };
 
     SpritePiece.prototype.destroy = function () {

@@ -9,7 +9,6 @@ fChess.Board = (function () {
             parentElement = document.body;
         }
         this.$parent = $(parentElement);
-        this.boardVM = new fChess.BoardVM();
 
         this.players = [];
         this.spritePieces = [];
@@ -24,7 +23,6 @@ fChess.Board = (function () {
     //fields
     Board.prototype.game = null;
     Board.prototype.$parent = null;
-    Board.prototype.boardVM = null;
     Board.prototype.selectedCell = null;
 
     Board.prototype.players = null;
@@ -40,8 +38,8 @@ fChess.Board = (function () {
     //functions
     Board.prototype.preload = function () {
         //load all the images
-        for (var image in Board.images) {
-            this.game.load.image(image, Board.images[image]);
+        for (var image in fChess.Utils.images) {
+            this.game.load.image(image, fChess.Utils.images[image]);
         }
     };
 
@@ -178,6 +176,7 @@ fChess.Board = (function () {
                 this.selectedCell.piece = null;
 
                 // recalculate moves for the piece that just gets moved
+                // so that if we can check if any king is checked
                 this.calculateMoves(selectedPiece);
 
                 if (selectedPiece instanceof fChess.PawnPiece) {
@@ -186,6 +185,7 @@ fChess.Board = (function () {
                     selectedPiece.isChecked = false;
                 }
 
+                this.updateBoardState(cellToMove);
                 this.switchPlayer();
                 this.feedbackGraphics.destroy();
         }
@@ -201,6 +201,11 @@ fChess.Board = (function () {
         }
     };
 
+    Board.prototype.updateBoardState = function (cellToMove) {
+        var cellID = Board.getCellID(cellToMove);
+        fChess.GameManager.GameVM.state(cellID);
+    };
+
     Board.prototype.clearCell = function (cell) {
         var spritePiece = this.findSpriteForPiece(cell.piece);
         spritePiece.piece.alive = false;
@@ -212,13 +217,13 @@ fChess.Board = (function () {
     Board.prototype.recordLostPiece = function (spritePiece) {
         var color = spritePiece.piece.color;
         if (color == 'white') {
-            this.boardVM.lostWhitePieces.push(spritePiece);
+            fChess.GameManager.GameVM.lostWhitePieces.push(spritePiece);
         } else { // black
-            this.boardVM.lostBlackPieces.push(spritePiece);
+            fChess.GameManager.GameVM.lostBlackPieces.push(spritePiece);
         }
     }
 
-    Board.prototype.startNewGame = function () {
+    Board.prototype.reset = function () {
         this.clearBoard();
         this.resetPlayers();
         this.initializePieces();
@@ -386,45 +391,18 @@ fChess.Board = (function () {
     };
 
     //static functions
-    Board.getImageNameForPiece = function (piece) {
-        var name = '';
-        if (piece instanceof fChess.KingPiece) {
-            name = piece.color + 'King';
-        } else if (piece instanceof fChess.QueenPiece) {
-            name = piece.color + 'Queen';
-        } else if (piece instanceof fChess.BishopPiece) {
-            name = piece.color + 'Bishop';
-        } else if (piece instanceof fChess.KnightPiece) {
-            name = piece.color + 'Knight';
-        } else if (piece instanceof fChess.RookPiece) {
-            name = piece.color + 'Rook';
-        } else { //pawn
-            name = piece.color + 'Pawn';
-        }
+    Board.getCellID = function (cell) {
+        var column = Board.gameSettings.columnIDs[cell.column];
+        var row = (Board.gameSettings.rows - cell.row).toString();
 
-        return name;
+        return column + row;
     };
 
     //static fields
-    Board.images = {
-        'board': 'assets/board.png',
-        'blackKing': 'assets/chesspieces/alpha/bK.png',
-        'blackQueen': 'assets/chesspieces/alpha/bQ.png',
-        'blackBishop': 'assets/chesspieces/alpha/bB.png',
-        'blackRook': 'assets/chesspieces/alpha/bR.png',
-        'blackKnight': 'assets/chesspieces/alpha/bN.png',
-        'blackPawn': 'assets/chesspieces/alpha/bP.png',
-        'whiteKing': 'assets/chesspieces/alpha/wK.png',
-        'whiteQueen': 'assets/chesspieces/alpha/wQ.png',
-        'whiteBishop': 'assets/chesspieces/alpha/wB.png',
-        'whiteRook': 'assets/chesspieces/alpha/wR.png',
-        'whiteKnight': 'assets/chesspieces/alpha/wN.png',
-        'whitePawn': 'assets/chesspieces/alpha/wP.png'
-    };
-
     Board.gameSettings = {
         rows: 8,
         columns: 8,
+        columnIDs: ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h'],
         squareWidth: 63,
         squareHeight: 63,
         widthScale: 0.6,
@@ -435,16 +413,4 @@ fChess.Board = (function () {
     };
 
     return Board;
-})();
-
-fChess.BoardVM = (function() {
-    var BoardVM = function() {
-
-    };
-
-    BoardVM.prototype.lostWhitePieces = ko.observableArray([]);
-    BoardVM.prototype.lostBlackPieces = ko.observableArray([]);
-    BoardVM.prototype.state = ko.observable();
-
-    return BoardVM;
 })();

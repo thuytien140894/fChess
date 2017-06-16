@@ -8,24 +8,23 @@
 </head>
 <body>
 <div id="wrapper">
-    <div id="right-panel">
+    <div id="left-panel">
         <button id="start-new-game-btn" type="button">New Game</button>
     </div>
     <div id="game">
     </div>
-    <div id="left-panel">
+    <div id="right-panel">
         <div id="dashboard">
-            <div id="lost-pieces">
-                <div id="piece" data-bind="foreach: lostBlackPieces">
-                    <img data-bind="attr: { src: imageUrl }">
+            <div class="lost-pieces" id="top" data-bind="foreach: lostBlackPieces">
+                <div id="piece">
+                    <img id="piece-icon" data-bind="attr: { src: imageUrl }">
                 </div>
             </div>
             <div id="history-chart">
-
             </div>
-            <div id="lost-pieces">
+            <div class="lost-pieces" id="bottom">
                 <div id="piece" data-bind="foreach: lostWhitePieces">
-                    <img data-bind="attr: { src: imageUrl }">
+                    <img id="piece-icon" data-bind="attr: { src: imageUrl }">
                 </div>
             </div>
         </div>
@@ -50,7 +49,8 @@
 <script src="scripts/knightPiece.js"></script>
 <script src="scripts/pawnPiece.js"></script>
 <script src="scripts/board.js"></script>
-<script src="scripts/game-manager.js"></script>
+<script src="scripts/history.js"></script>
+<script src="scripts/gameManager.js"></script>
 
 <script type="text/javascript">
     var fChess = fChess || {};
@@ -59,16 +59,20 @@
         var Page = {};
 
         //fields
+        Page.gameManager = null;
         Page.board = null;
+        Page.gameHistory = null;
 
         //functions
         Page.initialize = function () {
-            this.board = new fChess.Board('#game');
+            this.gameManager = new fChess.GameManager();
+            this.gameManager.createBoard('#game');
+            this.gameManager.createHistory('#history-chart');
             $('#start-new-game-btn').on('click', function () {
-                this.board.startNewGame();
+                this.gameManager.startNewGame();
             }.bind(this));
 
-            ko.applyBindings(this.board.boardVM);
+            ko.applyBindings(fChess.GameManager.GameVM);
         };
 
         return Page;

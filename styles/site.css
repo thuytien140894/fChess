@@ -6,7 +6,7 @@
     flex-direction: row;
 }
 
-#right-panel {
+#left-panel {
     flex: 2;
     background-color: #2f4f4f;
 }
@@ -15,7 +15,7 @@
     flex: 10;
 }
 
-#left-panel {
+#right-panel {
     flex: 5;
     background-color: #182d3b;
     display: flex;
@@ -26,25 +26,59 @@
     background-color: white;
     width: 70%;
     height: 620px;
-    border-radius: 10px;
     display: flex;
+    border-radius: 10px;
     flex-direction: column;
 }
 
 #history-chart {
-    flex: 5;
-    overflow-y: auto;
+    flex: 7;
+    overflow: auto;
 }
 
-#lost-pieces {
-    background-color: grey;
+#history-row {
+    height: 30px;
+    margin-top: 5px;
     display: flex;
     flex-direction: row;
-    flex: 1;
-    overflow-x: auto;
     white-space: nowrap;
 }
 
-#piece {
+#history-cell {
+    padding-left: 10px;
+    flex: 3;
+    height: 30px;
+    line-height: 30px;
+}
+
+#turn-label {
     flex: 1;
+    height: 30px;
+    line-height: 30px;
+    background-color: grey;
+    text-align: center;
+}
+
+.lost-pieces {
+    background-color: grey;
+    flex: 1;
+    overflow: auto;
+    white-space: nowrap;
+}
+
+#top {
+    border-radius: 10px 10px 0px 0px;
+}
+
+#bottom {
+    border-radius: 0px 0px 10px 10px;
+}
+
+#piece {
+    display: inline-block;
+}
+
+#piece-icon {
+    width: 60px;
+    length: 60px;
 }
