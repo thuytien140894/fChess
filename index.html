@@ -20,8 +20,18 @@
                     <img id="piece-icon" data-bind="attr: { src: imageUrl }">
                 </div>
             </div>
-            <div id="history-chart">
+            <!-- ko stopBinding: true -->
+            <div id="history-chart" data-bind="foreach: rows">
+                <div id="history-row">
+                    <div id="turn-label" data-bind="text: index">
+                    </div>
+                    <!-- ko foreach: cells -->
+                    <div id="history-cell" data-bind="text: name, click: revertTheGame">
+                    </div>
+                    <!-- /ko -->
+                </div>
             </div>
+             <!-- /ko -->
             <div class="lost-pieces" id="bottom">
                 <div id="piece" data-bind="foreach: lostWhitePieces">
                     <img id="piece-icon" data-bind="attr: { src: imageUrl }">
@@ -49,7 +59,7 @@
 <script src="scripts/knightPiece.js"></script>
 <script src="scripts/pawnPiece.js"></script>
 <script src="scripts/board.js"></script>
-<script src="scripts/history.js"></script>
+<script src="scripts/historyChart.js"></script>
 <script src="scripts/gameManager.js"></script>
 
 <script type="text/javascript">
@@ -67,12 +77,13 @@
         Page.initialize = function () {
             this.gameManager = new fChess.GameManager();
             this.gameManager.createBoard('#game');
-            this.gameManager.createHistory('#history-chart');
+            this.gameManager.createHistoryChart();
             $('#start-new-game-btn').on('click', function () {
                 this.gameManager.startNewGame();
             }.bind(this));
 
             ko.applyBindings(fChess.GameManager.GameVM);
+            ko.applyBindings(this.gameManager.historyChart, $('#history-chart').get(0));
         };
 
         return Page;

@@ -30,6 +30,17 @@ fChess.Utils = (function () {
         return name;
     };
 
+    Utils.CustomKOBindings = (function () {
+        // http://www.knockmeout.net/2012/05/quick-tip-skip-binding.html
+        ko.bindingHandlers.stopBinding = {
+            init: function() {
+                return { controlsDescendantBindings: true };
+            }
+        };
+
+        ko.virtualElements.allowedBindings.stopBinding = true;
+    })();
+
     Utils.images = {
         'board': 'assets/board.png',
         'blackKing': 'assets/chesspieces/alpha/bK.png',

@@ -16,7 +16,7 @@ fChess.KingPiece = (function () {
 
     //functions
     KingPiece.prototype.calculateMoves = function (boardCells) {
-        this.refreshMoves();
+        fChess.Piece.prototype.calculateMoves.call(this, boardCells);
         this.findMoves(boardCells);
     };
 

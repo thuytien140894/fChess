@@ -15,7 +15,7 @@ fChess.BishopPiece = (function () {
 
     //functions
     BishopPiece.prototype.calculateMoves = function (boardCells) {
-        this.refreshMoves();
+        fChess.Piece.prototype.calculateMoves.call(this, boardCells);
 
         var myKing = this.findKing(boardCells);
         if (myKing && !myKing.isChecked && this.isSafeToMove(boardCells, myKing)) {

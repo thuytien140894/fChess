@@ -18,6 +18,14 @@ fChess.Piece = (function () {
     Piece.prototype.blockedMoves = null; // used for cells blocked by the piece's friends
 
     //functions
+    Piece.prototype.revive = function () {
+        this.alive = true;
+    };
+
+    Piece.prototype.kill = function () {
+        this.alive = false;
+    };
+
     Piece.prototype.findCell = function (cells) {
         for (var i = 0; i < cells.length; i++) {
             if (cells[i].piece == this) {
@@ -26,6 +34,10 @@ fChess.Piece = (function () {
         }
 
         return null;
+    };
+
+    Piece.prototype.calculateMoves = function (boardCells) {
+        this.refreshMoves();
     };
 
     Piece.prototype.isAllowedToMove = function (move) {

@@ -49,6 +49,11 @@
     flex: 3;
     height: 30px;
     line-height: 30px;
+    cursor: pointer;
+}
+
+#history-cell:hover {
+    background-color: yellow;
 }
 
 #turn-label {

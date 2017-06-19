@@ -69,8 +69,15 @@ fChess.SpritePiece = (function () {
     };
 
     SpritePiece.prototype.kill = function () {
+        this.piece.kill();
         this.sprite.alpha = 0;
         this.sprite.inputEnabled = false;
+    };
+
+    SpritePiece.prototype.revive = function () {
+        this.piece.revive();
+        this.sprite.alpha = 1;
+        this.sprite.inputEnabled = true;
     };
 
     return SpritePiece;
