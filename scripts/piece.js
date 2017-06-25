@@ -40,13 +40,8 @@ fChess.Piece = (function () {
         this.refreshMoves();
         var myKing = fChess.Board.findKing(this);
         if (myKing) {
-            if (this.isSafeToMove(boardCells, myKing)) {
-                this.findMoves(boardCells);
-
-                if (myKing.isChecked()) {
-                    this.findEmergencyMoves(boardCells, myKing);
-                }
-            }
+            this.findMoves(boardCells);
+            this.findSafeMoves(boardCells, myKing);
         }
     };
 
@@ -112,70 +107,44 @@ fChess.Piece = (function () {
         return enemies;
     };
 
-    // makes sure that a piece's movement will not free a spot for an enemy
-    // to attack the king
-    Piece.prototype.isSafeToMove = function (boardCells, myKing) {
-        var currentCell = this.findCell(boardCells);
-        // hypothetically remove the piece and calculate all the enemies' moves
-        // to see if the king would be affected
-        currentCell.piece = null;
+    Piece.prototype.findSafeMoves = function (boardCells, myKing) {
+        var dangerousMoves = this.findDangerousMoves(boardCells, myKing);
 
-        var enemies = this.findAllEnemies(boardCells);
-        var threateningPiece = myKing.threateningPiece;
-        if (threateningPiece) {
-            enemies.splice(enemies.indexOf(threateningPiece), 1); // disregard the threateningPiece if there is one
-        }
-
-        for (var i = 0; i < enemies.length; i++) {
-            var enemy = enemies[i];
-            // pawns can only move one step at a time so the king will not be
-            // blocked.
-            // knights' possible moves are not blocked by other pieces
-            if (enemy instanceof fChess.BishopPiece ||
-                enemy instanceof fChess.RookPiece ||
-                enemy instanceof fChess.QueenPiece) {
-                    enemy.findMoves(boardCells);
-                    if (myKing.isChecked()) {
-                        currentCell.piece = this;
-                        myKing.checkedByPiece(threateningPiece);
-                        return false;
-                    }
-                }
-        }
-
-        currentCell.piece = this;
-        myKing.checkedByPiece(threateningPiece);
-        return true;
+        // filter out dangerous moves from the available moves
+        this.availableMoves = this.availableMoves.filter(function (move) {
+            return dangerousMoves.indexOf(move) == -1;
+        }.bind(this));
     };
 
-    // find the moves that will help uncheck the king
-    Piece.prototype.findEmergencyMoves = function (boardCells, king) {
+    Piece.prototype.findDangerousMoves = function (boardCells, myKing) {
         var currentCell = this.findCell(boardCells);
-        // assume we make each available move and check
-        // if it can uncheck the king
         currentCell.piece = null;
-        var emergencyMoves = [];
-        var threateningPiece = king.threateningPiece;
+        var dangerousMoves = [];
+        var threateningPiece = myKing.threateningPiece;
 
-        this.availableMoves.forEach(function (cellToMove) {
+        for (var i = 0; i < this.availableMoves.length; i++) {
+            var cellToMove = this.availableMoves[i];
             var cellPiece = cellToMove.piece;
-            if (cellPiece && cellPiece == threateningPiece) { // if the threateningPiece will be eaten
-                emergencyMoves.push(cellToMove);
-            } else {
-                cellToMove.piece = this;
-                threateningPiece.findMoves(boardCells);
+            cellToMove.piece = this;
+            var enemies = this.findAllEnemies(boardCells);
 
-                if (!king.isChecked()) {
-                    emergencyMoves.push(cellToMove);
+            for (var j = 0; j < enemies.length; j++) {
+                var enemy = enemies[j];
+                enemy.findMoves(boardCells);
+                if (myKing.isChecked()) {
+                    dangerousMoves.push(cellToMove);
+                    cellToMove.piece = cellPiece;
+                    break;
                 }
-
-                cellToMove.piece = cellPiece;
             }
-        }.bind(this));
 
-        king.checkedByPiece(threateningPiece);
+            cellToMove.piece = cellPiece;
+        }
+
+        myKing.checkedByPiece(threateningPiece);
         currentCell.piece = this;
-        this.availableMoves = emergencyMoves;
+
+        return dangerousMoves;
     };
 
     Piece.prototype.updateEnemyKingStatus = function () {

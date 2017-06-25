@@ -192,12 +192,6 @@ fChess.Board = (function () {
     };
 
     Board.prototype.updateCheckStatus = function (movedPiece) {
-        // when the king is able to move and attack the enemy,
-        // then the king should be free of threat
-        if (Board.kings.indexOf(movedPiece) != -1) {
-            movedPiece.unchecked();
-        }
-
         // if the most recently moved piece helps uncheck its king, then
         // the king's threatening piece should not threaten the king anymore
 
@@ -298,6 +292,15 @@ fChess.Board = (function () {
 
     Board.prototype.clearCell = function (cell) {
         cell.piece.kill();
+
+        // if the killed piece is the threatening piece,
+        // then the king should be safe again
+        Board.kings.forEach(function (king) {
+            if (cell.piece == king.threateningPiece) {
+                king.unchecked();
+            }
+        }.bind(this));
+
         cell.piece = null;
     };
 
