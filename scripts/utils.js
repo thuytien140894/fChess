@@ -30,6 +30,30 @@ fChess.Utils = (function () {
         return name;
     };
 
+    Utils.isKing = function (piece) {
+        return piece instanceof fChess.KingPiece;
+    };
+
+    Utils.isQueen = function (piece) {
+        return piece instanceof fChess.QueenPiece;
+    };
+
+    Utils.isRook = function (piece) {
+        return piece instanceof fChess.RookPiece;
+    };
+
+    Utils.isBishop = function (piece) {
+        return piece instanceof fChess.BishopPiece;
+    };
+
+    Utils.isPawn = function (piece) {
+        return piece instanceof fChess.PawnPiece;
+    };
+
+    Utils.isKnight = function (piece) {
+        return piece instanceof fChess.KnightPiece;
+    };
+
     Utils.CustomKOBindings = (function () {
         // http://www.knockmeout.net/2012/05/quick-tip-skip-binding.html
         ko.bindingHandlers.stopBinding = {

@@ -54,7 +54,7 @@ fChess.Piece = (function () {
         var intersection = [];
         var enemyMoves = [];
 
-        if (anotherPiece instanceof fChess.PawnPiece) {
+        if (fChess.Utils.isPawn(anotherPiece)) {
             // for the pawn, we only consider the moves that it can make to capture
             // an enemy, not the ones used for moving
             enemyMoves = anotherPiece.potentialMoves.concat(anotherPiece.blockedMoves);
@@ -167,7 +167,7 @@ fChess.Piece = (function () {
                 if (boardCells[cellIndex].isEmpty()) {
                     this.availableMoves.push(boardCells[cellIndex]);
                 } else {
-                    if (!(this instanceof fChess.PawnPiece)) { // a pawn cannot cannot capture its enemy on its path
+                    if (!fChess.Utils.isPawn(this)) { // a pawn cannot cannot capture its enemy on its path
                         if (this.isEnemy(boardCells[cellIndex].piece)) {
                             this.availableMoves.push(boardCells[cellIndex]);
                         } else {
@@ -190,7 +190,7 @@ fChess.Piece = (function () {
                 if (boardCells[cellIndex].isEmpty()) {
                     this.availableMoves.push(boardCells[cellIndex]);
                 } else {
-                    if (!(this instanceof fChess.PawnPiece)) { // a pawn cannot cannot capture its enemy on its path
+                    if (!fChess.Utils.isPawn(this)) { // a pawn cannot cannot capture its enemy on its path
                         if (this.isEnemy(boardCells[cellIndex].piece)) {
                             this.availableMoves.push(boardCells[cellIndex]);
                         } else {
@@ -253,7 +253,7 @@ fChess.Piece = (function () {
             cellIndex += 9;
             if (boardCells[cellIndex]) {
                 if (boardCells[cellIndex].isEmpty()) {
-                    if (!(this instanceof fChess.PawnPiece)) { // a pawn only gets to move diagonally if there is an enemy
+                    if (!fChess.Utils.isPawn(this)) { // a pawn only gets to move diagonally if there is an enemy
                         this.availableMoves.push(boardCells[cellIndex]);
                     } else {
                         // these moves can be used by a pawn to capture an incoming enemy
@@ -280,7 +280,7 @@ fChess.Piece = (function () {
             cellIndex += 7;
             if (boardCells[cellIndex]) {
                 if (boardCells[cellIndex].isEmpty()) {
-                    if (!(this instanceof fChess.PawnPiece)) {
+                    if (!fChess.Utils.isPawn(this)) {
                         this.availableMoves.push(boardCells[cellIndex]);
                     } else {
                         this.potentialMoves.push(boardCells[cellIndex]);
@@ -306,7 +306,7 @@ fChess.Piece = (function () {
             cellIndex -= 7;
             if (boardCells[cellIndex]) {
                 if (boardCells[cellIndex].isEmpty()) {
-                    if (!(this instanceof fChess.PawnPiece)) {
+                    if (!fChess.Utils.isPawn(this)) {
                         this.availableMoves.push(boardCells[cellIndex]);
                     } else {
                         this.potentialMoves.push(boardCells[cellIndex]);
@@ -332,7 +332,7 @@ fChess.Piece = (function () {
             cellIndex -= 9;
             if (boardCells[cellIndex]) {
                 if (boardCells[cellIndex].isEmpty()) {
-                    if (!(this instanceof fChess.PawnPiece)) {
+                    if (!fChess.Utils.isPawn(this)) {
                         this.availableMoves.push(boardCells[cellIndex]);
                     } else {
                         this.potentialMoves.push(boardCells[cellIndex]);

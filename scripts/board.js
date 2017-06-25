@@ -83,7 +83,7 @@ fChess.Board = (function () {
                 chessPiece.sprite.y = cell.centerY;
 
                 // update the king's status
-                if (chessPiece.piece instanceof fChess.KingPiece) {
+                if (fChess.Utils.isKing(chessPiece.piece)) {
                     if (chessPiece.piece.isChecked()) {
                         this.check(chessPiece);
                     } else {
@@ -124,7 +124,7 @@ fChess.Board = (function () {
     };
 
     Board.prototype.calculateMoves = function (piece) {
-        if (piece instanceof fChess.KingPiece) {
+        if (fChess.Utils.isKing(piece)) {
             piece.calculateMovesWithCaution(this.cells);
         } else {
             piece.calculateMoves(this.cells);
@@ -444,9 +444,9 @@ fChess.Board = (function () {
             this.cells[i].piece = piece;
         }.bind(this));
         this.players[1].pieces.forEach(function (piece, i) {
-            if (piece instanceof fChess.QueenPiece) {
+            if (fChess.Utils.isQueen(piece)) {
                 this.cells[this.cells.length - 5].piece = piece;
-            } else if (piece instanceof fChess.KingPiece) {
+            } else if (fChess.Utils.isKing(piece)) {
                 this.cells[this.cells.length - 4].piece = piece;
             } else {
                 this.cells[this.cells.length - i - 1].piece = piece;
@@ -459,7 +459,7 @@ fChess.Board = (function () {
         for (var i = 0; i < this.players.length; i++) {
             var pieces = this.players[i].pieces;
             for (var j = 0; j < pieces.length; j++) {
-                if (pieces[j] instanceof fChess.KingPiece) {
+                if (fChess.Utils.isKing(pieces[j])) {
                     Board.kings.push(pieces[j]);
                     break;
                 }
