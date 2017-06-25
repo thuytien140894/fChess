@@ -14,16 +14,9 @@ fChess.QueenPiece = (function () {
     //fields
 
     //functions
-    QueenPiece.prototype.calculateMoves = function (boardCells) {
-        fChess.Piece.prototype.calculateMoves.call(this, boardCells);
-
-        var myKing = this.findKing(boardCells);
-        if (myKing && !myKing.isChecked && this.isSafeToMove(boardCells, myKing)) {
-            this.findMoves(boardCells);
-        }
-    };
-
     QueenPiece.prototype.findMoves = function (boardCells) {
+        this.refreshMoves();
+        
         var currentCell = this.findCell(boardCells);
         this.findNorthernMoves(currentCell, boardCells, 8);
         this.findSouthernMoves(currentCell, boardCells, 8);
@@ -33,6 +26,8 @@ fChess.QueenPiece = (function () {
         this.findNorthEasternMoves(currentCell, boardCells, 8);
         this.findSouthEasternMoves(currentCell, boardCells, 8);
         this.findSouthWesternMoves(currentCell, boardCells, 8);
+
+        this.updateEnemyKingStatus();
     };
 
     return QueenPiece;

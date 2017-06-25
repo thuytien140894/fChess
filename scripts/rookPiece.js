@@ -14,21 +14,16 @@ fChess.RookPiece = (function () {
     //fields
 
     //functions
-    RookPiece.prototype.calculateMoves = function (boardCells) {
-        fChess.Piece.prototype.calculateMoves.call(this, boardCells);
-
-        var myKing = this.findKing(boardCells);
-        if (myKing && !myKing.isChecked && this.isSafeToMove(boardCells, myKing)) {
-            this.findMoves(boardCells);
-        }
-    };
-
     RookPiece.prototype.findMoves = function (boardCells) {
+        this.refreshMoves();
+        
         var currentCell = this.findCell(boardCells);
         this.findNorthernMoves(currentCell, boardCells, 8);
         this.findSouthernMoves(currentCell, boardCells, 8);
         this.findWesternMoves(currentCell, boardCells, 8);
         this.findEasternMoves(currentCell, boardCells, 8);
+
+        this.updateEnemyKingStatus();
     };
 
     return RookPiece;

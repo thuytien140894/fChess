@@ -14,21 +14,16 @@ fChess.BishopPiece = (function () {
     //fields
 
     //functions
-    BishopPiece.prototype.calculateMoves = function (boardCells) {
-        fChess.Piece.prototype.calculateMoves.call(this, boardCells);
-
-        var myKing = this.findKing(boardCells);
-        if (myKing && !myKing.isChecked && this.isSafeToMove(boardCells, myKing)) {
-            this.findMoves(boardCells);
-        }
-    };
-
     BishopPiece.prototype.findMoves = function (boardCells) {
+        this.refreshMoves();
+        
         var currentCell = this.findCell(boardCells);
         this.findNorthWesternMoves(currentCell, boardCells, 8);
         this.findSouthWesternMoves(currentCell, boardCells, 8);
         this.findNorthEasternMoves(currentCell, boardCells, 8);
         this.findSouthEasternMoves(currentCell, boardCells, 8);
+
+        this.updateEnemyKingStatus();
     };
 
     return BishopPiece;

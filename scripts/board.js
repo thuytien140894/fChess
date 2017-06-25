@@ -40,6 +40,9 @@ fChess.Board = (function () {
     Board.prototype.firstPlayerPieces = null;
     Board.prototype.secondPlayerPieces = null;
 
+    //static fields
+    Board.kings = null;
+
     //functions
     Board.prototype.preload = function () {
         //load all the images
@@ -81,7 +84,7 @@ fChess.Board = (function () {
 
                 // update the king's status
                 if (chessPiece.piece instanceof fChess.KingPiece) {
-                    if (chessPiece.piece.isChecked) {
+                    if (chessPiece.piece.isChecked()) {
                         this.check(chessPiece);
                     } else {
                         this.uncheck(chessPiece);
@@ -181,16 +184,31 @@ fChess.Board = (function () {
 
                 // recalculate moves for the piece that just gets moved
                 // so that if we can check if any king is checked
-                this.calculateMoves(selectedPiece);
-
-                if (selectedPiece instanceof fChess.PawnPiece) {
-                    selectedPiece.hasMoved = true;
-                } else if (selectedPiece instanceof fChess.KingPiece && selectedPiece.isChecked) {
-                    selectedPiece.isChecked = false;
-                }
+                selectedPiece.findMoves(this.cells);
+                this.updateCheckStatus(selectedPiece);
 
                 this.takeSnapshot(cellToMove);
         }
+    };
+
+    Board.prototype.updateCheckStatus = function (movedPiece) {
+        // when the king is able to move and attack the enemy,
+        // then the king should be free of threat
+        if (Board.kings.indexOf(movedPiece) != -1) {
+            movedPiece.unchecked();
+        }
+
+        // if the most recently moved piece helps uncheck its king, then
+        // the king's threatening piece should not threaten the king anymore
+
+        // if the most recently moved piece checks the king,
+        // the king status should remain the same
+        Board.kings.forEach(function (king) {
+            if (king.isChecked()) {
+                king.threateningPiece.findMoves(this.cells);
+            }
+
+        }.bind(this));
     };
 
     Board.prototype.switchPlayer = function () {
@@ -283,19 +301,10 @@ fChess.Board = (function () {
         cell.piece = null;
     };
 
-    Board.prototype.recordLostPiece = function (cell) {
-        var spritePiece = this.findSpriteForPiece(cell.piece);
-        var color = spritePiece.piece.color;
-        if (color == 'white') {
-            fChess.GameManager.GameVM.lostWhitePieces.push(spritePiece);
-        } else { // black
-            fChess.GameManager.GameVM.lostBlackPieces.push(spritePiece);
-        }
-    }
-
     Board.prototype.reset = function () {
         this.clearBoard();
         this.resetPlayers();
+        this.findKings();
         this.clearSnapshots();
         this.initializePieces();
         // this.test();
@@ -442,6 +451,19 @@ fChess.Board = (function () {
         }.bind(this));
     };
 
+    Board.prototype.findKings = function () {
+        Board.kings = [];
+        for (var i = 0; i < this.players.length; i++) {
+            var pieces = this.players[i].pieces;
+            for (var j = 0; j < pieces.length; j++) {
+                if (pieces[j] instanceof fChess.KingPiece) {
+                    Board.kings.push(pieces[j]);
+                    break;
+                }
+            }
+        }
+    };
+
     Board.prototype.findCellForPiece = function (piece) {
         for (var i = 0; i < this.cells.length; i++) {
             if (this.cells[i].piece == piece) {
@@ -468,6 +490,26 @@ fChess.Board = (function () {
         var row = (Board.gameSettings.rows - cell.row).toString();
 
         return column + row;
+    };
+
+    Board.findKing = function (piece) {
+        for (var i = 0; i < Board.kings.length; i++) {
+            if (Board.kings[i].color == piece.color) {
+                return Board.kings[i];
+            }
+        }
+
+        return null;
+    };
+
+    Board.findEnemyKing = function (piece) {
+        for (var i = 0; i < Board.kings.length; i++) {
+            if (Board.kings[i].color != piece.color) {
+                return Board.kings[i];
+            }
+        }
+
+        return null;
     };
 
     //static fields

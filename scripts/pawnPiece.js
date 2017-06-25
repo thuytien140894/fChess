@@ -13,7 +13,6 @@ fChess.PawnPiece = (function () {
     fChess.Utils.extend(fChess.Piece, PawnPiece);
 
     //fields
-    PawnPiece.prototype.hasMoved = false;
     PawnPiece.prototype.potentialMoves = null;
 
     //functions
@@ -22,41 +21,12 @@ fChess.PawnPiece = (function () {
         this.potentialMoves.length = 0;
     };
 
-    PawnPiece.prototype.checkForEnemies = function (currentCell, boardCells) {
-        var cellIndex = boardCells.indexOf(currentCell);
-
-        if (this.color == 'white') {
-            if (!boardCells[cellIndex + 7].isEmpty() && this.isEnemy(boardCells[cellIndex + 7].piece)) {
-                this.findSouthWesternMoves(currentCell, boardCells, 1);
-            }
-
-            if (!boardCells[cellIndex + 9].isEmpty() && this.isEnemy(boardCells[cellIndex + 9].piece)) {
-                this.findSoutherEasternMoves(currentCell, boardCells, 1);
-            }
-        } else {
-            if (!boardCells[cellIndex - 7].isEmpty() && this.isEnemy(boardCells[cellIndex - 7].piece)) {
-                this.findNorthEasternMoves(currentCell, boardCells, 1);
-            }
-
-            if (!boardCells[cellIndex - 9].isEmpty() && this.isEnemy(boardCells[cellIndex - 9].piece)) {
-                this.findNorthWesternMoves(currentCell, boardCells, 1);
-            }
-        }
-    };
-
-    PawnPiece.prototype.calculateMoves = function (boardCells) {
-        fChess.Piece.prototype.calculateMoves.call(this, boardCells);
-
-        var myKing = this.findKing(boardCells);
-        if (myKing && !myKing.isChecked && this.isSafeToMove(boardCells, myKing)) {
-            this.findMoves(boardCells);
-        }
-    };
-
     PawnPiece.prototype.findMoves = function (boardCells) {
+        this.refreshMoves();
+        
         var currentCell = this.findCell(boardCells);
         if (this.color == 'white') { //move south
-            if (this.hasMoved) {
+            if (this.hasMoved(currentCell)) {
                 this.findSouthernMoves(currentCell, boardCells, 1);
             } else {
                 this.findSouthernMoves(currentCell, boardCells, 2);
@@ -65,7 +35,7 @@ fChess.PawnPiece = (function () {
             this.findSouthWesternMoves(currentCell, boardCells, 1);
             this.findSouthEasternMoves(currentCell, boardCells, 1);
         } else { //move north
-            if (this.hasMoved) {
+            if (this.hasMoved(currentCell)) {
                 this.findNorthernMoves(currentCell, boardCells, 1);
             } else {
                 this.findNorthernMoves(currentCell, boardCells, 2);
@@ -74,6 +44,17 @@ fChess.PawnPiece = (function () {
             this.findNorthEasternMoves(currentCell, boardCells, 1);
             this.findNorthWesternMoves(currentCell, boardCells, 1);
         }
+
+        this.updateEnemyKingStatus();
+    };
+
+    PawnPiece.prototype.hasMoved = function (owningCell) {
+        if (this.color == 'white') {
+            return owningCell.row > 1;
+        } else {
+            return owningCell.row < 6;
+        }
+
     };
 
     return PawnPiece;

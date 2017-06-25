@@ -4,7 +4,6 @@ var fChess = fChess || {};
 //1. CHECKMATE - when the king has no more available moves
 //2. castling
 //3. pawn promotion
-//4. allow other pieces to move when the king is in check only if the moves uncheck the king
 fChess.GameManager = (function() {
     'use strict';
 

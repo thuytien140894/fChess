@@ -86,21 +86,16 @@ fChess.KnightPiece = (function () {
         }
     };
 
-    KnightPiece.prototype.calculateMoves = function (boardCells) {
-        fChess.Piece.prototype.calculateMoves.call(this, boardCells);
-
-        var myKing = this.findKing(boardCells);
-        if (myKing && !myKing.isChecked && this.isSafeToMove(boardCells, myKing)) {
-            this.findMoves(boardCells);
-        }
-    };
-
     KnightPiece.prototype.findMoves = function (boardCells) {
+        this.refreshMoves();
+        
         var currentCell = this.findCell(boardCells);
         this.findNorthernMoves(currentCell, boardCells, 2);
         this.findSouthernMoves(currentCell, boardCells, 2);
         this.findEasternMoves(currentCell, boardCells, 2);
         this.findWesternMoves(currentCell, boardCells, 2);
+
+        this.updateEnemyKingStatus();
     };
 
     return KnightPiece;
