@@ -38,6 +38,7 @@ fChess.KingPiece = (function () {
     };
 
     KingPiece.prototype.calculateMoves = function (boardCells) {
+        this.refreshMoves();
         this.findMoves(boardCells);
     };
 

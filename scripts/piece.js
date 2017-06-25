@@ -37,6 +37,7 @@ fChess.Piece = (function () {
     };
 
     Piece.prototype.calculateMoves = function (boardCells) {
+        this.refreshMoves();
         var myKing = fChess.Board.findKing(this);
         if (myKing) {
             if (this.isSafeToMove(boardCells, myKing)) {
@@ -121,7 +122,10 @@ fChess.Piece = (function () {
 
         var enemies = this.findAllEnemies(boardCells);
         var threateningPiece = myKing.threateningPiece;
-        enemies.splice(enemies.indexOf(threateningPiece), 1); // disregard the threateningPiece if there is one
+        if (threateningPiece) {
+            enemies.splice(enemies.indexOf(threateningPiece), 1); // disregard the threateningPiece if there is one
+        }
+
         for (var i = 0; i < enemies.length; i++) {
             var enemy = enemies[i];
             // pawns can only move one step at a time so the king will not be
@@ -133,6 +137,7 @@ fChess.Piece = (function () {
                     enemy.findMoves(boardCells);
                     if (myKing.isChecked()) {
                         currentCell.piece = this;
+                        myKing.checkedByPiece(threateningPiece);
                         return false;
                     }
                 }
