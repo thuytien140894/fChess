@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Chess</title>
+    <title>fChess</title>
 
     <link rel="stylesheet" type="text/css" href="styles/reset.css">
     <link rel="stylesheet" type="text/css" href="styles/site.css">
@@ -15,7 +15,7 @@
     </div>
     <div id="right-panel">
         <div id="dashboard">
-            <div class="lost-pieces" id="top" data-bind="foreach: lostBlackPieces">
+            <div class="lost-pieces top" data-bind="foreach: lostBlackPieces">
                 <div id="piece">
                     <img id="piece-icon" data-bind="attr: { src: imageUrl }">
                 </div>
@@ -32,11 +32,25 @@
                 </div>
             </div>
              <!-- /ko -->
-            <div class="lost-pieces" id="bottom">
+            <div class="lost-pieces bottom">
                 <div id="piece" data-bind="foreach: lostWhitePieces">
                     <img id="piece-icon" data-bind="attr: { src: imageUrl }">
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+<!-- modal -->
+<div class="modal" data-bind="style: { display: isVisible() ? 'flex' : 'none' }">
+    <div class="modal-content">
+        <div class="modal-header top">
+        </div>
+        <div class="modal-body">
+        </div>
+        <div class="modal-footer bottom">
+            <button class="modal-btn reject-btn" data-bind="click: close">Cancel</button>
+            <button class="modal-btn accept-btn" data-bind="click: confirm">OK</button>
         </div>
     </div>
 </div>
@@ -61,37 +75,16 @@
 <script src="scripts/board.js"></script>
 <script src="scripts/historyChart.js"></script>
 <script src="scripts/gameManager.js"></script>
+<script src="scripts/gamePage.js"></script>
 
+<script src="scripts/modal.js"></script>
+
+<!-- main method -->
 <script type="text/javascript">
-    var fChess = fChess || {};
-
-    fChess.Page = (function () {
-        var Page = {};
-
-        //fields
-        Page.gameManager = null;
-        Page.board = null;
-        Page.gameHistory = null;
-
-        //functions
-        Page.initialize = function () {
-            this.gameManager = new fChess.GameManager();
-            this.gameManager.createBoard('#game');
-            this.gameManager.createHistoryChart();
-            $('#start-new-game-btn').on('click', function () {
-                this.gameManager.startNewGame();
-            }.bind(this));
-
-            ko.applyBindings(fChess.GameManager.GameVM);
-            ko.applyBindings(this.gameManager.historyChart, $('#history-chart').get(0));
-        };
-
-        return Page;
-    })();
-
     $(document).on('ready', function () {
         fChess.Page.initialize();
     });
 </script>
+
 </body>
 </html>
