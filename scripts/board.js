@@ -235,6 +235,9 @@ fChess.Board = (function () {
     };
 
     Board.prototype.saveLostPieces = function () {
+        var currentSnapshot = fChess.GameManager.GameVM.snapshot();
+        fChess.GameManager.lostPiecesRecord.splice(currentSnapshot + 1);
+
         var lostPieces = [];
         this.spritePieces.forEach(function (spritePiece) {
             if (!spritePiece.piece.alive) {

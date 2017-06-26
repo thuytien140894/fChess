@@ -40,7 +40,6 @@ fChess.GameManager = (function() {
     GameManager.resetHeadSnapshot = function () {
         var turn = GameManager.GameVM.snapshot();
         GameManager.GameVM.snapshot(turn + 1);
-        GameManager.lostPiecesRecord.splice(GameManager.GameVM.snapshot() + 1);
         GameManager.updateLostPieces();
     };
 
