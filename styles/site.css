@@ -64,6 +64,29 @@
     text-align: center;
 }
 
+#piece {
+    display: inline-block;
+}
+
+#piece-icon {
+    width: 60px;
+    length: 60px;
+}
+
+#pawn-replacement-options {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#piece-option {
+    border-radius: 10px;
+    border-style: solid;
+    box-shadow: 0 0 1em #337ab7;
+    cursor: pointer;
+}
+
 .lost-pieces {
     background-color: grey;
     flex: 1;
@@ -77,15 +100,6 @@
 
 .bottom {
     border-radius: 0px 0px 10px 10px;
-}
-
-#piece {
-    display: inline-block;
-}
-
-#piece-icon {
-    width: 60px;
-    length: 60px;
 }
 
 .modal {
@@ -169,6 +183,10 @@
     border-width: 1px;
 }
 
+.selected {
+    background-color: #337ab7;
+}
+
 /* Add Animation */
 /* Safari 4.0 - 8.0 */
 @-webkit-keyframes animatetop {
@@ -180,22 +198,4 @@
 @keyframes animatetop {
     from { top: -300px; opacity: 0 }
     to { top: 0; opacity: 1 }
-}
-
-#pawn-replacement-options {
-    display: flex;
-    flex-direction: row;
-    justify-content: space-around;
-    align-items: center;
-}
-
-#piece-option {
-    border-radius: 10px;
-    border-style: solid;
-    box-shadow: 0 0 1em #337ab7;
-    cursor: pointer;
-}
-
-.selected {
-    background-color: #337ab7;
 }
