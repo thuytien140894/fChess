@@ -1,9 +1,9 @@
 var fChess = fChess || {};
 
 //TODO:
-//1. CHECKMATE - when the king has no more available moves
+//1. CHECKMATE - when the king has no more available moves - pop the game result modal
 //2. castling
-//3. pawn promotion
+//4. reset the king's checked status when reverting to different snapshots
 fChess.GameManager = (function() {
     'use strict';
 
@@ -12,27 +12,17 @@ fChess.GameManager = (function() {
     };
 
     //fields
-    GameManager.prototype.board = null;
-    GameManager.prototype.historyChart = null;
 
     //static fields
     GameManager.lostPiecesRecord = null;
-
-    GameManager.prototype.createBoard = function (element) {
-        this.board = new fChess.Board(element);
-    };
-
-    GameManager.prototype.createHistoryChart = function (element) {
-        this.historyChart = new fChess.HistoryChart(element);
-    };
 
     GameManager.prototype.startNewGame = function (element) {
         GameManager.GameVM.reset();
         GameManager.lostPiecesRecord = [];
 
-        if (this.board && this.historyChart) {
-            this.board.reset();
-            this.historyChart.reset();
+        if (fChess.Page.board && fChess.Page.historyChart) {
+            fChess.Page.board.reset();
+            fChess.Page.historyChart.reset();
         }
     };
 
@@ -58,6 +48,21 @@ fChess.GameManager = (function() {
                     fChess.GameManager.GameVM.lostBlackPieces.push(piece);
                 }
             }.bind(this));
+        }
+    };
+
+    GameManager.promotePawn = async function (color) {
+        fChess.Page.pawnPromotionModal.initialize(color);
+        var promotedPiece = await fChess.Page.pawnPromotionModal.show();
+
+        if (promotedPiece.name == 'Queen') {
+            return new fChess.QueenPiece(color);
+        } else if (promotedPiece.name == 'Knight') {
+            return new fChess.KnightPiece(color);
+        } else if (promotedPiece.name == 'Rook') {
+            return new fChess.RookPiece(color);
+        } else { // bishop
+            return new fChess.BishopPiece(color);
         }
     };
 

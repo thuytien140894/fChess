@@ -77,7 +77,7 @@ fChess.Board = (function () {
 
     Board.prototype.updatePiecePosition = function () {
         this.spritePieces.forEach(function (chessPiece) {
-            var cell = this.findCellForPiece(chessPiece.piece);
+            var cell = this.findCellForSprite(chessPiece);
             if (cell) {
                 chessPiece.sprite.x = cell.centerX;
                 chessPiece.sprite.y = cell.centerY;
@@ -116,11 +116,11 @@ fChess.Board = (function () {
     };
 
     Board.prototype.check = function (kingPiece) {
-        kingPiece.sprite.tint = 0xff0000;
+        kingPiece.changeColor(0xff0000);
     };
 
     Board.prototype.uncheck = function (kingPiece) {
-        kingPiece.sprite.tint = 0xffffff;
+        kingPiece.changeColor(0xffffff);
     };
 
     Board.prototype.calculateMoves = function (piece) {
@@ -171,10 +171,12 @@ fChess.Board = (function () {
         }.bind(this));
     };
 
-    Board.prototype.makeMove = function (cellToMove) {
+    Board.prototype.makeMove = async function (cellToMove) {
         if (this.selectedCell &&
             this.selectedCell.piece &&
             this.selectedCell.piece.isAllowedToMove(cellToMove)) { // make sure that cellToMove is part of the piece's availableMoves
+                this.removeFeedback();
+
                 var selectedPiece = this.selectedCell.piece;
                 if (!cellToMove.isEmpty()) {
                     this.clearCell(cellToMove);
@@ -182,12 +184,14 @@ fChess.Board = (function () {
                 cellToMove.piece = selectedPiece;
                 this.selectedCell.piece = null;
 
+                selectedPiece = await this.checkForPawnPromotion(cellToMove);
+
                 // recalculate moves for the piece that just gets moved
                 // so that if we can check if any king is checked
                 selectedPiece.findMoves(this.cells);
                 this.updateCheckStatus(selectedPiece);
 
-                this.takeSnapshot(cellToMove);
+                this.takeSnapshot(cellToMove); // make this a promise waiting for pawn promotion tp resolve
         }
     };
 
@@ -203,6 +207,44 @@ fChess.Board = (function () {
             }
 
         }.bind(this));
+    };
+
+    Board.prototype.checkForPawnPromotion = async function (cellToMove) {
+        var movedPiece = cellToMove.piece;
+        if (fChess.Utils.isPawn(cellToMove.piece)) {
+            if (movedPiece.readyForPromotion(cellToMove)) {
+                var promotedPiece = await fChess.GameManager.promotePawn(cellToMove.piece.color);
+                cellToMove.piece = promotedPiece;
+
+                // update the sprite
+                var sprite = this.findSpriteForPiece(movedPiece);
+                sprite.replacePiece(promotedPiece);
+
+                this.updatePlayerPieces(movedPiece, promotedPiece);
+
+                return promotedPiece;
+            }
+        }
+
+        return movedPiece;
+    };
+
+    // update player pieces after pawn promotion
+    Board.prototype.updatePlayerPieces = function (oldPiece, newPiece) {
+        var activePlayer;
+        for (var i = 0; i < this.players.length; i++) {
+            if (this.players[i].isActive) {
+                activePlayer = this.players[i];
+                break;
+            }
+        }
+
+        for (var j = 0; j < activePlayer.pieces.length; j++) {
+            if (oldPiece == activePlayer.pieces[j]) {
+                activePlayer.pieces[j] = newPiece;
+                break;
+            }
+        }
     };
 
     Board.prototype.switchPlayer = function () {
@@ -296,6 +338,9 @@ fChess.Board = (function () {
     Board.prototype.clearCell = function (cell) {
         cell.piece.kill();
 
+        var spritePiece = this.findSpriteForPiece(cell.piece);
+        spritePiece.kill();
+
         // if the killed piece is the threatening piece,
         // then the king should be safe again
         Board.kings.forEach(function (king) {
@@ -328,9 +373,7 @@ fChess.Board = (function () {
         }.bind(this));
 
         // remove the feedbackGraphics from the previous game
-        if (this.feedbackGraphics) {
-            this.feedbackGraphics.destroy();
-        }
+        this.removeFeedback();
     };
 
     Board.prototype.initializeCells = function () {
@@ -473,6 +516,20 @@ fChess.Board = (function () {
     Board.prototype.findCellForPiece = function (piece) {
         for (var i = 0; i < this.cells.length; i++) {
             if (this.cells[i].piece == piece) {
+                return this.cells[i];
+            }
+        }
+
+        return null;
+    };
+
+    Board.prototype.findCellForSprite = function (spritePiece) {
+        for (var i = 0; i < this.cells.length; i++) {
+            var piece = this.cells[i].piece;
+            if (piece == spritePiece.piece) {
+                return this.cells[i];
+            } else if (spritePiece.pastPieces.has(piece)) { // the sprite used to have this piece
+                spritePiece.replacePiece(piece);
                 return this.cells[i];
             }
         }

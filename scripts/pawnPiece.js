@@ -23,7 +23,7 @@ fChess.PawnPiece = (function () {
 
     PawnPiece.prototype.findMoves = function (boardCells) {
         this.refreshMoves();
-        
+
         var currentCell = this.findCell(boardCells);
         if (this.color == 'white') { //move south
             if (this.hasMoved(currentCell)) {
@@ -54,7 +54,14 @@ fChess.PawnPiece = (function () {
         } else {
             return owningCell.row < 6;
         }
+    };
 
+    PawnPiece.prototype.readyForPromotion = function (owningCell) {
+        if (this.color == 'white') {
+            return owningCell.row == 7;
+        } else {
+            return owningCell.row == 0;
+        }
     };
 
     return PawnPiece;

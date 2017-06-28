@@ -31,26 +31,50 @@ fChess.Utils = (function () {
     };
 
     Utils.isKing = function (piece) {
+        if (!piece) {
+            return false;
+        }
+
         return piece instanceof fChess.KingPiece;
     };
 
     Utils.isQueen = function (piece) {
+        if (!piece) {
+            return false;
+        }
+
         return piece instanceof fChess.QueenPiece;
     };
 
     Utils.isRook = function (piece) {
+        if (!piece) {
+            return false;
+        }
+
         return piece instanceof fChess.RookPiece;
     };
 
     Utils.isBishop = function (piece) {
+        if (!piece) {
+            return false;
+        }
+
         return piece instanceof fChess.BishopPiece;
     };
 
     Utils.isPawn = function (piece) {
+        if (!piece) {
+            return false;
+        }
+
         return piece instanceof fChess.PawnPiece;
     };
 
     Utils.isKnight = function (piece) {
+        if (!piece) {
+            return false;
+        }
+        
         return piece instanceof fChess.KnightPiece;
     };
 

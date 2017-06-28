@@ -40,6 +40,10 @@ fChess.Sprite = (function () {
         }
     };
 
+    Sprite.prototype.changeColor = function (color) {
+        this.sprite.tint = color;
+    };
+
     return Sprite;
 })();
 
@@ -51,12 +55,14 @@ fChess.SpritePiece = (function () {
         this.piece = piece;
         fChess.Sprite.prototype.constructor.call(this, game, xPos, yPos);
         this.sprite.bringToTop();
+        this.pastPieces = new Set(); // only store unique pieces
     };
 
     fChess.Utils.extend(fChess.Sprite, SpritePiece);
 
     // fields
     SpritePiece.prototype.piece = null;
+    SpritePiece.prototype.pastPieces = null;
 
     // functions
     SpritePiece.prototype._getName = function () {
@@ -66,6 +72,16 @@ fChess.SpritePiece = (function () {
     SpritePiece.prototype.destroy = function () {
         fChess.Sprite.prototype.destroy.apply(this, arguments);
         this.piece = null;
+    };
+
+    SpritePiece.prototype.replacePiece = function (newPiece) {
+        this.pastPieces.add(this.piece);
+
+        this.piece = newPiece;
+        var pieceName = fChess.Utils.getImageNameForPiece(newPiece);
+        this.name = pieceName;
+        this.sprite.loadTexture(pieceName, 0);
+        this.imageUrl = fChess.Utils.images[pieceName];
     };
 
     SpritePiece.prototype.kill = function () {

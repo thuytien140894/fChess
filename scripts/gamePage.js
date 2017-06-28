@@ -8,25 +8,28 @@ fChess.Page = (function () {
     //fields
     Page.gameManager = null;
     Page.board = null;
-    Page.gameHistory = null;
-    Page.modal = null;
+    Page.historyChart = null;
+    Page.pawnPromotionModal = null;
 
     //functions
     Page.initialize = function () {
         Page.gameManager = new fChess.GameManager();
-        Page.gameManager.createBoard('#game');
-        Page.gameManager.createHistoryChart();
-        Page.modal = new fChess.Modal();
+        Page.board = new fChess.Board('#game');
+        Page.historyChart = new fChess.HistoryChart();
+        Page.pawnPromotionModal = new fChess.PawnPromotionModal();
 
         $('#start-new-game-btn').on('click', function () {
             Page.gameManager.startNewGame();
-            Page.modal.show();
         }.bind(this));
 
         // apply knockout bindings
+        Page.applyBindings();
+    };
+
+    Page.applyBindings = function () {
         ko.applyBindings(fChess.GameManager.GameVM, $('#wrapper').get(0));
-        ko.applyBindings(Page.gameManager.historyChart, $('#history-chart').get(0));
-        ko.applyBindings(Page.modal, $(".modal").get(0));
+        ko.applyBindings(Page.historyChart, $('#history-chart').get(0));
+        ko.applyBindings(Page.pawnPromotionModal, $('#pawn-promotion-modal').get(0));
     };
 
     return Page;

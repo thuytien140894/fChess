@@ -100,15 +100,17 @@
 }
 
 .modal-content {
+    position: relative; /* need this for animation to work */
     margin: 10%;
     border-radius: 10px;
     background-color: white;
     border-style: solid;
     display: flex;
     flex-direction: column;
-    width: 40%;
-    height: 30%;
+    width: 400px;
+    height: 250px;
     box-shadow: 0 0 1em black;
+    font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 
     -webkit-animation-name: animatetop;
     -webkit-animation-duration: 0.4s;
@@ -117,21 +119,20 @@
 }
 
 .modal-header {
-    width: 100%;
-    height: 20%;
+    flex: 2;
     border-bottom: solid;
     border-width: 1px;
     border-color: #d3d3d3;
+    display: flex;
+    align-items: center;
 }
 
 .modal-body {
-    width: 100%;
-    height: 60%;
+    flex: 5;
 }
 
 .modal-footer {
-    width: 100%;
-    height: 20%;
+    flex: 2;
     border-top: solid;
     display: flex;
     flex-direction: row;
@@ -141,11 +142,17 @@
     border-color: #d3d3d3;
 }
 
+.modal-title {
+    margin: 20px;
+    font-size: 18px;
+    font-weight: bold;
+}
+
 .modal-btn {
     width: 20%;
-    height: 80%;
+    height: 60%;
     border-radius: 5px;
-    margin-right: 5px;
+    margin-right: 10px;
     cursor: pointer;
     font-size: 14px;
     text-align: center;
@@ -165,16 +172,30 @@
 /* Add Animation */
 /* Safari 4.0 - 8.0 */
 @-webkit-keyframes animatetop {
-    from {top: 0px; opacity: 0}
-    to {top: 200px; opacity: 1}
+    from { top: 0px; opacity: 0 }
+    to { top: 200px; opacity: 1 }
 }
 
 /* Standard syntax */
 @keyframes animatetop {
-    from {top: -300px; opacity: 0}
-    to {top: 0; opacity: 1}
+    from { top: -300px; opacity: 0 }
+    to { top: 0; opacity: 1 }
 }
 
-#pawn-promotion-modal {
+#pawn-replacement-options {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
 
+#piece-option {
+    border-radius: 10px;
+    border-style: solid;
+    box-shadow: 0 0 1em #337ab7;
+    cursor: pointer;
+}
+
+.selected {
+    background-color: #337ab7;
 }
