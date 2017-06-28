@@ -16,6 +16,9 @@ fChess.GameManager = (function() {
     //static fields
     GameManager.lostPiecesRecord = null;
 
+    // private functions
+
+    // public functions
     GameManager.prototype.startNewGame = function (element) {
         GameManager.GameVM.reset();
         GameManager.lostPiecesRecord = [];

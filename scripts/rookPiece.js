@@ -13,10 +13,10 @@ fChess.RookPiece = (function () {
 
     //fields
 
-    //functions
+    // public functions
     RookPiece.prototype.findMoves = function (boardCells) {
         this.refreshMoves();
-        
+
         var currentCell = this.findCell(boardCells);
         this.findNorthernMoves(currentCell, boardCells, 8);
         this.findSouthernMoves(currentCell, boardCells, 8);

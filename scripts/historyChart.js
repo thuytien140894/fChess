@@ -13,8 +13,12 @@ fChess.HistoryChart = (function () {
         }.bind(this));
     };
 
+    // fields
     HistoryChart.prototype.rows = null;
 
+    // private functions
+
+    // public functions
     HistoryChart.prototype.reset = function () {
         this.rows([]);
     };
@@ -39,11 +43,13 @@ fChess.HistoryChart = (function () {
     };
 
     HistoryChart.Row = (function () {
+        // constructor
         var Row = function (turn) {
             this.cells = [new HistoryChart.Cell(turn), new HistoryChart.Cell(turn + 1)];
             this.index = Math.floor(turn / 2) + 1;
         };
 
+        // fields
         Row.prototype.cells = null;
         Row.prototype.index = 0;
 
@@ -51,6 +57,7 @@ fChess.HistoryChart = (function () {
     })();
 
     HistoryChart.Cell = (function () {
+        // constructor
         var Cell = function (turn) {
             // this attaches the observable to the individual instance
             // as a property
@@ -67,6 +74,7 @@ fChess.HistoryChart = (function () {
         Cell.prototype.name = null;
         Cell.prototype.turn = 0;
 
+        // public functions
         Cell.prototype.revertTheGame = function () {
             fChess.GameManager.GameVM.snapshot(this.turn);
         };

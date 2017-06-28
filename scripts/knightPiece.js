@@ -13,7 +13,7 @@ fChess.KnightPiece = (function () {
 
     //fields
 
-    //functions
+    // public functions
     KnightPiece.prototype.findNorthernMoves = function (currentCell, boardCells, maxStep) {
         var cellIndex = boardCells.indexOf(currentCell);
         var numberOfPossibleMoves = currentCell.row;
@@ -88,7 +88,7 @@ fChess.KnightPiece = (function () {
 
     KnightPiece.prototype.findMoves = function (boardCells) {
         this.refreshMoves();
-        
+
         var currentCell = this.findCell(boardCells);
         this.findNorthernMoves(currentCell, boardCells, 2);
         this.findSouthernMoves(currentCell, boardCells, 2);

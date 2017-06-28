@@ -24,12 +24,25 @@ fChess.PawnPromotionModal = (function () {
     PawnPromotionModal.prototype.selectedPiece = null;
     PawnPromotionModal.prototype.resolvePromise = null;
     PawnPromotionModal.prototype.rejectPromise = null;
+
+    // static fields
     PawnPromotionModal.self = null;
 
-    //static fields
-    PawnPromotionModal.selectedPiece = null;
+    // private functions
+    PawnPromotionModal.prototype._makePromise = function () {
+        return new Promise (function (resolve, reject) {
+            this.resolvePromise = resolve;
+            this.rejectPromise = reject;
+        }.bind(this));
+    };
 
-    //functions
+    PawnPromotionModal.prototype._reset = function () {
+        this.pieceChoices.forEach(function (choice) {
+            choice.isSelected(false);
+        });
+    };
+
+    // public functions
     PawnPromotionModal.prototype.initialize = function (color) {
         this.pieceChoices.forEach(function (choice) {
             var imageName = color + choice.name;
@@ -43,15 +56,11 @@ fChess.PawnPromotionModal = (function () {
         piece.isSelected(true);
     };
 
-    PawnPromotionModal.prototype.close = function () {
-        fChess.Modal.prototype.close.apply(this, arguments);
-    };
-
     PawnPromotionModal.prototype.show = function () {
         this._reset();
         fChess.Modal.prototype.show.apply(this, arguments);
 
-        return this.makePromise();
+        return this._makePromise();
     };
 
     PawnPromotionModal.prototype.confirm = function () {
@@ -59,19 +68,6 @@ fChess.PawnPromotionModal = (function () {
             fChess.Modal.prototype.confirm.apply(this, arguments);
             this.resolvePromise(PawnPromotionModal.self.selectedPiece);
         }
-    };
-
-    PawnPromotionModal.prototype.makePromise = function () {
-        return new Promise (function (resolve, reject) {
-            this.resolvePromise = resolve;
-            this.rejectPromise = reject;
-        }.bind(this));
-    };
-
-    PawnPromotionModal.prototype._reset = function () {
-        this.pieceChoices.forEach(function (choice) {
-            choice.isSelected(false);
-        });
     };
 
     return PawnPromotionModal;

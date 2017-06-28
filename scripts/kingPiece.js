@@ -12,13 +12,14 @@ fChess.KingPiece = (function () {
     fChess.Utils.extend(fChess.Piece, KingPiece);
 
     //fields
-    KingPiece.prototype.isThreatened = false;
+    KingPiece.prototype._isThreatened = false;
     KingPiece.prototype.threateningPiece = null;
 
-    //functions
+    // private functions
+
     // this function is used by the king primarily to calculate the moves
     // that it can make without being taken by an enemy
-    KingPiece.prototype.avoidEnemies = function (boardCells) {
+    KingPiece.prototype._avoidEnemies = function (boardCells) {
         var currentCell = this.findCell(boardCells);
         var threateningPiece = this.threateningPiece;
         // hypothetically remove the king and calculate all possible enemy moves
@@ -37,6 +38,7 @@ fChess.KingPiece = (function () {
         currentCell.piece = this;
     };
 
+    // public functions
     KingPiece.prototype.calculateMoves = function (boardCells) {
         this.refreshMoves();
         this.findMoves(boardCells);
@@ -60,26 +62,26 @@ fChess.KingPiece = (function () {
 
     KingPiece.prototype.calculateMovesWithCaution = function (boardCells) {
         this.calculateMoves(boardCells);
-        this.avoidEnemies(boardCells);
+        this._avoidEnemies(boardCells);
     };
 
     KingPiece.prototype.checkedByPiece = function (piece) {
         if (!piece) {
-            this.isThreatened = false;
+            this._isThreatened = false;
         } else {
-            this.isThreatened = true;
+            this._isThreatened = true;
         }
 
         this.threateningPiece = piece;
     };
 
     KingPiece.prototype.unchecked = function () {
-        this.isThreatened = false;
+        this._isThreatened = false;
         this.threateningPiece = null;
     };
 
     KingPiece.prototype.isChecked = function () {
-        return this.isThreatened;
+        return this._isThreatened;
     };
 
     return KingPiece;

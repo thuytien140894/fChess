@@ -10,7 +10,7 @@ fChess.Modal = (function () {
     //fields
     Modal.prototype.isVisible = null;
 
-    //functions
+    // public functions
     Modal.prototype.show = function () {
         this.isVisible(true);
     };

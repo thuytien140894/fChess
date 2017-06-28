@@ -12,12 +12,52 @@ fChess.Piece = (function () {
 
     //fields
     Piece.prototype.alive = true;
-    Piece.prototype.changePosition = false;
     Piece.prototype.color = '';
     Piece.prototype.availableMoves = null;
     Piece.prototype.blockedMoves = null; // used for cells blocked by the piece's friends
 
-    //functions
+    // private functions
+    Piece.prototype._findSafeMoves = function (boardCells, myKing) {
+        var dangerousMoves = this._findDangerousMoves(boardCells, myKing);
+
+        // filter out dangerous moves from the available moves
+        this.availableMoves = this.availableMoves.filter(function (move) {
+            return dangerousMoves.indexOf(move) == -1;
+        }.bind(this));
+    };
+
+    Piece.prototype._findDangerousMoves = function (boardCells, myKing) {
+        var currentCell = this.findCell(boardCells);
+        currentCell.piece = null;
+        var dangerousMoves = [];
+        var threateningPiece = myKing.threateningPiece;
+
+        for (var i = 0; i < this.availableMoves.length; i++) {
+            var cellToMove = this.availableMoves[i];
+            var cellPiece = cellToMove.piece;
+            cellToMove.piece = this;
+            var enemies = this.findAllEnemies(boardCells);
+
+            for (var j = 0; j < enemies.length; j++) {
+                var enemy = enemies[j];
+                enemy.findMoves(boardCells);
+                if (myKing.isChecked()) {
+                    dangerousMoves.push(cellToMove);
+                    cellToMove.piece = cellPiece;
+                    break;
+                }
+            }
+
+            cellToMove.piece = cellPiece;
+        }
+
+        myKing.checkedByPiece(threateningPiece);
+        currentCell.piece = this;
+
+        return dangerousMoves;
+    };
+
+    // public functions
     Piece.prototype.revive = function () {
         this.alive = true;
     };
@@ -34,19 +74,6 @@ fChess.Piece = (function () {
         }
 
         return null;
-    };
-
-    Piece.prototype.calculateMoves = function (boardCells) {
-        this.refreshMoves();
-        var myKing = fChess.Board.findKing(this);
-        if (myKing) {
-            this.findMoves(boardCells);
-            this.findSafeMoves(boardCells, myKing);
-        }
-    };
-
-    Piece.prototype.isAllowedToMove = function (move) {
-        return (this.availableMoves.indexOf(move) != -1);
     };
 
     // This function finds the common moves that two pieces can make
@@ -86,6 +113,19 @@ fChess.Piece = (function () {
         }.bind(this));
     };
 
+    Piece.prototype.calculateMoves = function (boardCells) {
+        this.refreshMoves();
+        var myKing = fChess.Board.findKing(this);
+        if (myKing) {
+            this.findMoves(boardCells);
+            this._findSafeMoves(boardCells, myKing);
+        }
+    };
+
+    Piece.prototype.isAllowedToMove = function (move) {
+        return (this.availableMoves.indexOf(move) != -1);
+    };
+
     Piece.prototype.refreshMoves = function () {
         this.availableMoves.length = 0;
         this.blockedMoves.length = 0;
@@ -105,46 +145,6 @@ fChess.Piece = (function () {
         }.bind(this));
 
         return enemies;
-    };
-
-    Piece.prototype.findSafeMoves = function (boardCells, myKing) {
-        var dangerousMoves = this.findDangerousMoves(boardCells, myKing);
-
-        // filter out dangerous moves from the available moves
-        this.availableMoves = this.availableMoves.filter(function (move) {
-            return dangerousMoves.indexOf(move) == -1;
-        }.bind(this));
-    };
-
-    Piece.prototype.findDangerousMoves = function (boardCells, myKing) {
-        var currentCell = this.findCell(boardCells);
-        currentCell.piece = null;
-        var dangerousMoves = [];
-        var threateningPiece = myKing.threateningPiece;
-
-        for (var i = 0; i < this.availableMoves.length; i++) {
-            var cellToMove = this.availableMoves[i];
-            var cellPiece = cellToMove.piece;
-            cellToMove.piece = this;
-            var enemies = this.findAllEnemies(boardCells);
-
-            for (var j = 0; j < enemies.length; j++) {
-                var enemy = enemies[j];
-                enemy.findMoves(boardCells);
-                if (myKing.isChecked()) {
-                    dangerousMoves.push(cellToMove);
-                    cellToMove.piece = cellPiece;
-                    break;
-                }
-            }
-
-            cellToMove.piece = cellPiece;
-        }
-
-        myKing.checkedByPiece(threateningPiece);
-        currentCell.piece = this;
-
-        return dangerousMoves;
     };
 
     Piece.prototype.updateEnemyKingStatus = function () {

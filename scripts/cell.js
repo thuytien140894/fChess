@@ -19,7 +19,9 @@ fChess.Cell = (function () {
     Cell.prototype.containEnemy = false;
     Cell.prototype.snapshots = null;
 
-    //functions
+    // private functions
+
+    // public functions
     Cell.prototype.isEmpty = function () {
         return !this.piece;
     };

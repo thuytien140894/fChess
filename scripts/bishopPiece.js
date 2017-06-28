@@ -13,10 +13,10 @@ fChess.BishopPiece = (function () {
 
     //fields
 
-    //functions
+    // public functions
     BishopPiece.prototype.findMoves = function (boardCells) {
         this.refreshMoves();
-        
+
         var currentCell = this.findCell(boardCells);
         this.findNorthWesternMoves(currentCell, boardCells, 8);
         this.findSouthWesternMoves(currentCell, boardCells, 8);

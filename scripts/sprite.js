@@ -13,20 +13,20 @@ fChess.Sprite = (function () {
     };
 
     // fields
+    Sprite.prototype.sprite = null;
     Sprite.prototype.game = null;
     Sprite.prototype.name = '';
-    Sprite.prototype.imageUrl = '';
     Sprite.prototype.xPos = 0;
     Sprite.prototype.yPos = 0;
-    Sprite.prototype.sprite = null;
+    Sprite.prototype.imageUrl = '';
 
-    // functions
-    Sprite.prototype._getName = function() {
+    // public functions
+    Sprite.prototype.getName = function() {
         // subclasses should fill this in
     };
 
     Sprite.prototype.initialize = function () {
-        this.name = this._getName();
+        this.name = this.getName();
         this.imageUrl = fChess.Utils.images[this.name];
         this.sprite = new Phaser.Sprite(this.game, this.xPos, this.yPos, this.name);
         this.sprite.scale.setTo(0.6, 0.6);
@@ -64,11 +64,12 @@ fChess.SpritePiece = (function () {
     SpritePiece.prototype.piece = null;
     SpritePiece.prototype.pastPieces = null;
 
-    // functions
-    SpritePiece.prototype._getName = function () {
+    // private functions
+    SpritePiece.prototype.getName = function () {
         return fChess.Utils.getImageNameForPiece(this.piece);
     };
 
+    // public functions
     SpritePiece.prototype.destroy = function () {
         fChess.Sprite.prototype.destroy.apply(this, arguments);
         this.piece = null;
@@ -117,18 +118,8 @@ fChess.SpriteCell = (function () {
     SpriteCell.prototype.cellIndex = 0;
     SpriteCell.prototype.graphics = null;
 
-    //functions
-    SpriteCell.prototype.initialize = function () {
-        this.drawOverlayRectangle();
-
-        this.sprite = new Phaser.Sprite(this.game, 0, 0, this.name);
-        this.sprite.addChild(this.graphics);
-        this.sprite.alpha = 0;
-
-        this.attachEvents();
-    };
-
-    SpriteCell.prototype.drawOverlayRectangle = function () {
+    // private functions
+    SpriteCell.prototype._drawOverlayRectangle = function () {
         this.graphics = this.game.add.graphics(0, 0);
         this.graphics.beginFill(0x0000FF, 1);
         this.graphics.drawRect(this.cell.topLeftX,
@@ -138,12 +129,23 @@ fChess.SpriteCell = (function () {
         this.graphics.endFill();
     };
 
-    SpriteCell.prototype.attachEvents = function () {
+    SpriteCell.prototype._attachEvents = function () {
         this.sprite.inputEnabled = true;
 
         this.sprite.events.onInputDown.add(function () {
             console.log('Cell ' + String(this.cellIndex) + ' is clicked.');
         }, this)
+    };
+
+    // public functions
+    SpriteCell.prototype.initialize = function () {
+        this._drawOverlayRectangle();
+
+        this.sprite = new Phaser.Sprite(this.game, 0, 0, this.name);
+        this.sprite.addChild(this.graphics);
+        this.sprite.alpha = 0;
+
+        this._attachEvents();
     };
 
     return SpriteCell;
