@@ -29,7 +29,7 @@ fChess.Page = (function () {
     };
 
     Page.applyBindings = function () {
-        ko.applyBindings(fChess.GameManager.GameVM, $('#wrapper').get(0));
+        ko.applyBindings(fChess.GameManager.GameVM, $('#dashboard').get(0));
         ko.applyBindings(Page.historyChart, $('#history-chart').get(0));
         ko.applyBindings(Page.pawnPromotionModal, $('#pawn-promotion-modal').get(0));
         ko.applyBindings(Page.newGameModal, $('#new-game-modal').get(0));

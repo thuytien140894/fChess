@@ -41,14 +41,17 @@ fChess.GameManager = (function() {
         if (snapshot >= 0) {
             var lostPieces = this.lostPiecesRecord[snapshot];
 
-            fChess.GameManager.GameVM.lostWhitePieces([]);
-            fChess.GameManager.GameVM.lostBlackPieces([]);
+            fChess.GameManager.GameVM.players.forEach(function (player) {
+                player.lostPieces([]);
+            }.bind(this));
+
             lostPieces.forEach(function (piece) {
-                var color = piece.piece.color;
-                if (color == 'white') {
-                    fChess.GameManager.GameVM.lostWhitePieces.push(piece);
-                } else { // black
-                    fChess.GameManager.GameVM.lostBlackPieces.push(piece);
+                var pieceColor = piece.piece.color;
+                for (var i = 0; i < fChess.GameManager.GameVM.players.length; i++) {
+                    var player = fChess.GameManager.GameVM.players[i];
+                    if (player.color == pieceColor) {
+                        player.lostPieces.push(piece);
+                    }
                 }
             }.bind(this));
         }
@@ -72,15 +75,11 @@ fChess.GameManager = (function() {
     GameManager.GameVM = (function () {
         var GameVM = {};
 
-        GameVM.lostWhitePieces = ko.observableArray([]);
-        GameVM.lostBlackPieces = ko.observableArray([]);
         GameVM.newState = ko.observable('');
         GameVM.snapshot = ko.observable();
-        GameVM.players = null;
+        GameVM.players = [];
 
         GameVM.reset = function () {
-            GameVM.lostWhitePieces([]);
-            GameVM.lostBlackPieces([]);
             GameVM.snapshot(-1);
         };
 

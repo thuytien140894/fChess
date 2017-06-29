@@ -469,13 +469,10 @@ fChess.Board = (function () {
             player.pieces.push(new fChess.KnightPiece(player.color));
             player.pieces.push(new fChess.RookPiece(player.color));
 
+            var moveDirection = this.players.indexOf(player) == 0 ? 'south' : 'north';
             for (var i = 0; i < 8; i++) {
                 var pawn = new fChess.PawnPiece(player.color);
-                if (this.players.indexOf(player) == 0) {
-                    pawn.setMoveDirection('south');
-                } else { // second player
-                    pawn.setMoveDirection('north');
-                }
+                pawn.setMoveDirection(moveDirection);
                 player.pieces.push(pawn);
             }
         }.bind(this));

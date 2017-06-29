@@ -9,6 +9,7 @@ fChess.Player = (function () {
         this.color = color;
 
         this.pieces = [];
+        this.lostPieces = ko.observableArray([]);
     };
 
     //fields
@@ -16,6 +17,7 @@ fChess.Player = (function () {
     Player.prototype.color = '';
     Player.prototype.pieces = null;
     Player.prototype.isActive = false;
+    Player.prototype.lostPieces = null;
 
     // public functions
 

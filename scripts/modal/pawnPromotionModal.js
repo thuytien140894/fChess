@@ -51,8 +51,8 @@ fChess.PawnPromotionModal = (function () {
     };
 
     PawnPromotionModal.prototype.select = function (piece) {
-        this.selectedPiece = piece;
-        this._reset();
+        PawnPromotionModal.self.selectedPiece = piece;
+        PawnPromotionModal.self._reset();
         piece.isSelected(true);
     };
 
@@ -64,9 +64,9 @@ fChess.PawnPromotionModal = (function () {
     };
 
     PawnPromotionModal.prototype.confirm = function () {
-        if (PawnPromotionModal.self.selectedPiece) {
+        if (this.selectedPiece) {
             fChess.Modal.prototype.confirm.apply(this, arguments);
-            this.resolvePromise(PawnPromotionModal.self.selectedPiece);
+            this.resolvePromise(this.selectedPiece);
         }
     };
 
