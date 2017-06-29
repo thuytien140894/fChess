@@ -51,8 +51,8 @@ fChess.PawnPromotionModal = (function () {
     };
 
     PawnPromotionModal.prototype.select = function (piece) {
-        PawnPromotionModal.self.selectedPiece = piece;
-        PawnPromotionModal.self._reset();
+        this.selectedPiece = piece;
+        this._reset();
         piece.isSelected(true);
     };
 

@@ -17,7 +17,7 @@ fChess.Player = (function () {
     Player.prototype.pieces = null;
     Player.prototype.isActive = false;
 
-    //functions
+    // public functions
 
     return Player;
 })();

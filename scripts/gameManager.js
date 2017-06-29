@@ -8,7 +8,7 @@ fChess.GameManager = (function() {
     'use strict';
 
     var GameManager = function () {
-
+        // GameManager.players = [];
     };
 
     //fields
@@ -19,7 +19,7 @@ fChess.GameManager = (function() {
     // private functions
 
     // public functions
-    GameManager.prototype.startNewGame = function (element) {
+    GameManager.prototype.startNewGame = function () {
         GameManager.GameVM.reset();
         GameManager.lostPiecesRecord = [];
 
@@ -76,6 +76,7 @@ fChess.GameManager = (function() {
         GameVM.lostBlackPieces = ko.observableArray([]);
         GameVM.newState = ko.observable('');
         GameVM.snapshot = ko.observable();
+        GameVM.players = null;
 
         GameVM.reset = function () {
             GameVM.lostWhitePieces([]);

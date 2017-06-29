@@ -453,8 +453,7 @@ fChess.Board = (function () {
     };
 
     Board.prototype._resetPlayers = function () {
-        this.players.length = 0;
-        this.players.push(new fChess.Player('Player 1', 'white'), new fChess.Player('Player 2', 'black'));
+        this.players = fChess.GameManager.GameVM.players;
         this.players[0].isActive = true;
 
         //give players all the starting pieces
@@ -471,7 +470,13 @@ fChess.Board = (function () {
             player.pieces.push(new fChess.RookPiece(player.color));
 
             for (var i = 0; i < 8; i++) {
-                player.pieces.push(new fChess.PawnPiece(player.color));
+                var pawn = new fChess.PawnPiece(player.color);
+                if (this.players.indexOf(player) == 0) {
+                    pawn.setMoveDirection('south');
+                } else { // second player
+                    pawn.setMoveDirection('north');
+                }
+                player.pieces.push(pawn);
             }
         }.bind(this));
 

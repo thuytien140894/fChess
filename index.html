@@ -15,7 +15,7 @@
     </div>
     <div id="right-panel">
         <div id="dashboard">
-            <div class="lost-pieces top" data-bind="foreach: lostBlackPieces">
+            <div class="lost-pieces top" data-bind="foreach: lostWhitePieces">
                 <div id="piece">
                     <img id="piece-icon" data-bind="attr: { src: imageUrl }">
                 </div>
@@ -33,7 +33,7 @@
             </div>
              <!-- /ko -->
             <div class="lost-pieces bottom">
-                <div id="piece" data-bind="foreach: lostWhitePieces">
+                <div id="piece" data-bind="foreach: lostBlackPieces">
                     <img id="piece-icon" data-bind="attr: { src: imageUrl }">
                 </div>
             </div>
@@ -71,6 +71,32 @@
         </div>
     </div>
 </div>
+
+<div id="new-game-modal" class="modal" data-bind="style: { display: isVisible() ? 'flex' : 'none' }">
+    <div class="modal-content">
+        <div class="modal-header top">
+            <div class="modal-title">New Game</div>
+        </div>
+        <div class="modal-body" id="players-info">
+            <!-- ko foreach: players -->
+            <div id="player">
+                <label style="margin: 10px" data-bind="text: label"></label>
+                <input type="text" placeholder="Name" data-bind="textInput: name">
+                <img style="height: 60px; width: 60px" data-bind="attr: { src: imageUrl }">
+            </div>
+            <!-- /ko -->
+            <div data-bind="click: switchColor">
+                <img id="switch-img" src="assets/double-arrow.png">
+            </div>
+        </div>
+        <div class="modal-footer bottom">
+            <button class="modal-btn cancel-btn" data-bind="click: close">Cancel</button>
+            <button class="modal-btn reset-btn" data-bind="click: reset">Reset</button>
+            <button class="modal-btn accept-btn" data-bind="click: confirm">OK</button>
+        </div>
+    </div>
+</div>
+
 
 <!-- third-party libraries -->
 <script src="libraries/jquery/jquery-1.12.3.min.js"></script>

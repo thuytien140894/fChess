@@ -24,7 +24,7 @@
 
 #dashboard {
     background-color: white;
-    width: 70%;
+    width: 300px;
     height: 620px;
     display: flex;
     border-radius: 10px;
@@ -53,7 +53,7 @@
 }
 
 #history-cell:hover {
-    background-color: yellow;
+    background-color: gold;
 }
 
 #turn-label {
@@ -85,6 +85,34 @@
     border-style: solid;
     box-shadow: 0 0 1em #337ab7;
     cursor: pointer;
+}
+
+#players-info {
+    display: flex;
+    flex-direction: row;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#player {
+    border-radius: 10px;
+    border-style: solid;
+    box-shadow: 0 0 1em #337ab7;
+    width: 47%;
+    height: 80%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: space-around;
+}
+
+#switch-img {
+    position: absolute;
+    left: 160px;
+    top: 100px;
+    height: 70px;
+    width: 70px;
+    cursor: pointer
 }
 
 .lost-pieces {
@@ -122,7 +150,7 @@
     display: flex;
     flex-direction: column;
     width: 400px;
-    height: 250px;
+    height: 280px;
     box-shadow: 0 0 1em black;
     font-family: Arial, "Helvetica Neue", Helvetica, sans-serif;
 
@@ -142,7 +170,8 @@
 }
 
 .modal-body {
-    flex: 5;
+    position: relative;
+    flex: 8;
 }
 
 .modal-footer {
@@ -177,10 +206,14 @@
     color: white;
 }
 
-.reject-btn {
+.cancel-btn {
     background-color: white;
     border-color: #d3d3d3;
     border-width: 1px;
+}
+
+.reset-btn {
+    background-color: gold;
 }
 
 .selected {
@@ -198,4 +231,14 @@
 @keyframes animatetop {
     from { top: -300px; opacity: 0 }
     to { top: 0; opacity: 1 }
+}
+
+input[type=text] {
+    width: 65%;
+    padding: 12px 20px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    text-align: center;
 }
