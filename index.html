@@ -15,7 +15,7 @@
     </div>
     <div id="right-panel">
         <div id="dashboard">
-            <div class="lost-pieces top" data-bind="foreach: players.length == 2 ? players[0].lostPieces : []">
+            <div class="lost-pieces top" data-bind="foreach: players().length == 2 ? players()[0].lostPieces : []">
                 <div id="piece">
                     <img id="piece-icon" data-bind="attr: { src: imageUrl }">
                 </div>
@@ -33,7 +33,7 @@
             </div>
              <!-- /ko -->
             <div class="lost-pieces bottom">
-                <div id="piece" data-bind="foreach: players.length == 2 ? players[1].lostPieces : []">
+                <div id="piece" data-bind="foreach: players().length == 2 ? players()[1].lostPieces : []">
                     <img id="piece-icon" data-bind="attr: { src: imageUrl }">
                 </div>
             </div>

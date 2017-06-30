@@ -453,7 +453,7 @@ fChess.Board = (function () {
     };
 
     Board.prototype._resetPlayers = function () {
-        this.players = fChess.GameManager.GameVM.players;
+        this.players = fChess.GameManager.GameVM.players();
         this.players[0].isActive = true;
 
         //give players all the starting pieces

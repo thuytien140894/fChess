@@ -41,14 +41,14 @@ fChess.GameManager = (function() {
         if (snapshot >= 0) {
             var lostPieces = this.lostPiecesRecord[snapshot];
 
-            fChess.GameManager.GameVM.players.forEach(function (player) {
+            fChess.GameManager.GameVM.players().forEach(function (player) {
                 player.lostPieces([]);
             }.bind(this));
 
             lostPieces.forEach(function (piece) {
                 var pieceColor = piece.piece.color;
-                for (var i = 0; i < fChess.GameManager.GameVM.players.length; i++) {
-                    var player = fChess.GameManager.GameVM.players[i];
+                for (var i = 0; i < fChess.GameManager.GameVM.players().length; i++) {
+                    var player = fChess.GameManager.GameVM.players()[i];
                     if (player.color == pieceColor) {
                         player.lostPieces.push(piece);
                     }
@@ -77,7 +77,7 @@ fChess.GameManager = (function() {
 
         GameVM.newState = ko.observable('');
         GameVM.snapshot = ko.observable();
-        GameVM.players = [];
+        GameVM.players = ko.observableArray([]);
 
         GameVM.reset = function () {
             GameVM.snapshot(-1);

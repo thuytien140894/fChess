@@ -26,7 +26,7 @@ fChess.NewGameModal = (function () {
     NewGameModal.prototype.confirm = function () {
         fChess.Modal.prototype.confirm.apply(this, arguments);
 
-        fChess.GameManager.GameVM.players = [];
+        fChess.GameManager.GameVM.players([]);
         this.players.forEach(function (player) {
             fChess.GameManager.GameVM.players.push(new fChess.Player(player.name(), player.color));
         }.bind(this));
