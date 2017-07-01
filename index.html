@@ -9,7 +9,47 @@
 <body>
 <div id="wrapper">
     <div id="left-panel">
-        <button id="start-new-game-btn" type="button">New Game</button>
+        <div id="title">
+            <img style="width: 50px; height: 50px" src="assets/chessPieces/alpha/bP.png">
+            <h1>f</h1>
+            <h2 style="padding-left: 2px">Chess</h2>
+        </div>
+        <div class="left-panel-btn" data-bind="click: onNewGame">
+            <img style="width: 30px; height: 30px" src="assets/on-button.png">
+            <h3 style="margin-left: 10px">New Game</h3>
+        </div>
+        <div class="left-panel-btn" data-bind="click: toggleSetting">
+            <img style="width: 30px; height: 30px" src="assets/settings-gears.png">
+            <h3 style="margin-left: 10px">Settings</h3>
+        </div>
+        <div id="settings" data-bind="style: { display: showSettings() ? 'flex' : 'none' }">
+            <div class="left-panel-btn" style="padding-left: 20px" data-bind="click: toggleSound">
+                <img style="width: 30px; height: 30px" data-bind="attr: { src: soundIcon }">
+                <h3 style="margin-left: 10px">Sound</h3>
+            </div>
+            <div class="left-panel-btn" style="padding-left: 20px" data-bind="click: toggleFeedback">
+                <img style="width: 30px; height: 30px" data-bind="attr: { src: feedbackIcon }">
+                <h3 style="margin-left: 10px">Feedback</h3>
+            </div>
+            <div class="left-panel-btn" style="padding-left: 20px" data-bind="click: togglePieceOptions">
+                <img style="width: 30px; height: 30px" src="assets/chess-board.png">
+                <h3 style="margin-left: 10px">Board</h3>
+            </div>
+            <div id="piece-options" data-bind="style: { display: showPieceOptions() ? 'flex' : 'none' }">
+                <div class="left-panel-btn" style="padding-left: 30px">
+                    <img style="width: 40px; height: 40px" src="assets/chesspieces/alpha/bN.png">
+                    <h3 style="margin-left: 10px">Alpha</h3>
+                </div>
+                <div class="left-panel-btn" style="padding-left: 30px">
+                    <img style="width: 40px; height: 40px" src="assets/chesspieces/uscf/bN.png">
+                    <h3 style="margin-left: 10px">Uscf</h3>
+                </div>
+                <div class="left-panel-btn" style="padding-left: 30px">
+                    <img style="width: 40px; height: 40px" src="assets/chesspieces/wikipedia/bN.png">
+                    <h3 style="margin-left: 10px">Wikipedia</h3>
+                </div>
+            </div>
+        </div>
     </div>
     <div id="game">
     </div>

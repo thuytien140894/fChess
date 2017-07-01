@@ -74,7 +74,7 @@ fChess.Utils = (function () {
         if (!piece) {
             return false;
         }
-        
+
         return piece instanceof fChess.KnightPiece;
     };
 
@@ -91,18 +91,18 @@ fChess.Utils = (function () {
 
     Utils.images = {
         'board': 'assets/board.png',
-        'blackKing': 'assets/chesspieces/alpha/bK.png',
-        'blackQueen': 'assets/chesspieces/alpha/bQ.png',
-        'blackBishop': 'assets/chesspieces/alpha/bB.png',
-        'blackRook': 'assets/chesspieces/alpha/bR.png',
-        'blackKnight': 'assets/chesspieces/alpha/bN.png',
-        'blackPawn': 'assets/chesspieces/alpha/bP.png',
-        'whiteKing': 'assets/chesspieces/alpha/wK.png',
-        'whiteQueen': 'assets/chesspieces/alpha/wQ.png',
-        'whiteBishop': 'assets/chesspieces/alpha/wB.png',
-        'whiteRook': 'assets/chesspieces/alpha/wR.png',
-        'whiteKnight': 'assets/chesspieces/alpha/wN.png',
-        'whitePawn': 'assets/chesspieces/alpha/wP.png'
+        'blackKing': 'assets/chesspieces/uscf/bK.png',
+        'blackQueen': 'assets/chesspieces/uscf/bQ.png',
+        'blackBishop': 'assets/chesspieces/uscf/bB.png',
+        'blackRook': 'assets/chesspieces/uscf/bR.png',
+        'blackKnight': 'assets/chesspieces/uscf/bN.png',
+        'blackPawn': 'assets/chesspieces/uscf/bP.png',
+        'whiteKing': 'assets/chesspieces/uscf/wK.png',
+        'whiteQueen': 'assets/chesspieces/uscf/wQ.png',
+        'whiteBishop': 'assets/chesspieces/uscf/wB.png',
+        'whiteRook': 'assets/chesspieces/uscf/wR.png',
+        'whiteKnight': 'assets/chesspieces/uscf/wN.png',
+        'whitePawn': 'assets/chesspieces/uscf/wP.png'
     };
 
     return Utils;

@@ -7,8 +7,31 @@
 }
 
 #left-panel {
-    flex: 2;
+    flex: 3;
+    position: relative;
     background-color: #2f4f4f;
+    display: flex;
+    flex-direction: column;
+}
+
+#title {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-end;
+    padding-bottom: 15px;
+    background-color: #e0be8a;
+}
+
+#settings {
+    margin-left: 10px;
+    flex-direction: column;
+    background-color: #517b7b;
+    border-radius: 10px 0px 0px 10px;
+}
+
+#piece-options {
+    margin-left: 20px;
+    flex-direction: column;
 }
 
 #game {
@@ -60,7 +83,7 @@
     flex: 1;
     height: 30px;
     line-height: 30px;
-    background-color: grey;
+    background-color: #e0be8a;
     text-align: center;
 }
 
@@ -115,8 +138,21 @@
     cursor: pointer
 }
 
+.left-panel-btn {
+    height: 40px;
+    padding: 12px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.left-panel-btn:hover {
+    background-color: #182d3b;
+    cursor: pointer;
+}
+
 .lost-pieces {
-    background-color: grey;
+    background-color: #e0be8a;
     flex: 1;
     overflow: auto;
     white-space: nowrap;
@@ -241,4 +277,23 @@ input[type=text] {
     font-size: 14px;
     font-family: inherit;
     text-align: center;
+}
+
+h1 {
+    font-weight: 500;
+    font-size: 35px;
+    text-align: center;
+    font-style: italic;
+}
+
+h2 {
+    font-weight: bold;
+    font-size: 35px;
+    text-align: center;
+}
+
+h3 {
+    font-size: 16px;
+    font-family: sans-serif;
+    font-weight: bold;
 }
