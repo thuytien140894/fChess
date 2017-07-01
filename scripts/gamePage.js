@@ -27,6 +27,7 @@ fChess.Page = (function () {
     Page.VM = (function () {
         var VM = {};
 
+        // fields
         VM.showSettings = ko.observable(false);
         VM.showPieceOptions = ko.observable(false);
         VM.hasSound = true;
@@ -34,6 +35,7 @@ fChess.Page = (function () {
         VM.soundIcon = ko.observable('assets/notifications.png');
         VM.feedbackIcon = ko.observable('assets/path.png');
 
+        // functions
         VM.onNewGame = function () {
             Page.newGameModal.show();
         };

@@ -76,7 +76,9 @@ fChess.HistoryChart = (function () {
 
         // public functions
         Cell.prototype.revertTheGame = function () {
-            fChess.GameManager.GameVM.snapshot(this.turn);
+            if (this.name() != '') { // a cell can be empty
+                fChess.GameManager.GameVM.snapshot(this.turn);
+            }
         };
 
         return Cell;
