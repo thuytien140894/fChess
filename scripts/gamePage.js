@@ -27,15 +27,27 @@ fChess.Page = (function () {
     Page.VM = (function () {
         var VM = {};
 
-        // fields
+        // static fields
         VM.showSettings = ko.observable(false);
         VM.showPieceOptions = ko.observable(false);
         VM.hasSound = true;
         VM.showFeedback = true;
         VM.soundIcon = ko.observable('assets/notifications.png');
         VM.feedbackIcon = ko.observable('assets/path.png');
+        VM.pieceOptions = [
+            { name: 'default', imageUrl: 'assets/chesspieces/uscf/bN.png', isSelected: ko.observable(true) },
+            { name: 'alpha', imageUrl: 'assets/chesspieces/alpha/bN.png', isSelected: ko.observable(false) },
+            { name: 'wikipedia', imageUrl: 'assets/chesspieces/wikipedia/bN.png', isSelected: ko.observable(false) }
+        ];
 
-        // functions
+        // private static functions
+        VM._resetPieceOptions = function () {
+            VM.pieceOptions.forEach(function (piece) {
+                piece.isSelected(false);
+            }.bind(this));
+        };
+
+        // public static functions
         VM.onNewGame = function () {
             Page.newGameModal.show();
         };
@@ -76,6 +88,14 @@ fChess.Page = (function () {
                 VM.showFeedback = true;
                 VM.feedbackIcon('assets/path.png');
             }
+
+            fChess.Page.board.toggleFeedback(VM.showFeedback);
+        };
+
+        VM.choosePiece = function (piece) {
+            VM._resetPieceOptions();
+            piece.isSelected(true);
+            fChess.Page.board.changePiece(piece.name);
         };
 
         return VM;

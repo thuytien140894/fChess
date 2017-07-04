@@ -45,7 +45,7 @@ fChess.PawnPromotionModal = (function () {
     // public functions
     PawnPromotionModal.prototype.initialize = function (color) {
         this.pieceChoices.forEach(function (choice) {
-            var imageName = color + choice.name;
+            var imageName = color + choice.name + '_' + fChess.Board.pieceType;
             choice.imageUrl(fChess.Utils.images[imageName]);
         }.bind(this));
     };

@@ -28,6 +28,7 @@ fChess.Board = (function () {
     Board.prototype.game = null;
     Board.prototype.$parent = null;
     Board.prototype.selectedCell = null;
+    Board.prototype.selectedPiece = null;
     Board.prototype.snapshotSubscription = null;
 
     Board.prototype.players = null;
@@ -37,11 +38,14 @@ fChess.Board = (function () {
     // these fields are used for graphics
     Board.prototype.overlayCells = null;
     Board.prototype.feedbackGraphics = null;
+    Board.prototype.highlightGraphics = null;
     Board.prototype.firstPlayerPieces = null;
     Board.prototype.secondPlayerPieces = null;
 
     //static fields
     Board.kings = null;
+    Board.pieceType = 'default';
+    Board.showFeedback = true;
 
     // private functions
     Board.prototype._preload = function () {
@@ -107,6 +111,7 @@ fChess.Board = (function () {
     };
 
     Board.prototype._selectPiece = function (piece) {
+        this.selectedPiece = piece;
         this.selectedCell = this._findCellForPiece(piece);
         if (this.selectedCell) {
             this._calculateMoves(piece);
@@ -141,13 +146,23 @@ fChess.Board = (function () {
     };
 
     Board.prototype._highlight = function (selectedCell) {
+        this._removeGraphics();
+
+        this.highlightGraphics = this.game.add.graphics(0, 0);
+        this.highlightGraphics.lineStyle(4, Board.gameSettings.selectedCellColor, 1);
+        this.highlightGraphics.drawRect(selectedCell.topLeftX, selectedCell.topLeftY, Board.gameSettings.squareWidth, Board.gameSettings.squareHeight);
+
+        if (Board.showFeedback) {
+            this._highlightMoves(selectedCell.piece);
+        }
+    };
+
+    Board.prototype._removeGraphics = function () {
+        if (this.highlightGraphics) {
+            this.highlightGraphics.destroy();
+        }
+
         this._removeFeedback();
-
-        this.feedbackGraphics = this.game.add.graphics(0, 0);
-        this.feedbackGraphics.lineStyle(4, Board.gameSettings.selectedCellColor, 1);
-        this.feedbackGraphics.drawRect(selectedCell.topLeftX, selectedCell.topLeftY, Board.gameSettings.squareWidth, Board.gameSettings.squareHeight);
-
-        this._highlightMoves(selectedCell.piece);
     };
 
     Board.prototype._removeFeedback = function () {
@@ -158,6 +173,7 @@ fChess.Board = (function () {
 
     Board.prototype._highlightMoves = function (piece) {
         // draw the possible moves for the piece
+        this.feedbackGraphics = this.game.add.graphics(0, 0);
         piece.availableMoves.forEach(function (move) {
             if (move.containEnemy) { // if the cell contains an enemy, highlight it red
                 this.feedbackGraphics.lineStyle(4, Board.gameSettings.enemyCellColor, 1);
@@ -175,23 +191,24 @@ fChess.Board = (function () {
         if (this.selectedCell &&
             this.selectedCell.piece &&
             this.selectedCell.piece.isAllowedToMove(cellToMove)) { // make sure that cellToMove is part of the piece's availableMoves
-                this._removeFeedback();
+                this._removeGraphics();
 
-                var selectedPiece = this.selectedCell.piece;
                 if (!cellToMove.isEmpty()) {
                     this._clearCell(cellToMove);
                 }
-                cellToMove.piece = selectedPiece;
+                cellToMove.piece = this.selectedPiece;
                 this.selectedCell.piece = null;
 
-                selectedPiece = await this._checkForPawnPromotion(cellToMove);
+                this.selectedPiece = await this._checkForPawnPromotion(cellToMove);
 
                 // recalculate moves for the piece that just gets moved
                 // so that if we can check if any king is checked
-                selectedPiece.findMoves(this.cells);
-                this._updateCheckStatus(selectedPiece);
+                this.selectedPiece.findMoves(this.cells);
+                this._updateCheckStatus(this.selectedPiece);
 
                 this._takeSnapshot(cellToMove); // make this a promise waiting for pawn promotion tp resolve
+
+                this.selectedPiece = null;
         }
     };
 
@@ -295,7 +312,7 @@ fChess.Board = (function () {
             this.selectedPiece = null;
             this.selectedCell = null;
             this._retrieveLostPieces(snapshot);
-            this._removeFeedback();
+            this._removeGraphics();
             this._switchPlayer();
 
             this.cells.forEach(function (cell) {
@@ -363,7 +380,7 @@ fChess.Board = (function () {
         }.bind(this));
 
         // remove the feedbackGraphics from the previous game
-        this._removeFeedback();
+        this._removeGraphics();
     };
 
     Board.prototype._initializeCells = function () {
@@ -426,30 +443,6 @@ fChess.Board = (function () {
                 this.secondPlayerPieces.add(spritePiece.sprite);
             }
         }.bind(this));
-    };
-
-    // just move some pieces around
-    Board.prototype._test = function () {
-        this.cells[59].piece = null;
-        this.cells[27].piece = this.players[1].pieces[3];
-
-        this.cells[0].piece = null;
-        this.cells[26].piece = this.players[0].pieces[0];
-
-        this.cells[61].piece = null;
-        this.cells[30].piece = this.players[1].pieces[2];
-
-        this.cells[4].piece = null;
-        this.cells[25].piece = this.players[0].pieces[4];
-
-        this.cells[1].piece = null;
-        this.cells[37].piece = this.players[0].pieces[1];
-
-        this.cells[60].piece = null;
-        this.cells[28].piece = this.players[1].pieces[4];
-
-        this.cells[3].piece = null;
-        this.cells[43].piece = this.players[0].pieces[3];
     };
 
     Board.prototype._resetPlayers = function () {
@@ -546,8 +539,27 @@ fChess.Board = (function () {
         this._findKings();
         this._clearSnapshots();
         this._initializePieces();
-        // this.test();
-        // this.takeSnapshot();
+    };
+
+    Board.prototype.changePiece = function (pieceName) {
+        Board.pieceType = pieceName;
+
+        // this is only valid when the game already starts
+        this.spritePieces.forEach(function (spritePiece) {
+            spritePiece.changeIcon();
+        }.bind(this));
+    };
+
+    Board.prototype.toggleFeedback = function (isSet) {
+        if (this.selectedPiece) {
+            if (isSet) {
+                this._highlightMoves(this.selectedPiece);
+            } else {
+                this._removeFeedback();
+            }
+        }
+
+        Board.showFeedback = isSet;
     };
 
     //static functions

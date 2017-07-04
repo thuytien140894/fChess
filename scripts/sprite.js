@@ -16,9 +16,10 @@ fChess.Sprite = (function () {
     Sprite.prototype.sprite = null;
     Sprite.prototype.game = null;
     Sprite.prototype.name = '';
+    Sprite.prototype.iconName = '';
     Sprite.prototype.xPos = 0;
     Sprite.prototype.yPos = 0;
-    Sprite.prototype.imageUrl = '';
+    Sprite.prototype.imageUrl = null;
 
     // public functions
     Sprite.prototype.getName = function() {
@@ -27,8 +28,9 @@ fChess.Sprite = (function () {
 
     Sprite.prototype.initialize = function () {
         this.name = this.getName();
-        this.imageUrl = fChess.Utils.images[this.name];
-        this.sprite = new Phaser.Sprite(this.game, this.xPos, this.yPos, this.name);
+        this.iconName = this.name + '_' + fChess.Board.pieceType;
+        this.imageUrl = ko.observable(fChess.Utils.images[this.iconName]);
+        this.sprite = new Phaser.Sprite(this.game, this.xPos, this.yPos, this.iconName);
         this.sprite.scale.setTo(0.6, 0.6);
         this.sprite.anchor.set(0.5);
         this.sprite.inputEnabled = true;
@@ -42,6 +44,18 @@ fChess.Sprite = (function () {
 
     Sprite.prototype.changeColor = function (color) {
         this.sprite.tint = color;
+    };
+
+    Sprite.prototype.kill = function () {
+        this.sprite.alpha = 0;
+        this.sprite.inputEnabled = false;
+        this.sprite.x = 0;
+        this.sprite.y = 0;
+    };
+
+    Sprite.prototype.revive = function () {
+        this.sprite.alpha = 1;
+        this.sprite.inputEnabled = true;
     };
 
     return Sprite;
@@ -81,20 +95,23 @@ fChess.SpritePiece = (function () {
         this.piece = newPiece;
         var pieceName = fChess.Utils.getImageNameForPiece(newPiece);
         this.name = pieceName;
-        this.sprite.loadTexture(pieceName, 0);
-        this.imageUrl = fChess.Utils.images[pieceName];
+        this.changeIcon();
     };
 
     SpritePiece.prototype.kill = function () {
+        fChess.Sprite.prototype.kill.apply(this, arguments);
         this.piece.kill();
-        this.sprite.alpha = 0;
-        this.sprite.inputEnabled = false;
     };
 
     SpritePiece.prototype.revive = function () {
+        fChess.Sprite.prototype.revive.apply(this, arguments);
         this.piece.revive();
-        this.sprite.alpha = 1;
-        this.sprite.inputEnabled = true;
+    };
+
+    SpritePiece.prototype.changeIcon = function () {
+        this.iconName = this.name + '_' + fChess.Board.pieceType;
+        this.sprite.loadTexture(this.iconName, 0);
+        this.imageUrl(fChess.Utils.images[this.iconName]);
     };
 
     return SpritePiece;

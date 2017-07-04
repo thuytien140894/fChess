@@ -35,18 +35,13 @@
                 <img style="width: 30px; height: 30px" src="assets/chess-board.png">
                 <h3 style="margin-left: 10px">Board</h3>
             </div>
-            <div id="piece-options" data-bind="style: { display: showPieceOptions() ? 'flex' : 'none' }">
-                <div class="left-panel-btn" style="padding-left: 30px">
-                    <img style="width: 40px; height: 40px" src="assets/chesspieces/alpha/bN.png">
-                    <h3 style="margin-left: 10px">Alpha</h3>
-                </div>
-                <div class="left-panel-btn" style="padding-left: 30px">
-                    <img style="width: 40px; height: 40px" src="assets/chesspieces/uscf/bN.png">
-                    <h3 style="margin-left: 10px">Uscf</h3>
-                </div>
-                <div class="left-panel-btn" style="padding-left: 30px">
-                    <img style="width: 40px; height: 40px" src="assets/chesspieces/wikipedia/bN.png">
-                    <h3 style="margin-left: 10px">Wikipedia</h3>
+            <div id="piece-options" data-bind="style: { display: showPieceOptions() ? 'flex' : 'none' },
+                                               foreach: pieceOptions">
+                <div class="left-panel-btn" data-bind="click: $root.choosePiece">
+                    <div class="selected-tag" style="margin-right: 20px"
+                         data-bind="style: { 'background-color': isSelected() ? 'green' : 'inherit' }"></div>
+                    <img style="width: 40px; height: 40px" data-bind="attr: { src: imageUrl }">
+                    <h3 style="margin-left: 10px" data-bind="text: name"></h3>
                 </div>
             </div>
         </div>

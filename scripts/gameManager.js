@@ -8,7 +8,7 @@ fChess.GameManager = (function() {
     'use strict';
 
     var GameManager = function () {
-        // GameManager.players = [];
+        
     };
 
     //fields

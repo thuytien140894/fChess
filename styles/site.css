@@ -23,6 +23,7 @@
 }
 
 #settings {
+    display: none;
     margin-left: 10px;
     flex-direction: column;
     background-color: #517b7b;
@@ -136,6 +137,12 @@
     height: 70px;
     width: 70px;
     cursor: pointer
+}
+
+.selected-tag {
+    width: 10px;
+    height: 100%;
+    background-color: inherit;
 }
 
 .left-panel-btn {
