@@ -36,7 +36,35 @@
 }
 
 #game {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     flex: 10;
+}
+
+#board-columns {
+    width: 510px;
+    height: 50px;
+    position: absolute;
+    left: 50px;
+    bottom: 0px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: row;
+}
+
+#board-rows {
+    height: 510px;
+    width: 50px;
+    position: absolute;
+    right: 0px;
+    top: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: space-around;
+    flex-direction: column-reverse;
 }
 
 #right-panel {
@@ -44,6 +72,7 @@
     background-color: #182d3b;
     display: flex;
     align-items: center;
+    justify-content: center;
 }
 
 #dashboard {

@@ -47,6 +47,28 @@
         </div>
     </div>
     <div id="game">
+        <div style="width: 610px; height: 610px; position: absolute; pointer-events: none">
+            <div id="board-columns">
+                <h3>a</h3>
+                <h3>b</h3>
+                <h3>c</h3>
+                <h3>d</h3>
+                <h3>e</h3>
+                <h3>f</h3>
+                <h3>g</h3>
+                <h3>h</h3>
+            </div>
+            <div id="board-rows">
+                <h3>1</h3>
+                <h3>2</h3>
+                <h3>3</h3>
+                <h3>4</h3>
+                <h3>5</h3>
+                <h3>6</h3>
+                <h3>7</h3>
+                <h3>8</h3>
+            </div>
+        </div>
     </div>
     <div id="right-panel">
         <div id="dashboard">
@@ -77,15 +99,16 @@
 </div>
 
 <!-- modal -->
-<div class="modal" style="display: none">
+<div id="game-result-modal" class="modal" style="display: none">
     <div class="modal-content">
         <div class="modal-header top">
+            <div class="modal-title">Game Result</div>
         </div>
         <div class="modal-body">
         </div>
         <div class="modal-footer bottom">
-            <button class="modal-btn reject-btn" data-bind="click: close">Cancel</button>
-            <button class="modal-btn accept-btn" data-bind="click: confirm">OK</button>
+            <button class="modal-btn reject-btn">New Game</button>
+            <button class="modal-btn accept-btn">Restart Game</button>
         </div>
     </div>
 </div>
@@ -158,7 +181,6 @@
 <!-- modal -->
 <script src="scripts/modal/modal.js"></script>
 <script src="scripts/modal/pawnPromotionModal.js"></script>
-<script src="scripts/modal/settingModal.js"></script>
 <script src="scripts/modal/gameResultModal.js"></script>
 <script src="scripts/modal/newGameModal.js"></script>
 
