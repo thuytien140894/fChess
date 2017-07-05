@@ -102,7 +102,7 @@
 </div>
 
 <!-- modal -->
-<div id="game-result-modal" class="modal" style="display: none">
+<div id="game-result-modal" class="modal" data-bind="style: { display: isVisible() ? 'flex' : 'none' }">
     <div class="modal-content">
         <div class="modal-header top">
             <div class="modal-title">Game Result</div>
@@ -110,8 +110,8 @@
         <div class="modal-body">
         </div>
         <div class="modal-footer bottom">
-            <button class="modal-btn reject-btn">New Game</button>
-            <button class="modal-btn accept-btn">Restart Game</button>
+            <button class="modal-btn reject-btn" data-bind="click: onNewGame">New Game</button>
+            <button class="modal-btn accept-btn" data-bind="click: onRestart">Restart Game</button>
         </div>
     </div>
 </div>

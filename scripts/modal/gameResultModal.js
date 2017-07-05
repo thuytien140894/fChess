@@ -4,20 +4,20 @@ fChess.GameResultModal = (function () {
     'use strict';
 
     var GameResultModal = function () {
+        fChess.Modal.prototype.constructor.apply(this, arguments);
     };
+
+    fChess.Utils.extend(fChess.Modal, GameResultModal);
 
     //fields
 
-    //functions
-    GameResultModal.prototype.show = function () {
-
+    // public functions
+    GameResultModal.prototype.onNewGame = function () {
+        // close();
+        fChess.Page.newGameModal.show();
     };
 
-    GameResultModal.prototype.close = function () {
-
-    };
-
-    GameResultModal.prototype.confirm = function () {
+    GameResultModal.prototype.onRestart = function () {
 
     };
 

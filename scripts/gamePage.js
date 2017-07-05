@@ -19,6 +19,7 @@ fChess.Page = (function () {
         Page.historyChart = new fChess.HistoryChart();
         Page.pawnPromotionModal = new fChess.PawnPromotionModal();
         Page.newGameModal = new fChess.NewGameModal();
+        Page.gameResultModal = new fChess.GameResultModal();
 
         // apply knockout bindings
         Page.applyBindings();
@@ -108,6 +109,7 @@ fChess.Page = (function () {
         ko.applyBindings(Page.historyChart, $('#history-chart').get(0));
         ko.applyBindings(Page.pawnPromotionModal, $('#pawn-promotion-modal').get(0));
         ko.applyBindings(Page.newGameModal, $('#new-game-modal').get(0));
+        ko.applyBindings(Page.gameResultModal, $('#game-result-modal').get(0));
     };
 
     return Page;
