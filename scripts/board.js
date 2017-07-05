@@ -67,6 +67,10 @@ fChess.Board = (function () {
         this.overlayCells = this.game.add.group();
 
         this._initializeCells();
+
+        // notify the page that the board has been loaded and that the overlay html
+        // for row and column ids can be rendered
+        fChess.Page.VM.boardIsLoaded(true);
     };
 
     Board.prototype._update = function () {

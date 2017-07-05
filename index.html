@@ -47,7 +47,8 @@
         </div>
     </div>
     <div id="game">
-        <div style="width: 610px; height: 610px; position: absolute; pointer-events: none">
+        <div style="width: 610px; height: 610px; position: absolute; pointer-events: none; display: none"
+             data-bind="style: { display : boardIsLoaded() ? 'flex' : 'none' }">
             <div id="board-columns">
                 <h3>a</h3>
                 <h3>b</h3>
@@ -70,6 +71,7 @@
             </div>
         </div>
     </div>
+    <!-- ko stopBinding: true -->
     <div id="right-panel">
         <div id="dashboard">
             <div class="lost-pieces top" data-bind="foreach: players().length == 2 ? players()[0].lostPieces : []">
@@ -88,7 +90,7 @@
                     <!-- /ko -->
                 </div>
             </div>
-             <!-- /ko -->
+            <!-- /ko -->
             <div class="lost-pieces bottom">
                 <div id="piece" data-bind="foreach: players().length == 2 ? players()[1].lostPieces : []">
                     <img id="piece-icon" data-bind="attr: { src: imageUrl }">
@@ -96,6 +98,7 @@
             </div>
         </div>
     </div>
+    <!-- /ko -->
 </div>
 
 <!-- modal -->

@@ -29,6 +29,7 @@ fChess.Page = (function () {
 
         // static fields
         VM.showSettings = ko.observable(false);
+        VM.boardIsLoaded = ko.observable(false);
         VM.showPieceOptions = ko.observable(false);
         VM.hasSound = true;
         VM.showFeedback = true;
@@ -102,7 +103,7 @@ fChess.Page = (function () {
     })();
 
     Page.applyBindings = function () {
-        ko.applyBindings(fChess.Page.VM, $('#left-panel').get(0));
+        ko.applyBindings(fChess.Page.VM, $('#wrapper').get(0));
         ko.applyBindings(fChess.GameManager.GameVM, $('#dashboard').get(0));
         ko.applyBindings(Page.historyChart, $('#history-chart').get(0));
         ko.applyBindings(Page.pawnPromotionModal, $('#pawn-promotion-modal').get(0));
