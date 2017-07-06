@@ -8,7 +8,7 @@ fChess.GameManager = (function() {
     'use strict';
 
     var GameManager = function () {
-        
+
     };
 
     //fields
@@ -30,6 +30,11 @@ fChess.GameManager = (function() {
     };
 
     // static functions
+    GameManager.endGame = function (reason, player) {
+        fChess.Page.gameResultModal.initialize(reason, player);
+        fChess.Page.gameResultModal.show();
+    };
+
     GameManager.resetHeadSnapshot = function () {
         var turn = GameManager.GameVM.snapshot();
         GameManager.GameVM.snapshot(turn + 1);

@@ -18,8 +18,30 @@ fChess.Player = (function () {
     Player.prototype.pieces = null;
     Player.prototype.isActive = false;
     Player.prototype.lostPieces = null;
+    Player.prototype.king = null;
 
     // public functions
+    Player.prototype.hasLegalMoves = function (boardCells) {
+        for (var i = 0; i < this.pieces.length; i++) {
+            var piece = this.pieces[i];
+            if (piece.alive) {
+                piece.calculateMoves(boardCells)
+                if (piece.hasAvailableMoves()) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    };
+
+    Player.prototype.isChecked = function () {
+        return this.king.isChecked();
+    };
+
+    Player.prototype.isCheckmated = function (boardCells) {
+        return this.isChecked() && !this.hasLegalMoves(boardCells);
+    };
 
     return Player;
 })();

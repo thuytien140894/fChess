@@ -43,7 +43,6 @@ fChess.Board = (function () {
     Board.prototype.secondPlayerPieces = null;
 
     //static fields
-    Board.kings = null;
     Board.pieceType = 'default';
     Board.showFeedback = true;
 
@@ -133,11 +132,7 @@ fChess.Board = (function () {
     };
 
     Board.prototype._calculateMoves = function (piece) {
-        if (fChess.Utils.isKing(piece)) {
-            piece.calculateMovesWithCaution(this.cells);
-        } else {
-            piece.calculateMoves(this.cells);
-        }
+        piece.calculateMoves(this.cells);
     };
 
     Board.prototype._detectEnemies = function (selectedPiece) {
@@ -217,17 +212,34 @@ fChess.Board = (function () {
     };
 
     Board.prototype._updateCheckStatus = function (movedPiece) {
-        // if the most recently moved piece helps uncheck its king, then
-        // the king's threatening piece should not threaten the king anymore
+        for (var i = 0; i < this.players.length; i++) {
+            var player = this.players[i];
+            var enemyKing = Board.findEnemyKing(player.king);
+            var threateningPiece = enemyKing.threateningPiece;
 
-        // if the most recently moved piece checks the king,
-        // the king status should remain the same
-        Board.kings.forEach(function (king) {
-            if (king.isChecked()) {
-                king.threateningPiece.findMoves(this.cells);
+            // check for game end conditions
+            if (player.isCheckmated(this.cells)) {
+                fChess.GameManager.endGame('Checkmate', player);
+                return;
             }
 
-        }.bind(this));
+            if (!player.hasLegalMoves(this.cells)) {
+                fChess.GameManager.endGame('Stalemate', player);
+                return;
+            }
+
+            // all the move calculations will uncheck the king
+            // so we have to reset its status
+            enemyKing.checkedByPiece(threateningPiece);
+            // if the most recently moved piece helps uncheck its king, then
+            // the king's threatening piece should not threaten the king anymore
+
+            // if the most recently moved piece checks the king,
+            // the king status should remain the same
+            if (player.king.isChecked()) {
+                player.king.threateningPiece.findMoves(this.cells);
+            }
+        }
     };
 
     Board.prototype._checkForPawnPromotion = async function (cellToMove) {
@@ -364,7 +376,8 @@ fChess.Board = (function () {
 
         // if the killed piece is the threatening piece,
         // then the king should be safe again
-        Board.kings.forEach(function (king) {
+        this.players.forEach(function (player) {
+            var king = player.king;
             if (cell.piece == king.threateningPiece) {
                 king.unchecked();
             }
@@ -490,12 +503,11 @@ fChess.Board = (function () {
     };
 
     Board.prototype._findKings = function () {
-        Board.kings = [];
         for (var i = 0; i < this.players.length; i++) {
             var pieces = this.players[i].pieces;
             for (var j = 0; j < pieces.length; j++) {
                 if (fChess.Utils.isKing(pieces[j])) {
-                    Board.kings.push(pieces[j]);
+                    this.players[i].king = pieces[j];
                     break;
                 }
             }
@@ -575,9 +587,10 @@ fChess.Board = (function () {
     };
 
     Board.findKing = function (piece) {
-        for (var i = 0; i < Board.kings.length; i++) {
-            if (Board.kings[i].color == piece.color) {
-                return Board.kings[i];
+        var players = fChess.GameManager.GameVM.players();
+        for (var i = 0; i < players.length; i++) {
+            if (players[i].color == piece.color) {
+                return players[i].king;
             }
         }
 
@@ -585,9 +598,10 @@ fChess.Board = (function () {
     };
 
     Board.findEnemyKing = function (piece) {
-        for (var i = 0; i < Board.kings.length; i++) {
-            if (Board.kings[i].color != piece.color) {
-                return Board.kings[i];
+        var players = fChess.GameManager.GameVM.players();
+        for (var i = 0; i < players.length; i++) {
+            if (players[i].color != piece.color) {
+                return players[i].king;
             }
         }
 

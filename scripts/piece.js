@@ -114,7 +114,6 @@ fChess.Piece = (function () {
     };
 
     Piece.prototype.calculateMoves = function (boardCells) {
-        this.refreshMoves();
         var myKing = fChess.Board.findKing(this);
         if (myKing) {
             this.findMoves(boardCells);
@@ -155,6 +154,10 @@ fChess.Piece = (function () {
                 enemyKing.checkedByPiece(this);
             }
         }.bind(this));
+    };
+
+    Piece.prototype.hasAvailableMoves = function () {
+        return this.availableMoves.length > 0;
     };
 
     Piece.prototype.findSouthernMoves = function (currentCell, boardCells, maxStep) {

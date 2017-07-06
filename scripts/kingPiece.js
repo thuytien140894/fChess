@@ -39,11 +39,6 @@ fChess.KingPiece = (function () {
     };
 
     // public functions
-    KingPiece.prototype.calculateMoves = function (boardCells) {
-        this.refreshMoves();
-        this.findMoves(boardCells);
-    };
-
     KingPiece.prototype.findMoves = function (boardCells) {
         this.refreshMoves();
 
@@ -60,8 +55,9 @@ fChess.KingPiece = (function () {
         this.updateEnemyKingStatus();
     };
 
-    KingPiece.prototype.calculateMovesWithCaution = function (boardCells) {
-        this.calculateMoves(boardCells);
+    KingPiece.prototype.calculateMoves = function (boardCells) {
+        this.refreshMoves();
+        this.findMoves(boardCells);
         this._avoidEnemies(boardCells);
     };
 
@@ -82,6 +78,10 @@ fChess.KingPiece = (function () {
 
     KingPiece.prototype.isChecked = function () {
         return this._isThreatened;
+    };
+
+    KingPiece.prototype.isCheckmated = function () {
+        return this.isChecked() && this.hasNoAvailableMoves();
     };
 
     return KingPiece;
