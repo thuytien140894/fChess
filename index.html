@@ -102,12 +102,11 @@
 </div>
 
 <!-- modal -->
-<div id="game-result-modal" class="modal" data-bind="style: { display: isVisible() ? 'flex' : 'none' }">
-    <div class="modal-content">
+<div id="game-result-modal" class="modal modeless" data-bind="style: { display: isVisible() ? 'flex' : 'none' }">
+    <div class="modal-content notification">
         <div class="modal-header top">
             <div class="modal-title" data-bind="text: reason"></div>
-        </div>
-        <div class="modal-body">
+            <span class="close" data-bind="click: close">&times;</span>
         </div>
         <div class="modal-footer bottom">
             <button class="modal-btn reject-btn" data-bind="click: onNewGame">New Game</button>
@@ -117,7 +116,7 @@
 </div>
 
 <div id="pawn-promotion-modal" class="modal" data-bind="style: { display: isVisible() ? 'flex' : 'none' }">
-    <div class="modal-content">
+    <div class="modal-content fade-in-top">
         <div class="modal-header top">
             <div class="modal-title">Promote your pawn</div>
         </div>
@@ -134,9 +133,10 @@
 </div>
 
 <div id="new-game-modal" class="modal" data-bind="style: { display: isVisible() ? 'flex' : 'none' }">
-    <div class="modal-content">
+    <div class="modal-content fade-in-top">
         <div class="modal-header top">
             <div class="modal-title">New Game</div>
+            <span class="close" data-bind="click: close">&times;</span>
         </div>
         <div class="modal-body" id="players-info">
             <!-- ko foreach: players -->

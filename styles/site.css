@@ -214,6 +214,11 @@
     justify-content: center;
 }
 
+.modeless { /* still allows the user to interact with the page */
+    pointer-events: none;
+    background-color: transparent;
+}
+
 .modal-content {
     position: relative; /* need this for animation to work */
     margin: 10%;
@@ -231,6 +236,31 @@
     -webkit-animation-duration: 0.4s;
     animation-name: animatetop;
     animation-duration: 0.4s
+}
+
+.notification {
+    margin: 8px;
+    height: 100px;
+    width: 350px;
+    pointer-events: auto;
+}
+
+/* The Close Button */
+.close {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: grey;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+    color: #000;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .modal-header {
@@ -259,13 +289,14 @@
 }
 
 .modal-title {
+    flex: 7;
     margin: 20px;
     font-size: 18px;
     font-weight: bold;
 }
 
 .modal-btn {
-    width: 30%;
+    width: 120px;
     height: 60%;
     border-radius: 5px;
     margin-right: 10px;
@@ -297,7 +328,7 @@
 /* Safari 4.0 - 8.0 */
 @-webkit-keyframes animatetop {
     from { top: 0px; opacity: 0 }
-    to { top: 200px; opacity: 1 }
+    to { top: 300px; opacity: 1 }
 }
 
 /* Standard syntax */
