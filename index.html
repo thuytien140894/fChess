@@ -101,6 +101,28 @@
     <!-- /ko -->
 </div>
 
+<!-- toolbar -->
+<div id="toolbar-wrapper">
+    <div class="toolbar">
+        <button class="toolbar-btn tooltip" data-bind="click: undo">
+            <img class="toolbar-img" src="assets/undo.png">
+            <span class="tooltip-text">Undo</span>
+        </button>
+        <button class="toolbar-btn tooltip" data-bind="click: draw">
+            <img class="toolbar-img" src="assets/handshake.png">
+            <span class="tooltip-text">Offer a Draw</span>
+        </button>
+        <button class="toolbar-btn tooltip" data-bind="click: concede">
+            <img class="toolbar-img" src="assets/flags.png">
+            <span class="tooltip-text">Concede</span>
+        </button>
+        <button class="toolbar-btn tooltip" data-bind="click: redo">
+            <img class="toolbar-img" src="assets/redo.png">
+            <span class="tooltip-text">Redo</span>
+        </button>
+    </div>
+</div>
+
 <!-- modal -->
 <div id="game-result-modal" class="modal modeless" data-bind="style: { display: isVisible() ? 'flex' : 'none' }">
     <div class="modal-content notification">
@@ -109,8 +131,8 @@
             <span class="close" data-bind="click: close">&times;</span>
         </div>
         <div class="modal-footer bottom">
-            <button class="modal-btn reject-btn" data-bind="click: onNewGame">New Game</button>
-            <button class="modal-btn accept-btn" data-bind="click: onRestart">Restart Game</button>
+            <button class="modal-btn reset-btn" data-bind="click: onRestart">Restart Game</button>
+            <button class="modal-btn accept-btn" data-bind="click: onNewGame">New Game</button>
         </div>
     </div>
 </div>

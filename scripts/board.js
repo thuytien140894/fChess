@@ -117,8 +117,10 @@ fChess.Board = (function () {
         this.selectedPiece = piece;
         this.selectedCell = this._findCellForPiece(piece);
         if (this.selectedCell) {
-            this._calculateMoves(piece);
-            this._detectEnemies(piece);
+            if (!fChess.GameManager.gameEnded) { // only calculates moves when game is in progress
+                this._calculateMoves(piece);
+                this._detectEnemies(piece);
+            }
             this._highlight(this.selectedCell);
         }
     };
@@ -151,7 +153,7 @@ fChess.Board = (function () {
         this.highlightGraphics.lineStyle(4, Board.gameSettings.selectedCellColor, 1);
         this.highlightGraphics.drawRect(selectedCell.topLeftX, selectedCell.topLeftY, Board.gameSettings.squareWidth, Board.gameSettings.squareHeight);
 
-        if (Board.showFeedback) {
+        if (Board.showFeedback && !fChess.GameManager.gameEnded) {
             this._highlightMoves(selectedCell.piece);
         }
     };
@@ -215,22 +217,7 @@ fChess.Board = (function () {
         for (var i = 0; i < this.players.length; i++) {
             var player = this.players[i];
             var enemyKing = Board.findEnemyKing(player.king);
-            var threateningPiece = enemyKing.threateningPiece;
 
-            // check for game end conditions
-            if (player.isCheckmated(this.cells)) {
-                fChess.GameManager.endGame('Checkmate', player);
-                return;
-            }
-
-            if (!player.hasLegalMoves(this.cells)) {
-                fChess.GameManager.endGame('Stalemate', player);
-                return;
-            }
-
-            // all the move calculations will uncheck the king
-            // so we have to reset its status
-            enemyKing.checkedByPiece(threateningPiece);
             // if the most recently moved piece helps uncheck its king, then
             // the king's threatening piece should not threaten the king anymore
 
@@ -239,6 +226,25 @@ fChess.Board = (function () {
             if (player.king.isChecked()) {
                 player.king.threateningPiece.findMoves(this.cells);
             }
+        }
+
+        this.checkForGameEndConditions();
+    };
+
+    Board.prototype.checkForGameEndConditions = function () {
+        var opponent;
+        for (var i = 0; i < this.players.length; i++) {
+            if (!this.players[i].isActive) {
+                opponent = this.players[i];
+                break;
+            }
+        }
+
+        // check for game end conditions
+        if (opponent.isCheckmated(this.cells)) {
+            fChess.GameManager.endGame('Checkmate', opponent);
+        } else if (!opponent.hasLegalMoves(this.cells)) {
+            fChess.GameManager.endGame('Stalemate', opponent);
         }
     };
 

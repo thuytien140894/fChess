@@ -103,8 +103,31 @@ fChess.Page = (function () {
         return VM;
     })();
 
+    Page.ToolbarVM = (function () {
+        var ToolbarVM = {};
+
+        ToolbarVM.concede = function () {
+
+        };
+
+        ToolbarVM.draw = function () {
+
+        };
+
+        ToolbarVM.undo = function () {
+
+        };
+
+        ToolbarVM.redo = function () {
+
+        };
+
+        return ToolbarVM;
+    })();
+
     Page.applyBindings = function () {
         ko.applyBindings(fChess.Page.VM, $('#wrapper').get(0));
+        ko.applyBindings(fChess.Page.ToolbarVM, $('#toolbar-wrapper').get(0));
         ko.applyBindings(fChess.GameManager.GameVM, $('#dashboard').get(0));
         ko.applyBindings(Page.historyChart, $('#history-chart').get(0));
         ko.applyBindings(Page.pawnPromotionModal, $('#pawn-promotion-modal').get(0));

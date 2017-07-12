@@ -15,6 +15,7 @@ fChess.GameManager = (function() {
 
     //static fields
     GameManager.lostPiecesRecord = null;
+    GameManager.gameEnded = false;
 
     // private functions
 
@@ -22,6 +23,7 @@ fChess.GameManager = (function() {
     GameManager.prototype.startNewGame = function () {
         GameManager.GameVM.reset();
         GameManager.lostPiecesRecord = [];
+        GameManager.gameEnded = false;
 
         if (fChess.Page.board && fChess.Page.historyChart) {
             fChess.Page.board.reset();
@@ -31,6 +33,7 @@ fChess.GameManager = (function() {
 
     // static functions
     GameManager.endGame = function (reason, player) {
+        GameManager.gameEnded = true;
         fChess.Page.gameResultModal.initialize(reason, player);
         fChess.Page.gameResultModal.show();
     };
