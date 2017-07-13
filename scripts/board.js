@@ -199,17 +199,15 @@ fChess.Board = (function () {
                 }
                 cellToMove.piece = this.selectedPiece;
                 this.selectedCell.piece = null;
-
                 this.selectedPiece = await this._checkForPawnPromotion(cellToMove);
 
                 // recalculate moves for the piece that just gets moved
                 // so that if we can check if any king is checked
                 this.selectedPiece.findMoves(this.cells);
                 this._updateCheckStatus(this.selectedPiece);
-
                 this._takeSnapshot(cellToMove); // make this a promise waiting for pawn promotion tp resolve
-
                 this.selectedPiece = null;
+                this._switchPlayer();
         }
     };
 
@@ -288,7 +286,7 @@ fChess.Board = (function () {
 
     Board.prototype._switchPlayer = function () {
         var currentTurn = fChess.GameManager.GameVM.snapshot();
-        if (currentTurn % 2 == 0) {
+        if (currentTurn % 2 == 1) {
             this.players[0].isActive = false;
             this.players[1].isActive = true;
         } else {
@@ -306,7 +304,9 @@ fChess.Board = (function () {
         this._saveLostPieces();
         fChess.GameManager.resetHeadSnapshot();
 
-        this._updateHistoryChart(cellToMove);
+        if (cellToMove) {
+            this._updateHistoryChart(cellToMove);
+        }
     };
 
     Board.prototype._clearSnapshots = function () {
@@ -335,7 +335,6 @@ fChess.Board = (function () {
             this.selectedCell = null;
             this._retrieveLostPieces(snapshot);
             this._removeGraphics();
-            this._switchPlayer();
 
             this.cells.forEach(function (cell) {
                 cell.checkout(snapshot);
@@ -561,6 +560,7 @@ fChess.Board = (function () {
         this._findKings();
         this._clearSnapshots();
         this._initializePieces();
+        this._takeSnapshot();
     };
 
     Board.prototype.changePiece = function (pieceName) {

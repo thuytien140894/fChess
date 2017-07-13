@@ -25,9 +25,9 @@ fChess.HistoryChart = (function () {
 
     HistoryChart.prototype.update = function (newState) {
         var counter = fChess.GameManager.GameVM.snapshot();
-        var rowIndex = Math.floor(counter / 2);
+        var rowIndex = Math.ceil(counter / 2) - 1;
 
-        var cellIndex = counter % 2;
+        var cellIndex = (counter - 1) % 2;
         if (cellIndex == 0) {
             this.rows.splice(rowIndex);
             var row = new HistoryChart.Row(counter);

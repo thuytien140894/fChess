@@ -16,8 +16,18 @@ fChess.GameManager = (function() {
     //static fields
     GameManager.lostPiecesRecord = null;
     GameManager.gameEnded = false;
+    GameManager.mostRecentSnapshot = -1;
+    GameManager.turnCounter = 0;
 
     // private functions
+    GameManager.prototype._getActivePlayer = function () {
+        for (var i = 0; i < GameManager.GameVM.players().length; i++) {
+            var player = GameManager.GameVM.players()[i];
+            if (player.isActive()) {
+                return player;
+            }
+        }
+    };
 
     // public functions
     GameManager.prototype.startNewGame = function () {
@@ -39,9 +49,16 @@ fChess.GameManager = (function() {
     };
 
     GameManager.resetHeadSnapshot = function () {
-        var turn = GameManager.GameVM.snapshot();
-        GameManager.GameVM.snapshot(turn + 1);
+        var turn = GameManager.GameVM.snapshot() + 1;
+        GameManager.GameVM.snapshot(turn);
+        GameManager.mostRecentSnapshot = GameManager.GameVM.snapshot();
         GameManager.updateLostPieces();
+
+        if (turn == 2) {
+            GameManager.GameVM.canUndo(true);
+        }
+
+        GameManager.GameVM.canRedo(false);
     };
 
     GameManager.updateLostPieces = function () {
@@ -86,10 +103,47 @@ fChess.GameManager = (function() {
         GameVM.newState = ko.observable('');
         GameVM.snapshot = ko.observable();
         GameVM.players = ko.observableArray([]);
+        GameVM.canUndo = ko.observable(false);
+        GameVM.canRedo = ko.observable(false);
 
         GameVM.reset = function () {
             GameVM.snapshot(-1);
         };
+
+        GameVM.concede = function () {
+
+        };
+
+        GameVM.draw = function () {
+
+        };
+
+        GameVM.undo = function () {
+            var previousTurn = GameVM.snapshot() - 2;
+
+            if (previousTurn >= 0 && previousTurn <= (fChess.GameManager.mostRecentSnapshot - 2)) {
+                GameVM.snapshot(previousTurn);
+                GameVM.canRedo(true);
+            }
+
+            if (previousTurn == 0) {
+                GameVM.canUndo(false);
+            }
+        };
+
+        GameVM.redo = function () {
+            var nextTurn = GameVM.snapshot() + 2;
+
+            if (nextTurn <= fChess.GameManager.mostRecentSnapshot && nextTurn >= 2) {
+                GameVM.snapshot(nextTurn);
+                GameVM.canUndo(true);
+            }
+
+            if (nextTurn == fChess.GameManager.mostRecentSnapshot) {
+                GameVM.canRedo(false);
+            }
+        };
+
 
         return GameVM;
     })();

@@ -104,8 +104,10 @@
 <!-- toolbar -->
 <div id="toolbar-wrapper">
     <div class="toolbar">
-        <button class="toolbar-btn tooltip" data-bind="click: undo">
-            <img class="toolbar-img" src="assets/undo.png">
+        <button class="toolbar-btn tooltip" data-bind="click: undo,
+                                                       enable: canUndo,
+                                                       style: { cursor : canUndo() ? 'pointer' : 'not-allowed' }" >
+            <img class="toolbar-img" src="assets/undo.png" data-bind="style: { opacity : canUndo() ? '1' : '0.5' }">
             <span class="tooltip-text">Undo</span>
         </button>
         <button class="toolbar-btn tooltip" data-bind="click: draw">
@@ -116,8 +118,10 @@
             <img class="toolbar-img" src="assets/flags.png">
             <span class="tooltip-text">Concede</span>
         </button>
-        <button class="toolbar-btn tooltip" data-bind="click: redo">
-            <img class="toolbar-img" src="assets/redo.png">
+        <button class="toolbar-btn tooltip" data-bind="click: redo,
+                                                       enable: canRedo,
+                                                       style: { cursor : canRedo() ? 'pointer' : 'not-allowed' }" >
+            <img class="toolbar-img" src="assets/redo.png" data-bind="style: { opacity : canRedo() ? '1' : '0.5' }">
             <span class="tooltip-text">Redo</span>
         </button>
     </div>
