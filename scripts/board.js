@@ -304,7 +304,7 @@ fChess.Board = (function () {
         this._saveLostPieces();
         fChess.GameManager.resetHeadSnapshot();
 
-        if (cellToMove) {
+        if (typeof cellToMove !== 'undefined') { // check if cellToMove was passed in
             this._updateHistoryChart(cellToMove);
         }
     };

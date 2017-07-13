@@ -110,12 +110,16 @@
             <img class="toolbar-img" src="assets/undo.png" data-bind="style: { opacity : canUndo() ? '1' : '0.5' }">
             <span class="tooltip-text">Undo</span>
         </button>
-        <button class="toolbar-btn tooltip" data-bind="click: draw">
-            <img class="toolbar-img" src="assets/handshake.png">
+        <button class="toolbar-btn tooltip" data-bind="click: draw,
+                                                       enable: gameIsStarted,
+                                                       style: { cursor : gameIsStarted() ? 'pointer' : 'not-allowed' }">
+            <img class="toolbar-img" src="assets/handshake.png" data-bind="style: { opacity : gameIsStarted() ? '1' : '0.5' }">
             <span class="tooltip-text">Offer a Draw</span>
         </button>
-        <button class="toolbar-btn tooltip" data-bind="click: concede">
-            <img class="toolbar-img" src="assets/flags.png">
+        <button class="toolbar-btn tooltip" data-bind="click: concede,
+                                                       enable: gameIsStarted,
+                                                       style: { cursor : gameIsStarted() ? 'pointer' : 'not-allowed' }">
+            <img class="toolbar-img" src="assets/flags.png" data-bind="style: { opacity : gameIsStarted() ? '1' : '0.5' }">
             <span class="tooltip-text">Concede</span>
         </button>
         <button class="toolbar-btn tooltip" data-bind="click: redo,

@@ -16,7 +16,10 @@ fChess.GameResultModal = (function () {
 
     // public functions
     GameResultModal.prototype.initialize = function (reason, player) {
-        var title = reason + ' - ' + player.name + ' lost!'
+        var title = reason;
+        if (typeof player !== 'undefined') { // check if player was passed
+            title += ' - ' + player.name + ' lost!';
+        }
         this.reason(title);
     };
 

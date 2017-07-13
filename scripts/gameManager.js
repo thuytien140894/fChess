@@ -19,16 +19,6 @@ fChess.GameManager = (function() {
     GameManager.mostRecentSnapshot = -1;
     GameManager.turnCounter = 0;
 
-    // private functions
-    GameManager.prototype._getActivePlayer = function () {
-        for (var i = 0; i < GameManager.GameVM.players().length; i++) {
-            var player = GameManager.GameVM.players()[i];
-            if (player.isActive()) {
-                return player;
-            }
-        }
-    };
-
     // public functions
     GameManager.prototype.startNewGame = function () {
         GameManager.GameVM.reset();
@@ -42,6 +32,15 @@ fChess.GameManager = (function() {
     };
 
     // static functions
+    GameManager.getActivePlayer = function () {
+        for (var i = 0; i < GameManager.GameVM.players().length; i++) {
+            var player = GameManager.GameVM.players()[i];
+            if (player.isActive) {
+                return player;
+            }
+        }
+    };
+
     GameManager.endGame = function (reason, player) {
         GameManager.gameEnded = true;
         fChess.Page.gameResultModal.initialize(reason, player);
@@ -53,6 +52,10 @@ fChess.GameManager = (function() {
         GameManager.GameVM.snapshot(turn);
         GameManager.mostRecentSnapshot = GameManager.GameVM.snapshot();
         GameManager.updateLostPieces();
+
+        if (turn == 1) {
+            GameManager.GameVM.gameIsStarted(true);
+        }
 
         if (turn == 2) {
             GameManager.GameVM.canUndo(true);
@@ -103,19 +106,24 @@ fChess.GameManager = (function() {
         GameVM.newState = ko.observable('');
         GameVM.snapshot = ko.observable();
         GameVM.players = ko.observableArray([]);
-        GameVM.canUndo = ko.observable(false);
-        GameVM.canRedo = ko.observable(false);
+        GameVM.canUndo = ko.observable();
+        GameVM.canRedo = ko.observable();
+        GameVM.gameIsStarted = ko.observable();
 
         GameVM.reset = function () {
             GameVM.snapshot(-1);
+            GameVM.canUndo(false);
+            GameVM.canRedo(false);
+            GameVM.gameIsStarted(false);
         };
 
         GameVM.concede = function () {
-
+            var player = GameManager.getActivePlayer();
+            GameManager.endGame('Concession', player);
         };
 
         GameVM.draw = function () {
-
+            GameManager.endGame('Tie');
         };
 
         GameVM.undo = function () {
