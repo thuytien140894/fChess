@@ -14,6 +14,7 @@ fChess.KingPiece = (function () {
     //fields
     KingPiece.prototype._isThreatened = false;
     KingPiece.prototype.threateningPiece = null;
+    KingPiece.prototype.hasMoved = false;
 
     // private functions
 
@@ -38,6 +39,62 @@ fChess.KingPiece = (function () {
         currentCell.piece = this;
     };
 
+    KingPiece.prototype._checkForCastling = function (boardCells) {
+        if (!this.hasMoved && !this.isChecked()) {
+            var kingCell = this.findCell(boardCells);
+            var kingCellIndex = boardCells.indexOf(kingCell);
+            var rooks = fChess.Board.findRooks(this, boardCells);
+
+            for (var i = 0; i < rooks.length; i++) {
+                if (!rooks[i].hasMoved) {
+                    // check if there are any pieces between the king and the rook
+                    var rookCell = rooks[i].findCell(boardCells);
+                    var difference = Math.abs(rookCell.column - kingCell.column);
+                    var sign = (rookCell.column - kingCell.column) / difference;
+                    var isEmpty = true;
+                    for (var j = 1; j < difference; j++) {
+                        var cell = boardCells[kingCellIndex + sign * j];
+                        if (!cell.isEmpty()) {
+                            isEmpty = false;
+                            break;
+                        }
+                    }
+
+                    if (isEmpty) {
+                        // first we check if the king can move to the adjacent cell
+                        // if so, then check the next cell
+                        var adjacentCell = boardCells[kingCellIndex + sign];
+                        if (this.isAllowedToMove(adjacentCell)) {
+                            var kingIsChecked = false;
+                            var enemies = this.findAllEnemies(boardCells);
+                            var cellToCastle = boardCells[kingCellIndex + sign * 2];
+                            // assume that king occupies this cell
+                            kingCell.piece = null;
+                            cellToCastle.piece = this;
+                            for (var k = 0; k < enemies.length; k++) {
+                                var enemy = enemies[k];
+                                enemy.findMoves(boardCells);
+                                if (this.isChecked()) {
+                                    kingIsChecked = true;
+                                    break;
+                                }
+                            }
+
+                            // reset the cell pieces
+                            kingCell.piece = this;
+                            cellToCastle.piece = null;
+                            this.unchecked();
+
+                            if (!kingIsChecked) {
+                                this.availableMoves.push(cellToCastle);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    };
+
     // public functions
     KingPiece.prototype.findMoves = function (boardCells) {
         this.refreshMoves();
@@ -59,6 +116,7 @@ fChess.KingPiece = (function () {
         this.refreshMoves();
         this.findMoves(boardCells);
         this._avoidEnemies(boardCells);
+        this._checkForCastling(boardCells);
     };
 
     KingPiece.prototype.checkedByPiece = function (piece) {
@@ -82,6 +140,10 @@ fChess.KingPiece = (function () {
 
     KingPiece.prototype.isCheckmated = function () {
         return this.isChecked() && this.hasNoAvailableMoves();
+    };
+
+    KingPiece.prototype.isCastling = function (kingCell, cellToMove) {
+        return Math.abs(cellToMove.column - kingCell.column) == 2;
     };
 
     return KingPiece;

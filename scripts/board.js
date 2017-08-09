@@ -199,6 +199,9 @@ fChess.Board = (function () {
                 }
                 cellToMove.piece = this.selectedPiece;
                 this.selectedCell.piece = null;
+
+                this._checkForKingMovement(cellToMove);
+                this._checkForRookMovement();
                 this.selectedPiece = await this._checkForPawnPromotion(cellToMove);
 
                 // recalculate moves for the piece that just gets moved
@@ -211,10 +214,42 @@ fChess.Board = (function () {
         }
     };
 
+    Board.prototype._checkForKingMovement = function (cellToMove) {
+        if (fChess.Utils.isKing(this.selectedPiece)) {
+            this.selectedPiece.hasMoved = true;
+
+            if (this.selectedPiece.isCastling(this.selectedCell, cellToMove)) {
+                this._moveRook(this.selectedPiece, cellToMove);
+            }
+        }
+    };
+
+    Board.prototype._moveRook = function (pieceToCastle, cellToCastle) {
+        var rooks = Board.findRooks(pieceToCastle, this.cells);
+
+        for (var i = 0; i < rooks.length; i++) {
+            var rookCell = rooks[i].findCell(this.cells);
+            var difference = Math.abs(rookCell.column - cellToCastle.column);
+            if (difference < 4) {
+                var sign = (rookCell.column - cellToCastle.column) / difference;
+                var cellToCastleIndex = this.cells.indexOf(cellToCastle);
+                var castlingCell = this.cells[cellToCastleIndex - sign];
+                castlingCell.piece = rooks[i];
+                rookCell.piece = null;
+                break;
+            }
+        }
+    };
+
+    Board.prototype._checkForRookMovement = function () {
+        if (fChess.Utils.isRook(this.selectedPiece)) {
+            this.selectedPiece.hasMoved = true;
+        }
+    };
+
     Board.prototype._updateCheckStatus = function (movedPiece) {
         for (var i = 0; i < this.players.length; i++) {
             var player = this.players[i];
-            var enemyKing = Board.findEnemyKing(player.king);
 
             // if the most recently moved piece helps uncheck its king, then
             // the king's threatening piece should not threaten the king anymore
@@ -302,6 +337,7 @@ fChess.Board = (function () {
         }.bind(this));
 
         this._saveLostPieces();
+        this._savePlayerStatuses();
         fChess.GameManager.resetHeadSnapshot();
 
         if (typeof cellToMove !== 'undefined') { // check if cellToMove was passed in
@@ -329,18 +365,49 @@ fChess.Board = (function () {
         fChess.GameManager.lostPiecesRecord.push(lostPieces);
     };
 
+    Board.prototype._savePlayerStatuses = function () {
+        var currentSnapshot = fChess.GameManager.GameVM.snapshot();
+
+        for (var color in fChess.GameManager.playerStatuses) {
+            var player = fChess.GameManager.playerStatuses[color];
+            player.isChecked.splice(currentSnapshot + 1);
+            player.canCastle.splice(currentSnapshot + 1);
+        }
+
+        this.players.forEach(function (player) {
+            var playerStatus = fChess.GameManager.playerStatuses[player.color]
+            playerStatus.isChecked.push(player.king.threateningPiece);
+            playerStatus.canCastle.push(false);
+        }.bind(this));
+    };
+
+    Board.prototype._updatePlayerStatuses = function (snapshot) {
+        this.players.forEach(function (player) {
+            var playerStatus;
+            if (player.color == 'white') {
+                playerStatus = fChess.GameManager.playerStatuses['white'];
+            } else {
+                playerStatus = fChess.GameManager.playerStatuses['black'];
+            }
+
+            player.king.checkedByPiece(playerStatus.isChecked[snapshot]);
+        }.bind(this));
+    };
+
     Board.prototype._checkout = function (snapshot) {
         if (snapshot >= 0) {
             this.selectedPiece = null;
             this.selectedCell = null;
-            this._retrieveLostPieces(snapshot);
             this._removeGraphics();
 
             this.cells.forEach(function (cell) {
                 cell.checkout(snapshot);
             }.bind(this));
 
+            this._retrieveLostPieces(snapshot);
             fChess.GameManager.updateLostPieces();
+
+            this._updatePlayerStatuses(snapshot);
         }
     };
 
@@ -590,6 +657,19 @@ fChess.Board = (function () {
         var row = (Board.gameSettings.rows - cell.row).toString();
 
         return column + row;
+    };
+
+    Board.findRooks = function (piece, cells) {
+        var rooks = [];
+        for (var i = 0; i < cells.length; i++) {
+            if (!cells[i].isEmpty() &&
+                cells[i].piece.color == piece.color &&
+                fChess.Utils.isRook(cells[i].piece)) {
+                rooks.push(cells[i].piece);
+            }
+        }
+
+        return rooks;
     };
 
     Board.findKing = function (piece) {

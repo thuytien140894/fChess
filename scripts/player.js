@@ -19,6 +19,7 @@ fChess.Player = (function () {
     Player.prototype.isActive = false;
     Player.prototype.lostPieces = null;
     Player.prototype.king = null;
+    Player.prototype.canCastle = false;
 
     // public functions
     Player.prototype.hasLegalMoves = function (boardCells) {

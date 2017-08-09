@@ -1,9 +1,8 @@
 var fChess = fChess || {};
 
 //TODO:
-//1. CHECKMATE - when the king has no more available moves - pop the game result modal
-//2. castling
 //4. reset the king's checked status when reverting to different snapshots
+//5. en passant - check if the left and right side of my pawn is occupied by the enemy's pawn which wasn't there the previous snapshot
 fChess.GameManager = (function() {
     'use strict';
 
@@ -15,14 +14,16 @@ fChess.GameManager = (function() {
 
     //static fields
     GameManager.lostPiecesRecord = null;
+    GameManager.playerStatuses = null;
     GameManager.gameEnded = false;
     GameManager.mostRecentSnapshot = -1;
-    GameManager.turnCounter = 0;
 
     // public functions
     GameManager.prototype.startNewGame = function () {
         GameManager.GameVM.reset();
         GameManager.lostPiecesRecord = [];
+        GameManager.playerStatuses = { white : { isChecked : [], canCastle : [] },
+                                       black: { isChecked : [], canCastle : [] } };
         GameManager.gameEnded = false;
 
         if (fChess.Page.board && fChess.Page.historyChart) {
@@ -51,7 +52,6 @@ fChess.GameManager = (function() {
         var turn = GameManager.GameVM.snapshot() + 1;
         GameManager.GameVM.snapshot(turn);
         GameManager.mostRecentSnapshot = GameManager.GameVM.snapshot();
-        GameManager.updateLostPieces();
 
         if (turn == 1) {
             GameManager.GameVM.gameIsStarted(true);

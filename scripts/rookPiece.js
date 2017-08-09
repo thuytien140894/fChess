@@ -12,6 +12,7 @@ fChess.RookPiece = (function () {
     fChess.Utils.extend(fChess.Piece, RookPiece);
 
     //fields
+    RookPiece.prototype.hasMoved = false;
 
     // public functions
     RookPiece.prototype.findMoves = function (boardCells) {
