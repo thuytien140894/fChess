@@ -210,7 +210,6 @@ fChess.Board = (function () {
                 this._updateCheckStatus(this.selectedPiece);
                 this._takeSnapshot(cellToMove); // make this a promise waiting for pawn promotion tp resolve
                 this.selectedPiece = null;
-                this._switchPlayer();
         }
     };
 
@@ -225,7 +224,7 @@ fChess.Board = (function () {
     };
 
     Board.prototype._moveRook = function (pieceToCastle, cellToCastle) {
-        var rooks = Board.findRooks(pieceToCastle, this.cells);
+        var rooks = this._findRooks(pieceToCastle);
 
         for (var i = 0; i < rooks.length; i++) {
             var rookCell = rooks[i].findCell(this.cells);
@@ -370,14 +369,30 @@ fChess.Board = (function () {
 
         for (var color in fChess.GameManager.playerStatuses) {
             var player = fChess.GameManager.playerStatuses[color];
-            player.isChecked.splice(currentSnapshot + 1);
-            player.canCastle.splice(currentSnapshot + 1);
+            player.threateningPiece.splice(currentSnapshot + 1);
+            player.kingIsMoved.splice(currentSnapshot + 1);
+            player.rooksForCastling.splice(currentSnapshot + 1);
         }
 
         this.players.forEach(function (player) {
             var playerStatus = fChess.GameManager.playerStatuses[player.color]
-            playerStatus.isChecked.push(player.king.threateningPiece);
-            playerStatus.canCastle.push(false);
+            // save the player's threatening piece if there's any
+            playerStatus.threateningPiece.push(player.king.threateningPiece);
+
+            // save the king's movement status
+            playerStatus.kingIsMoved.push(player.king.hasMoved);
+
+            // save the player's available rooks to castle if there's any
+            var availableRooks = [];
+            if (!player.king.hasMoved && !player.king.isChecked()) {
+                var rooks = this._findRooks(player.king);
+                for (var i = 0; i < rooks.length; i++) {
+                    if (!rooks[i].hasMoved) {
+                        availableRooks.push(rooks[i]);
+                    }
+                }
+            }
+            playerStatus.rooksForCastling.push(availableRooks);
         }.bind(this));
     };
 
@@ -390,7 +405,15 @@ fChess.Board = (function () {
                 playerStatus = fChess.GameManager.playerStatuses['black'];
             }
 
-            player.king.checkedByPiece(playerStatus.isChecked[snapshot]);
+            // update the checked status and the threatening piece
+            player.king.checkedByPiece(playerStatus.threateningPiece[snapshot]);
+
+            // update the castling ability by resetting the king's and the rook's movement status
+            player.king.hasMoved = playerStatus.kingIsMoved[snapshot];
+            player.king.rooksForCastling = playerStatus.rooksForCastling[snapshot];
+            player.king.rooksForCastling.forEach(function (rook) {
+                rook.hasMoved = false;
+            }.bind(this));
         }.bind(this));
     };
 
@@ -408,6 +431,7 @@ fChess.Board = (function () {
             fChess.GameManager.updateLostPieces();
 
             this._updatePlayerStatuses(snapshot);
+            this._switchPlayer();
         }
     };
 
@@ -586,6 +610,19 @@ fChess.Board = (function () {
         }
     };
 
+    Board.prototype._findRooks = function (piece) {
+        var rooks = [];
+        for (var i = 0; i < this.cells.length; i++) {
+            if (!this.cells[i].isEmpty() &&
+                this.cells[i].piece.color == piece.color &&
+                fChess.Utils.isRook(this.cells[i].piece)) {
+                rooks.push(this.cells[i].piece);
+            }
+        }
+
+        return rooks;
+    };
+
     Board.prototype._findCellForPiece = function (piece) {
         for (var i = 0; i < this.cells.length; i++) {
             if (this.cells[i].piece == piece) {
@@ -657,19 +694,6 @@ fChess.Board = (function () {
         var row = (Board.gameSettings.rows - cell.row).toString();
 
         return column + row;
-    };
-
-    Board.findRooks = function (piece, cells) {
-        var rooks = [];
-        for (var i = 0; i < cells.length; i++) {
-            if (!cells[i].isEmpty() &&
-                cells[i].piece.color == piece.color &&
-                fChess.Utils.isRook(cells[i].piece)) {
-                rooks.push(cells[i].piece);
-            }
-        }
-
-        return rooks;
     };
 
     Board.findKing = function (piece) {

@@ -7,6 +7,8 @@ fChess.KingPiece = (function () {
     var KingPiece = function (color) {
         //super()
         fChess.Piece.prototype.constructor.apply(this, arguments);
+
+        this.rooksForCastling = [];
     };
 
     fChess.Utils.extend(fChess.Piece, KingPiece);
@@ -15,6 +17,7 @@ fChess.KingPiece = (function () {
     KingPiece.prototype._isThreatened = false;
     KingPiece.prototype.threateningPiece = null;
     KingPiece.prototype.hasMoved = false;
+    KingPiece.prototype.rooksForCastling = null;
 
     // private functions
 
@@ -40,55 +43,49 @@ fChess.KingPiece = (function () {
     };
 
     KingPiece.prototype._checkForCastling = function (boardCells) {
-        if (!this.hasMoved && !this.isChecked()) {
-            var kingCell = this.findCell(boardCells);
-            var kingCellIndex = boardCells.indexOf(kingCell);
-            var rooks = fChess.Board.findRooks(this, boardCells);
+        var kingCell = this.findCell(boardCells);
+        var kingCellIndex = boardCells.indexOf(kingCell);
+        for (var i = 0; i < this.rooksForCastling.length; i++) {
+            // check if there are any pieces between the king and the rook
+            var rookCell = this.rooksForCastling[i].findCell(boardCells);
+            var difference = Math.abs(rookCell.column - kingCell.column);
+            var sign = (rookCell.column - kingCell.column) / difference;
+            var isEmpty = true;
+            for (var j = 1; j < difference; j++) {
+                var cell = boardCells[kingCellIndex + sign * j];
+                if (!cell.isEmpty()) {
+                    isEmpty = false;
+                    break;
+                }
+            }
 
-            for (var i = 0; i < rooks.length; i++) {
-                if (!rooks[i].hasMoved) {
-                    // check if there are any pieces between the king and the rook
-                    var rookCell = rooks[i].findCell(boardCells);
-                    var difference = Math.abs(rookCell.column - kingCell.column);
-                    var sign = (rookCell.column - kingCell.column) / difference;
-                    var isEmpty = true;
-                    for (var j = 1; j < difference; j++) {
-                        var cell = boardCells[kingCellIndex + sign * j];
-                        if (!cell.isEmpty()) {
-                            isEmpty = false;
+            if (isEmpty) {
+                // first we check if the king can move to the adjacent cell
+                // if so, then check the next cell
+                var adjacentCell = boardCells[kingCellIndex + sign];
+                if (this.isAllowedToMove(adjacentCell)) {
+                    var kingIsChecked = false;
+                    var enemies = this.findAllEnemies(boardCells);
+                    var cellToCastle = boardCells[kingCellIndex + sign * 2];
+                    // assume that king occupies this cell
+                    kingCell.piece = null;
+                    cellToCastle.piece = this;
+                    for (var k = 0; k < enemies.length; k++) {
+                        var enemy = enemies[k];
+                        enemy.findMoves(boardCells);
+                        if (this.isChecked()) {
+                            kingIsChecked = true;
                             break;
                         }
                     }
 
-                    if (isEmpty) {
-                        // first we check if the king can move to the adjacent cell
-                        // if so, then check the next cell
-                        var adjacentCell = boardCells[kingCellIndex + sign];
-                        if (this.isAllowedToMove(adjacentCell)) {
-                            var kingIsChecked = false;
-                            var enemies = this.findAllEnemies(boardCells);
-                            var cellToCastle = boardCells[kingCellIndex + sign * 2];
-                            // assume that king occupies this cell
-                            kingCell.piece = null;
-                            cellToCastle.piece = this;
-                            for (var k = 0; k < enemies.length; k++) {
-                                var enemy = enemies[k];
-                                enemy.findMoves(boardCells);
-                                if (this.isChecked()) {
-                                    kingIsChecked = true;
-                                    break;
-                                }
-                            }
+                    // reset the cell pieces
+                    kingCell.piece = this;
+                    cellToCastle.piece = null;
+                    this.unchecked();
 
-                            // reset the cell pieces
-                            kingCell.piece = this;
-                            cellToCastle.piece = null;
-                            this.unchecked();
-
-                            if (!kingIsChecked) {
-                                this.availableMoves.push(cellToCastle);
-                            }
-                        }
+                    if (!kingIsChecked) {
+                        this.availableMoves.push(cellToCastle);
                     }
                 }
             }

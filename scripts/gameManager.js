@@ -1,9 +1,8 @@
 var fChess = fChess || {};
 
 //TODO:
-//4. reset the king's checked status when reverting to different snapshots
 //5. en passant - check if the left and right side of my pawn is occupied by the enemy's pawn which wasn't there the previous snapshot
-fChess.GameManager = (function() {
+fChess.GameManager = (function () {
     'use strict';
 
     var GameManager = function () {
@@ -22,8 +21,12 @@ fChess.GameManager = (function() {
     GameManager.prototype.startNewGame = function () {
         GameManager.GameVM.reset();
         GameManager.lostPiecesRecord = [];
-        GameManager.playerStatuses = { white : { isChecked : [], canCastle : [] },
-                                       black: { isChecked : [], canCastle : [] } };
+        GameManager.playerStatuses = { white : { threateningPiece : [],
+                                                 kingIsMoved : [],
+                                                 rooksForCastling : [] },
+                                       black: { threateningPiece : [],
+                                                kingIsMoved : [],
+                                                rooksForCastling : [] } };
         GameManager.gameEnded = false;
 
         if (fChess.Page.board && fChess.Page.historyChart) {
@@ -134,7 +137,8 @@ fChess.GameManager = (function() {
                 GameVM.canRedo(true);
             }
 
-            if (previousTurn == 0) {
+            if (previousTurn <= 0) {
+                GameVM.snapshot(0);
                 GameVM.canUndo(false);
             }
         };
@@ -147,7 +151,8 @@ fChess.GameManager = (function() {
                 GameVM.canUndo(true);
             }
 
-            if (nextTurn == fChess.GameManager.mostRecentSnapshot) {
+            if (nextTurn >= fChess.GameManager.mostRecentSnapshot) {
+                GameVM.snapshot(fChess.GameManager.mostRecentSnapshot);
                 GameVM.canRedo(false);
             }
         };
