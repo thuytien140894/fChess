@@ -1,7 +1,5 @@
 var fChess = fChess || {};
 
-//TODO:
-//5. en passant - check if the left and right side of my pawn is occupied by the enemy's pawn which wasn't there the previous snapshot
 fChess.GameManager = (function () {
     'use strict';
 

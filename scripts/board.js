@@ -30,6 +30,9 @@ fChess.Board = (function () {
     Board.prototype.selectedCell = null;
     Board.prototype.selectedPiece = null;
     Board.prototype.snapshotSubscription = null;
+    Board.prototype.pawnIsPromoted = false;
+    Board.prototype.castlingPerformed = false;
+    Board.prototype.enPassantPerformed = false;
 
     Board.prototype.players = null;
     Board.prototype.cells = null;
@@ -194,14 +197,15 @@ fChess.Board = (function () {
             this.selectedCell.piece.isAllowedToMove(cellToMove)) { // make sure that cellToMove is part of the piece's availableMoves
                 this._removeGraphics();
 
+                this._checkForKingMovement(cellToMove);
+                this._checkForRookMovement();
+                this._checkForPawnMovement(cellToMove);
+
                 if (!cellToMove.isEmpty()) {
                     this._clearCell(cellToMove);
                 }
                 cellToMove.piece = this.selectedPiece;
                 this.selectedCell.piece = null;
-
-                this._checkForKingMovement(cellToMove);
-                this._checkForRookMovement();
                 this.selectedPiece = await this._checkForPawnPromotion(cellToMove);
 
                 // recalculate moves for the piece that just gets moved
@@ -219,6 +223,7 @@ fChess.Board = (function () {
 
             if (this.selectedPiece.isCastling(this.selectedCell, cellToMove)) {
                 this._moveRook(this.selectedPiece, cellToMove);
+                this.castlingPerformed = true;
             }
         }
     };
@@ -243,6 +248,19 @@ fChess.Board = (function () {
     Board.prototype._checkForRookMovement = function () {
         if (fChess.Utils.isRook(this.selectedPiece)) {
             this.selectedPiece.hasMoved = true;
+        }
+    };
+
+    Board.prototype._checkForPawnMovement = function (cellToMove) {
+        if (fChess.Utils.isPawn(this.selectedPiece)) {
+            if (this.selectedPiece.isPassing(this.selectedCell, cellToMove, this.cells)) {
+                // remove the passed pawn
+                var cellIndex = this.cells.indexOf(cellToMove);
+                var sign = this.selectedPiece.getMoveDirection() == 'north' ? 1 : -1;
+                var cellToPass = this.cells[cellIndex + sign * 8];
+                this._clearCell(cellToPass);
+                this.enPassantPerformed = true;
+            }
         }
     };
 
@@ -290,8 +308,8 @@ fChess.Board = (function () {
                 // update the sprite
                 var sprite = this._findSpriteForPiece(movedPiece);
                 sprite.replacePiece(promotedPiece);
-
                 this._updatePlayerPieces(movedPiece, promotedPiece);
+                this.pawnIsPromoted = true;
 
                 return promotedPiece;
             }
@@ -460,6 +478,17 @@ fChess.Board = (function () {
     Board.prototype._updateHistoryChart = function (cell) {
         if (cell) {
             var state = Board.getCellID(cell);
+            if (this.pawnIsPromoted) {
+                state += ' - promoted';
+                this.pawnIsPromoted = false;
+            } else if (this.castlingPerformed) {
+                state += ' - castled';
+                this.castlingPerformed = false;
+            } else if (this.enPassantPerformed) {
+                state += ' - en passant';
+                this.enPassantPerformed = false;
+            }
+            
             fChess.GameManager.GameVM.newState(state);
         }
     };

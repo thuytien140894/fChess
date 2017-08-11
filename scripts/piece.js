@@ -26,6 +26,7 @@ fChess.Piece = (function () {
         }.bind(this));
     };
 
+    // find moves that might threaten the king 
     Piece.prototype._findDangerousMoves = function (boardCells, myKing) {
         var currentCell = this.findCell(boardCells);
         currentCell.piece = null;
