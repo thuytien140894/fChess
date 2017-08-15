@@ -33,8 +33,10 @@ fChess.Page = (function () {
         VM.boardIsLoaded = ko.observable(false);
         VM.showPieceOptions = ko.observable(false);
         VM.hasSound = true;
+        VM.hasAnimation = true;
         VM.showFeedback = true;
         VM.soundIcon = ko.observable('assets/notifications.png');
+        VM.animationIcon = ko.observable('assets/running.png');
         VM.feedbackIcon = ko.observable('assets/path.png');
         VM.pieceOptions = [
             { name: 'default', imageUrl: 'assets/chesspieces/uscf/bN.png', isSelected: ko.observable(true) },
@@ -71,6 +73,18 @@ fChess.Page = (function () {
                 VM.hasSound = true;
                 VM.soundIcon('assets/notifications.png');
             }
+        };
+
+        VM.toggleAnimation = function () {
+            if (VM.hasAnimation) {
+                VM.hasAnimation = false;
+                VM.animationIcon('assets/no-running.png');
+            } else {
+                VM.hasAnimation = true;
+                VM.animationIcon('assets/running.png');
+            }
+
+            fChess.Page.board.toggleAnimation(VM.hasAnimation);
         };
 
         VM.togglePieceOptions = function () {

@@ -19,12 +19,12 @@ fChess.GameManager = (function () {
     GameManager.prototype.startNewGame = function () {
         GameManager.GameVM.reset();
         GameManager.lostPiecesRecord = [];
-        GameManager.playerStatuses = { white : { threateningPiece : [],
-                                                 kingIsMoved : [],
-                                                 rooksForCastling : [] },
-                                       black: { threateningPiece : [],
-                                                kingIsMoved : [],
-                                                rooksForCastling : [] } };
+        GameManager.playerStatuses = { white: { threateningPiece: [],
+                                                 kingIsMoved: [],
+                                                 rooksForCastling: [] },
+                                       black: { threateningPiece: [],
+                                                kingIsMoved: [],
+                                                rooksForCastling: [] } };
         GameManager.gameEnded = false;
 
         if (fChess.Page.board && fChess.Page.historyChart) {
@@ -132,13 +132,14 @@ fChess.GameManager = (function () {
 
             if (previousTurn >= 0 && previousTurn <= (fChess.GameManager.mostRecentSnapshot - 2)) {
                 GameVM.snapshot(previousTurn);
-                GameVM.canRedo(true);
             }
 
             if (previousTurn <= 0) {
                 GameVM.snapshot(0);
                 GameVM.canUndo(false);
             }
+
+            GameVM.canRedo(true);
         };
 
         GameVM.redo = function () {
@@ -146,13 +147,14 @@ fChess.GameManager = (function () {
 
             if (nextTurn <= fChess.GameManager.mostRecentSnapshot && nextTurn >= 2) {
                 GameVM.snapshot(nextTurn);
-                GameVM.canUndo(true);
             }
 
             if (nextTurn >= fChess.GameManager.mostRecentSnapshot) {
                 GameVM.snapshot(fChess.GameManager.mostRecentSnapshot);
                 GameVM.canRedo(false);
             }
+
+            GameVM.canUndo(true);
         };
 
 
