@@ -121,6 +121,7 @@ fChess.Board = (function () {
             var startCell = piecePosition.currentCell;
             var endCell = piecePosition.newCell;
             var spritePiece = piecePosition.piece;
+            var animationIsDone = false;
 
             if (startCell) { // make sure the piece is still alive
                 var xDifference = endCell.centerX - startCell.centerX;
@@ -135,9 +136,7 @@ fChess.Board = (function () {
                             spritePiece.sprite.y += ySlope * 6;
                             piecePosition.step += 1;
                         } else {
-                            spritePiece.sprite.y = endCell.centerY;
-                            piecePosition.currentCell = endCell;
-                            piecePosition.step = 0;
+                            animationIsDone = true;
                         }
                     } else if (yDifference == 0) { // move horizontally
                         var difference = Math.abs(xDifference);
@@ -147,9 +146,7 @@ fChess.Board = (function () {
                             spritePiece.sprite.x += xSlope * 6;
                             piecePosition.step += 1;
                         } else {
-                            spritePiece.sprite.x = endCell.centerX;
-                            piecePosition.currentCell = endCell;
-                            piecePosition.step = 0;
+                            animationIsDone = true;
                         }
                     } else { // move diagonally
                         var difference = Math.abs(yDifference);
@@ -162,20 +159,21 @@ fChess.Board = (function () {
                             spritePiece.sprite.y += ySlope * 6;
                             piecePosition.step += 1;
                         } else {
-                            spritePiece.sprite.y = endCell.centerY;
-                            spritePiece.sprite.x = endCell.centerX;
-                            piecePosition.currentCell = endCell;
-                            piecePosition.step = 0;
+                            animationIsDone = true;
                         }
                     }
                 }
             } else { // the startCell is null
                 if (endCell) { // the piece is revived
-                    spritePiece.sprite.y = endCell.centerY;
-                    spritePiece.sprite.x = endCell.centerX;
-                    piecePosition.currentCell = endCell;
-                    piecePosition.step = 0;
+                    animationIsDone = true;
                 }
+            }
+
+            if (animationIsDone) {
+                spritePiece.sprite.y = endCell.centerY;
+                spritePiece.sprite.x = endCell.centerX;
+                piecePosition.currentCell = endCell;
+                piecePosition.step = 0;
             }
         }.bind(this));
     };
