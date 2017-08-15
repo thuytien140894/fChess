@@ -73,6 +73,8 @@ fChess.Page = (function () {
                 VM.hasSound = true;
                 VM.soundIcon('assets/notifications.png');
             }
+
+            fChess.Page.board.toggleSound(VM.hasSound);
         };
 
         VM.toggleAnimation = function () {

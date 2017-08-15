@@ -50,6 +50,7 @@ fChess.Board = (function () {
     Board.pieceType = 'default';
     Board.showFeedback = true;
     Board.showAnimation = true;
+    Board.hasSound = true;
 
     // private functions
     Board.prototype._preload = function () {
@@ -289,6 +290,10 @@ fChess.Board = (function () {
                 this.selectedPiece = null;
                 this.selectedCell = null;
                 this._takeSnapshot(cellToMove); // make this a promise waiting for pawn promotion tp resolve
+
+                if (Board.hasSound) {
+                    fChess.Utils.moveSound.play();
+                }
         }
     };
 
@@ -812,6 +817,10 @@ fChess.Board = (function () {
 
     Board.prototype.toggleAnimation = function (isSet) {
         Board.showAnimation = isSet;
+    };
+
+    Board.prototype.toggleSound = function (isSet) {
+        Board.hasSound = isSet;
     };
 
     //static functions
